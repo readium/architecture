@@ -747,6 +747,8 @@ interface Navigator {
     /**
      * Returns the total number of screens in the current spine item (for reflowable 
      * documents).  Always returns 1 for fixed layout spine items.
+     *
+     * QUESTION:  Should this be callback-based?
      * 
      * @return integer 
      */
@@ -1050,7 +1052,7 @@ interface Renderer {
      * traverse the current set of highlights associated with the
      * document.
      * 
-     * @return HighlightsItem 
+     * @return HighlightItem 
      */
     HighlightItem  getHighlightsRoot();
 
@@ -1062,8 +1064,10 @@ interface Renderer {
      * @param end      end location for the hightlight. Can be null if start is range
      * @param color    CSS-style color
      * @param opacity  opacity in the range of 0..1
+     *
+     * @return DOMString The GUID that uniquely identifies this highlight.
      */
-    void addHighlight ( Location start, Location end, DOMString color, float opacity );
+    DOMString addHighlight ( Location start, Location end, DOMString color, float opacity );
 
     /**
      * Convenience method to clear all highlights in current document
@@ -1078,7 +1082,8 @@ interface Renderer {
     void clearHighlight( HighlightItem item );
 
     /**
-     * Attach a handler that will be called when a highlight is selected
+     * Attach a handler that will be called when a highlight is selected. The 
+     * handler will be passed the HighlightItem that has been selected.
      * 
      * @param handler 
      */
@@ -1124,6 +1129,7 @@ interface Search {
      *      { start:loc, end:loc, result:text },
      *      { start:loc, end:loc, result:text },
      *      { start:loc, end:loc, result:text }
+     *                     etc.
      *   ]
      \endcode
      * 
