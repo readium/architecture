@@ -1,0 +1,1379 @@
+/**
+ * @brief This is the IDL for the Readium interfaces to the SDK, where SDK 
+ * comprises the functionality implemented to support EPUB 3 rendering 
+ * not including the application layer. SDK is not intended to indicate a 
+ * native implementation
+ *
+ * @author rkwright (8/11/16) - initial draft
+ */
+
+/**
+ * @brief Provides methods for walking an OPF collection
+ * 
+ */
+interface CollectionItem {
+
+
+    /**
+     * Return the number of children of this CollectionItem
+     * 
+     * @return integer 
+     */
+    integer getChildCount();
+
+    /**
+     * Fetch the specified child of the current CollectionItem
+     * Returns null if there isn't one
+     *    
+     * @param index 
+     * 
+     * @return NavDocItem 
+     */
+    NavDocItem  getChild( integer index );
+
+    /**
+     * Returns the DOM3 Node type value for the current item.
+     * 
+     * @return integer 
+     */
+    integer   getNodeType();
+
+    /**
+     * Get the name of the element
+     * 
+     * @return DOMString 
+     */
+    DOMString   getItemName();
+
+    /**
+     * Returns a JSON object that is the complete set of attributes for this item
+     * 
+     * @return DOMString 
+     */
+    DOMString getAttributes();
+
+}
+
+/**
+ * @brief The fundamental interface for the SDK implementation.  Represents the current 
+ * open EPUB document.  Provides access to the document's OPF and its contents 
+ * as well as rendering, etc.  In addition, it provides access to the underlying 
+ * rendering and navigation engine (typically a browser engine).
+ * 
+ */
+interface Document {
+
+    /**
+     * Basic method to open an EPUB.  Also initializes the underlying renderer and
+     * performs any other initialization required.
+     *        
+     * @param url 
+     *
+     * @return boolean true if successful, else false
+     */
+    boolean openBook ( DOMString url );
+
+    /**
+     * Return the OPF package (or equivalent) for the document
+     * 
+     * @return Package 
+     */
+    Package getPackage();
+
+    /**
+     * Returns the root item of the error list. This is presumably a tree or list, 
+     * but the item should be a normal tree item in behaviour even if the set of
+     * errors is a flat list.
+     * 
+     * @return ErrorItem 
+     */
+    ErrorItem getErrorRoot();
+
+    /**
+     * Clear the current error list.
+     */
+    void clearErrorList();
+   
+    /**
+     * Fetch the associated nav doc for the EPUB. 
+     * Object will be null if not available (which is a fatal error).
+     * 
+     * @return NavDocItem  root of the XHTML document which is the NavDoc
+     */
+    NavDocItem getNavDoc();
+}
+
+/**
+ * @brief The official EPUB reading system object. Interface defined in 
+ * the EPUB spec here (provide link to 3.1)
+ * 
+ */
+interface EPUBReadingSystem {
+
+    /**
+     * The name of the reading system 
+     *
+     * @return DOMString The name
+     */
+    DOMString getName();
+
+    /**
+     * Returns the version of the reading system
+     * 
+     * @return DOMString 
+     */
+    DOMString getVersion();
+
+    /**
+     * Returns the type of layout
+     * 
+     * deprecated in 3.1??? - TODO check this
+     * 
+     * @return DOMString 
+     */
+    DOMString layoutStyle();
+
+    /**
+     * General query method.  Returns true or false depending on whether the feature is
+     * supported by the current reading system.
+     *
+     * As of 3.1, the queries that should be supported include:
+     *      TODO fill out the list
+     *
+     * @return boolean  true if feature supported, else false
+     */
+    boolean hasFeature( DOMString feature, optional DOMString version );
+};
+
+/**
+ * @brief Provides access to the current error list.
+ */
+interface ErrorItem {
+
+    /**
+     * The types of error severity - TODO better or more complete enumeration
+     */
+    const integer FATAL_ERROR = 0;
+    const integer ERROR       = 1;
+    const integer WARNING     = 2;
+    const integer INFO        = 3;
+
+    /**
+     * Get the number of children (errors) in the current error list (level)
+     * 
+     * @return integer Number of children
+     */
+    integer getChildCount();
+
+    /**
+     * Returns the indicated child error item.
+     * 
+     * @param index 
+     * 
+     * @return ErrorItem  
+     */
+    ErrorItem   getChild ( integer index );
+
+    /**
+     * Returns the error's ID value
+     *  
+     * @return integer 
+     */
+    const integer getID();
+
+    /**
+     * Return the severity of the specified error item 
+     *   
+     * @return const integer 
+     */
+    const integer getSeverity ();
+
+    /**
+     * Returns the string representation of the error, if any. The intent
+     * here is that the implementation may have a database of strings that 
+     * correspond to the set of possible error IDs
+     * 
+     * @param errID 
+     * 
+     * @return DOMString An empty string if there is no such string
+     */
+    DOMString getErrorString ( errID );
+}
+
+/**
+ * @brief Various methods for handling events
+ *
+ * TODO:  Is this the right approach?  Handling events of known IDs seems
+ * OK, but adding other handlers to specific objects seems to assume too much knowledge of 
+ * internals
+ * 
+ */
+interface Events {
+
+    const integer READER_INITIALIZED           = 100   // "ReaderInitialized"
+    const integer PAGINATION_CHANGED           = 101;  // "PaginationChanged"
+    const integer SETTINGS_APPLIED             = 102;  // "SettingsApplied"
+    const integer FXL_VIEW_RESIZED             = 103;  // "FXLViewResized"
+    const integer READER_VIEW_CREATED          = 104;  // "ReaderViewCreated"
+    const integer READER_VIEW_DESTROYED        = 105;  // "ReaderViewDestroyed"
+    const integer CONTENT_DOCUMENT_LOAD_START  = 106;  // "ContentDocumentLoadStart"
+    const integer CONTENT_DOCUMENT_LOADED      = 107;  // "ContentDocumentLoaded"
+    const integer CONTENT_DOCUMENT_UNLOADED    = 108;  // "ContentDocumentUnloaded"
+    const integer MEDIA_OVERLAY_STATUS_CHANGED = 109;  // "MediaOverlayStatusChanged"
+    const integer MEDIA_OVERLAY_TTS_SPEAK      = 110;  // "MediaOverlayTTSSpeak"
+    const integer MEDIA_OVERLAY_TTS_STOP       = 111;  // "MediaOverlayTTSStop"
+
+    /**
+     * Attach a handler for a specific, enumerated Readium event, such as 
+     * READER_INITIALIZED
+     * 
+     * @param eventID  The enumerated value of the event to be handled
+     * @param callback A callback function to be called when the event is emitted
+     */
+    void attachHandlerForEventID ( integer eventID, Object callback );
+
+    /**
+     * Removes a previously attached handler for a specific event.  The callback object
+     * is used to identify the handler to be removed.
+     * 
+     * @param eventID  The enumerated value of the event that was handled
+     * @param callback The callback function whch was to be called when event emitted
+     */
+    void removeHandlerForEventID ( integer eventID, Object callback );
+
+    /**
+     * Add a handler for a named event (e.g. onmousedown) to a specific object
+     * 
+     * @param object     The object to which the handler should be attached
+     * @param eventName  The name of the event
+     * @param callback   The handler to be called
+     */
+    void addHandlerForEvent ( Object object, DOMString eventName, Object callback );
+
+    /**
+     * Remove a previously added handler from a specific object
+     * 
+     * @param object     The object to which the handler was attached
+     * @param eventName  The name of the event being handled
+     * @param callback   The callback function that was being called
+     */
+    void removeHandlerForEvent ( Object object, DOMString eventName, Object callback );
+}
+
+/**
+ * Provides methods to manage the current highlight item 
+ * 
+ */
+interface HighlightItem {
+
+    /**
+     * Returns the unique ID for this HighlightItem
+     * 
+     * @return DOMString 
+     */
+    DOMString getGUID();
+
+    /**
+     * Get the number of children of this item
+     * 
+     * @return integer 
+     */
+    integer getChildCount();
+
+    /**
+     * Returns the indicated child item.
+     * 
+     * @param index 0-based index of the child item
+     * 
+     * @return HighlightItem  
+     */
+    ErrorItem getChild ( integer index );
+
+    /**
+     * Remove the specified child
+     * 
+     * @param index 
+     * 
+     * @return boolean True if successful, false on error
+     */
+    boolean removeChild (integer index );
+
+    /**
+     * Set the color of this highlight (CSS color)
+     * 
+     * @param color  CSS color
+     */
+    void setColor ( DOMString color );
+
+   /**
+     * Set the opacity of this highlight
+     * 
+     * @param opacity In range of 0..1
+     */
+    void setOpacity ( float opacity );
+
+}
+
+interface Location {
+
+    /** 
+     * Returns the location in the document, expressed as a CFI 
+     */
+    DOMString getLocation();
+
+    /** 
+     * Returns whether the current location is precisely known 
+     */
+    boolean getLocationPrecision();
+
+    /**
+     * Compare this location with another one. 
+     * The second parameter is the callback function that will be called
+     * when the comparison is complete.
+     *
+     * The signature of the callback function must be:
+     *
+     \code
+     *    callback( integer:result, boolean:precise)
+     \endcode
+     *
+     * where <c>result</c> will be\n 
+     *      -1 if the supplied value is before this one\n
+     *       0 if the supplied value is the same as this one\n
+     *       1 if the supplied value is after this one\n
+     * 
+     *    <c>precise</c> will be true if the CFI match is precise, else false
+     *
+     * @param otherLoc Location to be compared to this one
+     * @param callback Function to be called with results
+     *  
+     */
+    void compare ( DOMString otherLoc, Object callback);
+}
+
+/**
+ * @brief Represents a single manifest item
+ * 
+ */
+interface ManifestItem {
+
+   /**
+     * Returns the number of children of this item.
+     * 
+     * @return integer 
+     */
+    integer getChildCount();
+
+    /**
+     * Returns the specified ManifestChildItem, if any.
+     * 
+     * @param index 
+     * 
+     * @return ManifestItem 
+     */
+    ManifestItem getChild( integer index );
+
+    /**
+     * Returns the DOM3 Node type value for the current item.
+     * 
+     * @return integer 
+     */
+    integer   getNodeType();
+
+    /**
+     * Returns the name of this metadata item 
+     * 
+     * @return DOMString 
+     */
+    DOMString getName();
+
+    /**
+     * Returns a JSON object that is the complete set of attributes
+     * 
+     * @return DOMString 
+     */
+    DOMString getAttributes();
+}
+
+/**
+ * A set of methods to provide access and control of media overlays
+ * 
+ */
+interface MediaOverlay {
+
+    /**
+     * Check to see if the specified Location has a media overlay
+     * 
+     * @param Location
+     *
+     * @return boolean 
+     */
+    void hasMediaOverlay ( Location location );
+
+    /**
+     * Start or restart the current media overlay fragment.
+     * 
+     */
+    void play();
+
+    /**
+     * Stops the current fragment from playing
+     * 
+     */
+    void stop();
+
+    /**
+     * Pauses the current media overlay
+     * 
+     */
+    void pause();
+
+    /**
+     * Rewinds the media overlay to the start of the current fragment
+     * 
+     */
+    void reset();
+
+    /**
+     * Cause the playback to escape the current audio context
+     * 
+     */
+    void escapeCurrentContext();
+
+    /**
+     * Called when the media overlay handler encounters an error
+     * 
+     * TODO:  Enumerate errors...
+     * 
+     * @return integer 
+     */
+    integer onMOError();
+
+    /**
+     * Turn on or off touch-to-play capability
+     * 
+     * @param enable  true enables touch-to-play, false disables it
+     */
+    void setTouchToPlay ( boolean enable );
+
+    /**
+     * Set the audio playback rage
+     * 
+     * @param rate in the range 0.1 .. 5
+     */
+    void setPlaybackRate ( float rate );
+
+    /**
+     * Set the relative audio volume
+     * 
+     * @param volume  In percent, from 0 to 100%
+     */
+    void setAudioVolume ( float volume );
+
+    /**
+     * Set the audio highlight color
+     * 
+     * @param DOMString  CSS color syntax
+     */
+    void setHighlightColor ( DOMString );
+
+    /**
+     * Enable or disable scroll during playback
+     * 
+     * @param enable  Enabled if true, else disabled
+     */
+    void enableScrollDuringPlayback ( boolean enable );
+
+    /**
+     * Enable or disable automatic page turn
+     * 
+     * @param enable  Enabled if true else false
+     */
+    void enableAutomaticPageTurn ( boolean enable );
+
+    /**
+     * Enable or disable skippability
+     * 
+     * @param enable  Enable if true, else false
+     */
+    void enableSkippability ( boolean enable );
+}
+
+/**
+ * @brief Provides methods for walking and querying the metadata
+ * 
+ */
+interface MetadataItem {
+
+    /**
+     * Returns the number of children of this item.
+     * 
+     * @return integer 
+     */
+    integer getChildCount();
+
+    /**
+     * Returns the specified MetadataItem, if any.
+     * 
+     * @param index 
+     * 
+     * @return MetadataItem 
+     */
+    MetadataItem getChild( integer index );
+
+    /**
+     * Returns the DOM3 Node type value for the current item.
+     * 
+     * @return integer 
+     */
+    integer   getNodeType();
+
+    /**
+     * Returns the name of this metadata item 
+     * 
+     * @return DOMString 
+     */
+    DOMString getName();
+
+    /**
+     * Returns a JSON object that is the complete set of attributes
+     * 
+     * @return DOMString 
+     */
+    DOMString getAttributes();
+
+    /**
+     * Returns metadata item's property value, if any.
+     * 
+     * @return DOMString 
+     */
+    DOMString getProperty();
+
+    /**
+     * Returns the refines reference value, if any.  Empty if none
+     * 
+     * @return DOMString 
+     */
+    DOMString getRefines();
+
+    /**
+     * Returns actual value (text child node) of the metadata item.
+     * This is a convenience function as the item could be fetched as
+     * a child of the current item as well.
+     * 
+    * @return DOMString 
+     */
+    DOMString getValue();
+
+    /**
+     * Recursively searches the current item and its children for the metadata item
+     * with the specified property.
+     * 
+     * @param property   Name of the property
+     * 
+     * @return MetadataItem  Null if not found
+     */
+    MetadataItem findProperty ( DOMString property );
+}
+
+/**
+ * @brief Interface to elements of the EPUB navigation document.  The intent of 
+ * this interface is to allow callers to walk the tree of the NavDoc   
+ * 
+ */
+interface  NavDocItem {
+
+    /**
+     * Return the number of children of this NavDocItem
+     * 
+     * @return integer 
+     */
+    integer getChildCount();
+
+    /**
+     * Fetch the specified child of the current NavDocItem
+     * Returns null if there isn't one
+     *    
+     * @param index 
+     * 
+     * @return NavDocItem 
+     */
+    NavDocItem  getChild( integer index );
+
+    /**
+     * Returns the DOM3 Node type value for the current item.
+     * 
+     * @return integer 
+     */
+    integer   getNodeType();
+
+    /**
+     * Get the name of the element
+     * 
+     * @return DOMString 
+     */
+    DOMString   getItemName();
+
+    /**
+     * Returns the value of the epub:type attribute if any.
+     * Returns empty if there is no such attribute.
+     * 
+     * @return DOMString 
+     */
+    DOMString   getEPUBType();
+
+    /**
+     * Returns a JSON object that is the complete set of attributes for this item
+     * 
+     * @return DOMString 
+     */
+    DOMString getAttributes();
+}
+
+/**
+ * @brief Provides methods to navigate the document as well as converting between
+ * Location, screen and document position.
+ * 
+ */
+interface Navigator {
+
+    /**
+     * Navigate such that the specified location is at the top left of the 
+     * displayed screen (if ltr doc, else top right).
+     *
+     * @param loc 
+     */
+    void gotoLocation ( Location loc );
+
+    /**
+     * Returns the current location in the current spine item.  If no selection
+     * then it returns the top-left (or top-right if r-t-l document) of the current 
+     * screen
+     * 
+     * @return Location 
+     */
+    Location getCurrentLocation();
+
+    /**
+     * Returns the most recent location before the current location.
+     * This is essentially a FILO stack as each navigation action 
+     * (e.g. nextScreen, gotoDocEnd, etc.) pushes the previous 
+     * "current" location onto the stack 
+     *
+     * QUESTION: Should simple page turns be saved?  Or only higher 
+     * level actions such as gotoLocation, gotoEnd, etc.?
+     * 
+     * @return Location 
+     */
+    Location getPreviousLocation();
+
+    /**
+     * Navigate to the next renderable screen in the document, if any
+     *
+     * Note that this takes into account the page-direction of the document
+     */
+    void nextScreen();
+
+    /**
+     * Navigate to the previous renderable screen in the document, if any
+     *
+     * Note that this takes into account the page-direction of the document
+     */
+    void previousScreen();
+
+    /**
+     * Returns, as accurately as possible, the location of the top left (for 
+     * ltr doc) or top-right location (for rtl docs) of the current screen
+     *
+     * @return Location 
+     */
+    Location getScreenBegin();
+
+    /**
+     * Returns, as accurately as possible, the location of the lower right (for 
+     * ltr doc) or lower-left location (for rtl docs) of the current screen
+     *
+     * @return Location 
+     */
+    Location getScreenEnd();
+
+    /**
+     * Returns, as accurately as possible, the location of the top left (for 
+     * ltr doc) or top-right location (for rtl docs) of the first screen in the doc
+     *
+     * @return Location 
+     */
+    Location getDocBegin();
+
+    /**
+     * Returns, as accurately as possible, the location of the lower right (for 
+     * ltr doc) or lower-left location (for rtl docs) of the last screen in the doc
+     *
+     * @return Location 
+     */
+    Location getDocEnd();
+
+    /**
+     * Returns true if the current screen is the first screen in the document
+     * 
+     * @return boolean 
+     */
+    boolean isFirstScreen();
+
+    /**
+     * Returns true if the current screen is the last one in the document (.
+     * 
+     * @return boolean 
+     */
+    boolean isFinalScreen();
+
+    /**
+     * Returns true if the current screen is the first screen in the current
+     * spiineItem (for reflowable spine items).  Always returns true for fixed 
+     * layout spine items.
+     * 
+     * @return boolean 
+     */
+    boolean isFirstScreenSpine();
+
+    /**
+     * Returns true if the current screen is the last one in the spine item (for
+     * reflowable documents).  Always returns true for fixed layout spine items.
+     * 
+     * @return boolean 
+     */
+    boolean isFinalScreenSpine();
+
+    /**
+     * Returns the total number of screens in the current spine item (for reflowable 
+     * documents).  Always returns 1 for fixed layout spine items.
+     * 
+     * @return integer 
+     */
+    integer getScreenCountSpine();
+
+    /**
+     * Returns the total number of screens in the document (for reflowable documents)
+     * or the total number of pages (for fixed layout documents).
+     * The  parameter is the callback function that will be called
+     * when the count is complete.\n
+     * The signature of the callback function must be:
+     *
+     *    <i>callback( integer:result )</i>
+     *
+     * where
+     *
+     *    <i>result</i> will be the number of screens in the document\n  
+     *
+     * @param callback Function to be called with results
+     *  
+     */
+    void getScreenCount( Object callback );
+
+    /**
+     * Navigates to the specified screen (for reflowable) or page (for fixed
+     * layout)
+     * 
+     * @param screenNum 
+     */
+    void gotoScreen ( integer screenNum );
+
+    /**
+     * Returns the screen (or page) number for the specified location in the 
+     * document.
+     * 
+     * @param loc 
+     * 
+     * @return integer 
+     */
+    integer getScreenFromLocation ( Location loc );
+
+    /**
+     * Return the location of the upper-left (ltr documents) or upper-right (for rtl 
+     * documents) of the specified screen.
+     * 
+     * @param integer  The number of the screen
+     * 
+     * @return Location 
+     */
+    Location getLocationFromScreen ( integer );
+
+    /**
+     * Get the spine item that contains the specified Location
+     * 
+     * @return SpineItem 
+     */
+    SpineItem getSpineItemFromLocation();
+
+    /**
+     * Returns a JSON object that has the bounding box enclosed by the start
+     * Location (if a range) or the two Locations
+     * 
+     * @param start 
+     * @param end 
+     * 
+     * @return Object  JSON object with top, right, bottom, left as CSS lengths
+     */
+    Object getBoundingBox ( Location start, Location end );
+}
+
+/**
+ * @brief Provides access to the OPF package (or equivalent)
+ * 
+ */
+interface Package {
+
+    /**
+     * Returns the MetadataItem object which encapsulates the <metadata> 
+     * element itself
+     * 
+     * The object is empty if there is an error or the metadata element
+     * does not exist or is empty (which is a fatal error itself).
+     *
+     * @return MetadataItem 
+     */
+     MetadataItem getMetadataRoot();
+
+    /**
+     * Returns the MetadataItem object which encapsulates the <manifest> 
+     * element itself
+     * 
+     * @return ManifestItem 
+     */
+    ManifestItem getManifestRoot();
+
+    /**
+     * Returns the the MetadataItem object which encapsulates the <spine> 
+     * element itself
+     * 
+     * @return SpineItem 
+     */
+    SpineItem   getSpineRoot();
+
+    /**
+     * Fetches the top-most <collection> element for the package, if any
+     * 
+     * @return CollectionItem 
+     */
+    CollectionItem  getCollectionRoot(); 
+     
+    /**
+     * Returns a URL to the cover image from this package, if there is one
+     * 
+     * @return DOMString 
+     */
+    DOMString getCoverImage();
+}
+
+/**
+ * @brief Enables querying and constrolling how screens and/or pages are
+ * laid out.
+ * 
+ */
+interface PageLayout {
+
+    const REND_LAYOUT_PREPAGINATED = 0;
+    const REND_LAYOUT_REFLOWABLE   = 1;
+
+    const REND_ORIENT_AUTO      = 0;
+    const REND_ORIENT_LANDSCAPE = 1;
+    const REND_ORIENT_PORTRAIT  = 2;
+
+    const REND_SPREAD_AUTO      = 0;
+    const REND_SPREAD_LANDSCAPE = 1;
+    const REND_SPREAD_PORTRAIT  = 2;
+    const REND_SPREAD_NONE      = 3;
+
+    const REND_FLOW_PAGINATED   = 0;
+    const REND_FLOW_CONTINUOUS  = 1;
+    const REND_FLOW_DOCUMENT    = 2;
+    const REND_FLOW_FIXED       = 3;
+
+    /**
+     * Returns the current document-level rendition layout parameter 
+     * 
+     * @return integer  paginated or reflowable
+     */
+    integer getRenditionLayout();
+
+    /**
+     * Set the rendition orientation property for the current document
+     * 
+     * Note: The reading system may ignore this setting, in which case
+     * the return value is false.
+     * 
+     * @param orient 
+     *
+     * @return boolean
+     */
+    boolean setRenditionOrientation ( integer orient );
+
+    /**
+     * Returns the document-level rendition orientation
+     * 
+     * @return integer 
+     */
+    integer getRenditionOrientation();
+
+    /**
+     * Set the layout mode for the current screen(s)
+     * 
+     * Note: This may fail if the document is set to Spread:None 
+     * 
+     * @param spread 
+     */
+    boolean setRenditionSpread (integer spread );
+
+    /**
+     * Return the document-level rendition:spread property or setting
+     *  
+     * @return integer 
+     */
+    integer getRenditionSpread();
+
+    /**
+     * Set the renditiion flow mode for the document
+     * 
+     * Note: If the document is not reflowable the method will return false
+     *
+     * @param mode   @see REND_FLOW_* constants (above)
+     * 
+     * @return boolean 
+     */
+    boolean setRenditionFlow ( integer mode );
+
+    /**
+     * Returns the document-level rendition flow mode
+     * 
+     * Note: If the document is fixed layout this will always return 
+     * REND_FLOW_FIXED, indicating that the document is fixed layout
+     * 
+     * @return integer 
+     */
+    integer getRenditionFlow();
+
+    /**
+     * Set the width (in pixels) of the display available for layout of
+     * the screens (pages). This is the width of the displays available 
+     * to layout spreads, including the margins and gutter width, if any.
+     * 
+     * Note: This may not be supported on some devices
+     * 
+     * @param integer 
+     *
+     * @return boolean  False if request not supported
+     */
+    boolean setWidth ( integer );
+
+    /**
+     * Returns the current width of the display surface (in pixels) available
+     * to layout screens (pages), including margins and gutters.
+     * 
+     * @return integer 
+     */
+    integer getWidth ();
+
+    /**
+     * Returns the gutter distance between synthetic spread pages
+     *
+     * Note: If there is no synthetic spread the returned string will be 
+     * empty.
+     * 
+     * @return DOMstring  CSS units
+     */
+    DOMstring getGutterWidth();
+
+    /**
+     * Sets the gutter width between synthetic spread pages
+     * 
+     * Note: Will fail if the document or reading system does not allow 
+     * synthetic spreads
+     *
+     * @param gutter CSS units
+     * 
+     * @return boolean 
+     */
+    boolean setGutterWidth( DOMString gutter );
+}
+
+/**
+ * @brief Provides information about the current device as well as setting
+ * device parameters, if supported
+ * 
+ */
+interface ReadingSystem {
+
+    /**
+     * Get the name of the device (e.g browser or device)
+     * 
+     * @return DOMString 
+     */
+    DOMString getName();
+
+    /**
+     * Returns a JSON object that has the size of the device, if available
+     * 
+     * @return DOMString 
+     */
+    DOMString getDeviceSize();
+
+    /**
+     * Provides method of injecting user/app stylesheet such as 
+     * for setting night-mode or other non-default color schemes
+     * 
+     * @param url to the stylesheet to be injected
+     * 
+     * @return boolean  False if not supported
+     */
+    boolean injectStyleSheet ( DOMString url );
+
+    /**
+     * Provides a method for injecting a JavaScript library into the 
+     * ReadingSystem at runtime.
+     * 
+     * @param url to the JavaScript to be injected
+     * 
+     * @return boolean False if not supported
+     */
+    boolean injectJavaScript ( DOMString url );
+ }
+
+/**
+ * @brief Encapsulates the various rendering capabilities, currently 
+ * comprising only highlights
+ * 
+ */
+interface Renderer {
+
+    /**
+     * Returns the root highlight element which can be used to then 
+     * traverse the current set of highlights associated with the
+     * document.
+     * 
+     * @return HighlightsItem 
+     */
+    HighlightItem  getHighlightsRoot();
+
+    /**
+     * Add a highlight to the current document. If the second location
+     * is NULL the first Location MUST be a range.
+     * 
+     * @param start    location to start the hightlight, or range if end param null
+     * @param end      end location for the hightlight. Can be null if start is range
+     * @param color    CSS-style color
+     * @param opacity  opacity in the range of 0..1
+     */
+    void addHighlight ( Location start, Location end, DOMString color, float opacity );
+
+    /**
+     * Convenience method to clear all highlights in current document
+     */
+    void clearHighlights();
+
+    /**
+     * Delete the specified highlight
+     * 
+     * @param item 
+     */
+    void clearHighlight( HighlightItem item );
+
+    /**
+     * Attach a handler that will be called when a highlight is selected
+     * 
+     * @param handler 
+     */
+    void attachHandlerForHighlights( Object handler );
+
+    /**
+     * Remove handler for hit-testing on highlights.  The supplied object is 
+     * to ID the correct handler to remove.
+     * 
+     * @param handler 
+     */
+    void removeHandlerForHighlights( Object handler );
+
+}
+
+/**
+ * @brief Interface to the search capability of the underlying implementation.
+ * 
+ */
+
+interface Search {
+
+    const integer       SEARCH_BACKWARD       = 1;
+    const integer       SEARCH_WRAP_ON_END    = 2;
+    const integer       SEARCH_WHOLE_WORD     = 4;
+    const integer       SEARCH_IGNORE_CASE    = 8;
+    const integer       SEARCH_IGNORE_DIACRIT = 16;
+
+    /**
+     * Searches for ALL succesful results for the specified string between the 
+     * start and end locations.  
+     * Callback is the function to be called with the results.
+     * 
+     * The signature of the callback function MUST be
+     \code
+     *    callback(Object:results)
+     \endcode
+     * where
+     *
+     *   <c>results</c> is a JSON array of the form:\n
+     \code
+     *   [
+     *      { start:loc, end:loc, result:text },
+     *      { start:loc, end:loc, result:text },
+     *      { start:loc, end:loc, result:text }
+     *   ]
+     \endcode
+     * 
+     * @param startLoc    If null, startLoc is the beginning of the document
+     * @param endLoc      If null, endLoc is the end of the document.
+     * @param modifiers   bitwise combination of flags (see above)
+     * @param findText    Text to find
+     * @param callback    Function to be called with the results
+     */
+    void  search ( Location startLoc, Location endLoc, integer modifiers, Object callback );   
+
+}
+
+/**
+ * @brief Provides access to the current selection in the document. There can
+ * only be one selection at a time and must be a contiguous range.
+ * 
+ */
+interface Selection {
+
+    /**
+     * Fetch the current selection, if any
+     *
+     * QUESTION: What if it includes image(s), either raster or SVG?
+     * 
+     * @return DOMString 
+     */
+    DOMString   getText();
+
+    /**
+     * Get current location of the selection
+     * 
+     * @return Location Is empty if there is no current selection
+     */
+    Location    getLocation();
+}
+
+/**
+ * @brief Methods for managing the spine
+ * 
+ * TODO: Need to provide access to spine-level overrides
+ */
+interface SpineItem {
+
+    /**
+     * Return the number of children of this SpineItem
+     * 
+     * @return integer 
+     */
+    integer getChildCount();
+
+    /**
+     * Fetch the specified child of the current SpineItem
+     *    
+     * @param index 
+     * 
+     * @return TOCItem  null if there isn't one
+     */
+    NavDocItem  getChild( integer index );
+
+    /**
+     * Returns the DOM3 Node type value for the current item.
+     * 
+     * @return integer 
+     */
+    integer   getNodeType();
+
+    /**
+     * Get the Idref of the element
+     * 
+     * @return DOMString 
+     */
+    DOMString   getIdref();
+
+    /**
+     * Returns a JSON object that is all the attributes of this spine item
+     * 
+     * @return DOOMString 
+     */
+    DOOMString getAttributes();
+}
+
+/**
+ * @brief Interface to enable controlling the way in which text on a page
+ * is rendered
+ * 
+ */
+interface TextRendering {
+
+    /**
+     * Returns the distance (in CSS units) between baselines in the current font
+     * 
+     * @return DOMString 
+     */
+    DOMString getLineHeight();
+
+    /**
+     * Sets the the distance (in CSS units) between baselines in the current font
+     *  
+     * Note that this call will fail for fixed layout pages and return false.
+     *
+     * @return boolean 
+     */
+    boolean setLineHeight();
+
+    /**
+     * Returns the number of columns the screen is laid out in.
+     * 
+     * Note that this is columns within a single page, not whether
+     * the screen is laid as a synthetic spread or not. @see synthetic spread
+     * 
+     * @return integer 
+     */
+    integer getNumColumns();
+
+    /**
+     * Sets the number of columns laid out within a single page.
+     * 
+     * Note that this is columns within a single page, not whether
+     * the screen is laid as a synthetic spread or not. @see synthetic spread
+     * 
+     * @return boolean true if successful, false if not supported
+     */
+    boolean setNumColumns();
+
+    /**
+     * Returns the size of a column cap between columns on the page (not the gutter 
+     * between pages in a spread).  Will be empty if multiple columns are not 
+     * supported.
+     * 
+     * @return DOMString In CSS lengths. 
+     */
+    DOMString getColumnGap();
+
+    /**
+     * Sets the justification for the text layout.
+     *
+     * Note that this will apply to the whole document, not just the 
+     * current screen
+     * 
+     * @param justify Type of justification (CSS enumeration: left, right, center or justify)
+     *
+     * @return boolean true if successful, false if not supported
+     */
+    boolean setJustification ( DOMString justify );
+
+    /**
+     * Returns the justification setting for the current document
+     *  
+     * @return DOMString justify Type of justification (CSS enumeration: left, right, center or justify)
+     */
+    DOMString getJustification();
+
+    /**
+     * Get the margins setting for the current document.
+     * 
+     * Note:  Will be empty for fixed-layout documents
+     * 
+     * @return DOMString   CSS fashion (all, or top, right, bottom, left)
+     */
+    DOMString getMargins();
+
+    /**
+     * Set the margins for the current document.
+     * 
+     * Note: Will return false for fixed-layout documents
+     * 
+     * @param margins CSS syntax (all, or top, right, bottom, left)
+     * 
+     * @return boolean 
+     */
+    boolean setMargins( DOMstring margins );
+
+    /**
+     * Sets the color of the current font
+     * 
+     * @param fontColor  In CSS color syntax
+     */
+    void setFontColor ( DOMString fontColor );
+
+    /**
+     * Returns the current font color for the document
+     * 
+     * @return DOMString In CSS color syntax
+     */
+    DOMString getFontColor();
+
+    /**
+     * Returns the height of the current document font
+     * 
+     * Note: Returns empty string for fixed layout spine items
+     * 
+     * @return DOMString   CSS length
+     */
+    DOMString getFontHeight();
+
+    /**
+     * Sets the height of the font for the current spine item
+     * 
+     * Note: Will fail and return false for fixed layout spine items
+     *
+     * @param fontHeight In CSS length
+     * 
+     * @return boolean 
+     */
+    boolean setFontHeight( DOMString fontHeight );
+
+    /**
+     * Returns the current font-face name for the document
+     * 
+     * Note: Will fail for fixed-layout spine items and return
+     * and empty string
+     * 
+     * @return DOMString 
+     */
+    DOMString getFontFace();
+
+    /**
+     * Set the font-face for the current document
+     * 
+     * Note: Will fail for fixed layout spine items
+     * 
+     * @param fontFace 
+     * 
+     * @return boolean False if not supported
+     */
+    boolean setFontFace ( DOMString fontFace );
+};
+
+/**
+ * @brief Provides methods for zooming or otherwise transforming
+ * the page content
+ *
+ * TODO:  Add additional methods (e.g. pan, matrix methods, etc.)
+ */
+interface Transform {
+
+    /**
+     * Returns the current zoom level for the current screen
+     *  
+     * @return float 
+     */
+    float getZoom();
+
+    /**
+     * Sets the current zoom level for the page
+     * 
+     * @param zoom 
+     */
+    void setZoom( float zoom );
+}
+
+
