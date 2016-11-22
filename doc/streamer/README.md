@@ -37,6 +37,13 @@ The following features might be necessary:
 * provide a configuration file to indicate CSS and JS resources that need to be injected in all HTML resources
 * support for navigator.epubReadingSystem
 
+Injecting links to related resources could also prove to be useful:
+
+* link to next/previous resource
+* link to the manifest itself
+
+That said, it's worth considering whether such links should show up in the content itself or in HTTP headers.
+
 ## Decryption & Deobfuscation
 
 For decryption, speed is the key. We need to make sure that this has minimal impact on performance which means:
@@ -44,7 +51,7 @@ For decryption, speed is the key. We need to make sure that this has minimal imp
 * for languages that provide high performance, hardware-based optimisations, we can directly rely on native code
 * for the rest, we should probably rely on C++
 
-We'll also need a generic interface to handle this feature, something that might look like Readium-1 Content Filters/Modules, but that will probably be quite different in each language.
+We might also need a generic interface to handle this feature, something that could look like Readium-1 Content Filters/Modules, but that will probably be quite different in each language.
 
 ## HTTP
 
