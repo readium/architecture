@@ -2,20 +2,30 @@
 
 > **Note:** need to find a name for this project.
 
-Building a "parser + server" is a first step towards Readium-2, that will be used in mobile, desktop and Web apps.
+In every Readium-2 implementation (mobile, desktop or Web app) appear two main runtimes, which may be in different processes or on differents systems. One contains the webview and associated rendering application, let's call it the "frontend", and the other contains the EPUB parser and the associated marshaling service, that we could call the "backend". 
 
-## Features
+![frontend-backend](IMG_3404.JPG)
+<br/>
 
+
+## Features of the parser
+
+* access EPUB files or exploded EPUBs 
 * parse EPUB 2.x and 3.x
-* expose in-memory data model for EPUB
-* output a JSON manifest as an interchange format
-* expose in HTTP the manifest, LCP License Document and resources from the EPUB container
-* inject and modify content in HTML and SVG documents
 * decrypt and deobfuscate resources contained in the EPUB container
-* provide a pluggable API for other modules exposed in HTTP (search, locator resolver)
-* process and resolve SMIL Media Overlays to a simplified JSON document
+* pre-process HTML and SVG documents
+* expose in-memory data model for EPUB
 
-## Interchange Format
+## Features of the marshaling service
+* expose to the frontend 
+ * the EPUB manifest (JSON),
+ * the Media Overlays (JSON),
+ * the LCP License Document (JSON),
+ * every resource from the EPUB container
+ 
+* provide a pluggable API for other modules exposed in HTTP (search, locator resolver)
+
+## EPUB manifest as an Interchange Format
 
 Initial work on the interchange format will be based on the [Web Publication Manifest](https://github.com/HadrienGardeur/webpub-manifest) with potential extensions and improvement to that draft through the following means:
 
@@ -53,7 +63,7 @@ For decryption, speed is the key. We need to make sure that this has minimal imp
 
 We might also need a generic interface to handle this feature, something that could look like Readium-1 Content Filters/Modules, but that will probably be quite different in each language.
 
-## HTTP
+## HTTP details
 
 Purely in terms of speed, we need to optimize how we handle HTTP using both HTTP caching and HTTP/2 push (when available).
 
