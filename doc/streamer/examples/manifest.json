@@ -1,0 +1,64 @@
+{
+  "metadata": {
+    "@type": "http://schema.org/EBook",
+    "title": "Moby-Dick",
+    "author": "Herman Melville",
+    "identifier": "urn:isbn:9780000000001",
+    "language": "en",
+    "modified": "2015-09-29T17:00:00Z"
+  },
+
+  "links": [
+    {"rel": "self", "href": "https://localhost:8080/manifest.json", "type": "application/webpub+json"},
+    {"rel": "search", "href": "https://localhost:8080/search?q={searchTerms}", "type": "application/locators+json"},
+    {"rel": "http://readium.org/rel/mo-resolver", "href": "https://localhost:8080/mo.json"}
+  ],
+
+  "spine": [
+    {"href": "index.html", "type": "text/html"},
+    {"href": "html/copyright.html", "type": "text/html"},
+    {"href": "html/introduction.html", "type": "text/html"},
+    {"href": "html/epigraph.html", "type": "text/html"}, 
+    {"href": "html/c001.html", "type": "text/html", "rel": "start"}, 
+    {"href": "html/c002.html", "type": "text/html"}, 
+    {"href": "html/c003.html", "type": "text/html"}, 
+    {"href": "html/c004.html", "type": "text/html"}, 
+    {"href": "html/c005.html", "type": "text/html"}, 
+    {"href": "html/c006.html", "type": "text/html"}
+  ],
+
+  "resources": [
+    {"rel": "cover", "href": "images/cover.jpg", "type": "image/jpeg", "height": 1253, "width": 797}, 
+    {"rel": "contents", "href": "html/toc.html", "type": "text/html"}, 
+    {"href": "css/mobydick.css", "type": "text/css"},
+    {"href": "fonts/STIXGeneral.otf", "type": "application/vnd.ms-opentype"},
+    {"href": "fonts/STIXGeneralBol.otf", "type": "application/vnd.ms-opentype"},
+    {"href": "fonts/STIXGeneralBolIta.otf", "type": "application/vnd.ms-opentype"},
+    {"href": "fonts/STIXGeneralItalic.otf", "type": "application/vnd.ms-opentype"},
+    {"href": "chapter1_audio.smil", "type": "application/smil+xml"}, 
+    {"href": "chapter2_audio.smil", "type": "application/smil+xml"}, 
+    {"href": "chapter3_audio.smil", "type": "application/smil+xml"}, 
+    {"href": "chapter4_audio.smil", "type": "application/smil+xml"}, 
+    {"href": "chapter5_audio.smil", "type": "application/smil+xml"}, 
+    {"href": "chapter6_audio.smil", "type": "application/smil+xml"}, 
+    {"href": "chapter1_audio.mp3", "type": "audio/mpeg"},
+    {"href": "chapter2_audio.mp3", "type": "audio/mpeg"}, 
+    {"href": "chapter3_audio.mp3", "type": "audio/mpeg"},
+    {"href": "chapter4_audio.mp3", "type": "audio/mpeg"},
+    {"href": "chapter5_audio.mp3", "type": "audio/mpeg"}, 
+    {"href": "chapter6_audio.mp3", "type": "audio/mpeg"}
+  ],
+
+  "toc": [
+    {"href": "index.html", "title": "Title Page"},
+    {"href": "html/copyright.html", "title": "Copyright"},
+    {"href": "html/introduction.html", "title": "Etymology"},
+    {"href": "html/epigraph.html", "title": "Extracts"}, 
+    {"href": "html/c001.html", "title": "Chapter 1 - Loomings"}, 
+    {"href": "html/c002.html", "title": "Chapter 2 - The Carpet-Bad"}, 
+    {"href": "html/c003.html", "title": "Chapter 3 - The Spouter-Inn"}, 
+    {"href": "html/c004.html", "title": "Chapter 4 - The Counterpane"}, 
+    {"href": "html/c005.html", "title": "Chapter 5 - Breakfast"}, 
+    {"href": "html/c006.html", "title": "Chapter 6 - The Street"}
+  ]
+}
