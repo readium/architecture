@@ -1,10 +1,9 @@
 # Architecture for Readium-2 Streamer
 
-> **Note:** need to find a name for this project.
 
 In every Readium-2 implementation (mobile, desktop or Web app) appear two main runtimes, which may be in different processes or on differents systems. One contains the webview and associated rendering application, let's call it the "frontend", and the other contains the EPUB parser and the associated marshaling service, that we could call the "backend". 
 
-![frontend-backend](IMG_3404.JPG)
+![frontend-backend](images/IMG_3404.JPG)
 <br/>
 
 
@@ -37,6 +36,7 @@ Initial work on the interchange format will be based on the [Web Publication Man
 ## SMIL Media Overlay Resolver
 
 > **Action Item:** Define a new JSON document format for this resolver.
+>[Follow-up on issue #22](https://github.com/readium/readium-2/issues/22)
 
 ## Content Injection
 
