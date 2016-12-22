@@ -10,9 +10,9 @@ If you are interested in participating to this exciting project, contact us via 
 
 ## Modules
 
-* [Streamer](/tree/master/streamer)
-* [Pagination](/tree/master/pagination)
-* [Locators](/tree/master/locators)
+* [Streamer](/streamer)
+* [Pagination](/pagination)
+* [Locators](/locators)
 
 ## Active Projects
 
