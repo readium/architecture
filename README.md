@@ -13,6 +13,7 @@ If you are interested in participating to this exciting project, contact us via 
 * [Streamer](/streamer)
 * [Pagination](/pagination)
 * [Locators](/locators)
+* [Media Overlay](/media-overlay)
 
 ## Active Projects
 
