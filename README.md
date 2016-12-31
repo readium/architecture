@@ -14,6 +14,7 @@ If you are interested in participating to this exciting project, contact us via 
 * [Pagination](/pagination)
 * [Locators](/locators)
 * [Media Overlay](/media-overlay)
+* [Search](/search)
 
 ## Active Projects
 
