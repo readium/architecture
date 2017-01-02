@@ -1,44 +1,59 @@
 # Architecture for Readium-2 Streamer
 
 
-In every Readium-2 implementation (mobile, desktop or Web app) appear two main runtimes, which may be in different processes or on differents systems. One contains the webview and associated rendering application, let's call it the "frontend", and the other contains the EPUB parser and the associated marshaling service, that we could call the "backend". 
+Most Readium-2 implementations (mobile, desktop or Web app) can be divided in two parts, which may be running on different systems or written in completely different languages. 
+
+One contains the webview and associated rendering application, let's call it the "frontend", and the other contains the EPUB parser and the associated marshaling service, that we could call the "backend". 
 
 ![frontend-backend](images/IMG_3404.JPG)
 <br/>
 
+This backend is called the "streamer" in the Readium-2 architecture and it's responsible for a number of different things: parsing publications, fetching resources in them and exposing them using HTTP.
 
-## Features of the parser
+## Features of the Parser
 
-* access EPUB files or exploded EPUBs 
+* access EPUB files or exploded EPUBs
 * parse EPUB 2.x and 3.x
-* decrypt and deobfuscate resources contained in the EPUB container
-* pre-process HTML and SVG documents
 * expose in-memory data model for EPUB
 
-## Features of the marshaling service
+## Features of the Fetcher
+
+* decrypt and deobfuscate resources contained in the EPUB container
+* pre-process HTML and SVG documents
+
+## Features of the HTTP Server
 * expose to the frontend 
- * the EPUB manifest (JSON),
+ * the Web Publication Manifest (JSON),
  * the Media Overlays (JSON),
  * the LCP License Document (JSON),
  * every resource from the EPUB container
  
-* provide a pluggable API for other modules exposed in HTTP (search, locator resolver)
+* provide a pluggable API for other modules exposed in HTTP (search, media-overlay, locators)
 
-## EPUB manifest as an Interchange Format
+## Web Publication Manifest
 
 Initial work on the interchange format will be based on the [Web Publication Manifest](https://github.com/HadrienGardeur/webpub-manifest) with potential extensions and improvement to that draft through the following means:
 
-* additional metadata for the default context or an additional Readium-2 context
-* new collection roles
+* additional metadata in a new EPUB specific context document
+* new collection roles (so far, mostly to cover the Navigation Document)
 * new relationships
 * new properties for the link object
 
-## SMIL Media Overlay Resolver
+The first implementation of the streamer (written in Go) has an in-memory model that's very close from a Web Publication Manifest:
 
-> **Action Item:** Define a new JSON document format for this resolver.
->[Follow-up on issue #22](https://github.com/readium/readium-2/issues/22)
+* [publication](https://github.com/Feedbooks/webpub-streamer/blob/master/models/publication.go)
+* [metadata](https://github.com/Feedbooks/webpub-streamer/blob/master/models/metadata.go)
 
-## Content Injection
+The main difference being that the in-memory model also have a number of extension points, including:
+
+* a generic metadata element
+* additional collections
+
+None of these extensions will show up in the JSON output (manifest).
+
+## Fetcher
+
+### Content Injection
 
 On some platforms, injecting JS, CSS and links directly at a parser level will be necessary.
 
@@ -52,22 +67,26 @@ Injecting links to related resources could also prove to be useful:
 * link to next/previous resource
 * link to the manifest itself
 
-That said, it's worth considering whether such links should show up in the content itself or in HTTP headers.
+Content injection can have a pretty big impact in terms of performance, which means that its use should be as minimal as possible.
 
-## Decryption & Deobfuscation
+### Decryption & Deobfuscation
 
 For decryption, speed is the key. We need to make sure that this has minimal impact on performance which means:
 
 * for languages that provide high performance, hardware-based optimisations, we can directly rely on native code
 * for the rest, we should probably rely on C++
 
-We might also need a generic interface to handle this feature, something that could look like Readium-1 Content Filters/Modules, but that will probably be quite different in each language.
+While most resources (HTML, images, JS and CSS) should not be too difficult to decrypt, larger resources such as video and audio files require partial decryption, right in the middle of the resource.
 
-## HTTP details
+This is by far the trickiest part of the fetcher, and will require a per platform approach to be handled properly.
 
-Purely in terms of speed, we need to optimize how we handle HTTP using both HTTP caching and HTTP/2 push (when available).
+## HTTP Server
 
-For caching, using `Cache-Control` is the most efficient technique:
+### Caching
+
+Purely in terms of speed, caching can provide some useful and easy to implement improvements.
+
+In the context of the streamer, using `Cache-Control` is the most efficient technique:
 
 * after the first request, an HTTP client will keep the response in cache for a period of time that we can control
 * for subsequent requests, if the cache is still valid, the response will be served directly from the cache without any additional request
@@ -80,6 +99,20 @@ If we rely on `Last-Modified` or `ETag` instead:
 `Cache-Control` requires the usage of unique URIs per publication and resource, in order to avoid a situation where the cache would serve a resource from the wrong publication, or an older version of the same publication.
 
 This will have an impact on how we expose resources from our publication, which will require using both a publication identifier and a modification date (based on metadata in EPUB 3.x and on a system specific timestamp for EPUB 2.x) in our URIs.
+
+For Readium-2 streamers that will be deployed on the server side, this also means that using a CDN to serve resources from the publication is a possibility.
+
+### Link Header
+
+The `Link` header in HTTP enables a number of optimization, for instance pre-fetching ("prefetch") or pre-rendering ("prerender"). 
+
+While pre-fetching is relatively harmless and should probably be turned on by default, pre-rendering is a little trickier and can also be safely handled by the HTTP server in a number of cases (a FXL EPUB for instance).
+
+It's also relatively harmless to include references to the manifest ("manifest"), along with the next ("next") and previous ("prev") resources from the spine.
+
+The latest versions of Chrome can also handle service workers using a HTTP link header ("serviceworker"), which could be a good option where one of the latest version of Chrome/Chromium are the target.
+
+### HTTP/2
 
 HTTP/2 push opens the door to a brand new world for optimization:
 
@@ -99,6 +132,13 @@ To provide a good plugin architecture, we need generic APIs to:
 * expose additional links in the manifest
 * add new routes to the HTTP server
 * handle incoming requests from the HTTP server
+
+A number of Readium-2 modules are also plugins themselves, and should rely on the same mechanism.
+
+The current list includes:
+
+* [Media Overlay](../media-overlay)
+* [Search](../search)
 
 ## Security
 
