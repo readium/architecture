@@ -11,6 +11,7 @@ If you are interested in participating to this exciting project, contact us via 
 ## Modules
 
 * [Streamer](/streamer)
+* [Navigator](/navigator)
 * [Pagination](/pagination)
 * [Locators](/locators)
 * [Media Overlay](/media-overlay)
@@ -20,3 +21,7 @@ If you are interested in participating to this exciting project, contact us via 
 
 * [Streamer](https://github.com/Feedbooks/r2-streamer-go) - Written in Go
 * [Streamer](https://github.com/ArtBookMagazine/r2-streamer-swift) - Written in Swift
+
+## Prototypes
+
+* [webpub-viewer](https://github.com/HadrienGardeur/webpub-viewer) - An iframe-based navigator, written in JS
