@@ -1,0 +1,153 @@
+[{
+    "children": [{
+        "href": "pr01.xhtml#I_sect1_d1e137",
+        "title": "Conventions Used in This Book"
+    }, {
+        "href": "pr01s02.xhtml",
+        "title": "Using Code Examples"
+    }, {
+        "href": "pr01s03.xhtml",
+        "title": "Safari® Books Online"
+    }, {
+        "href": "pr01s04.xhtml",
+        "title": "How to Contact Us"
+    }, {
+        "href": "pr01s05.xhtml",
+        "title": "Acknowledgments"
+    }],
+    "href": "pr01.xhtml",
+    "title": "Preface"
+}, {
+    "children": [{
+        "href": "ch01.xhtml#_the_digital_famine",
+        "title": "The Digital Famine"
+    }, {
+        "href": "ch01s02.xhtml",
+        "title": "Accessibility and Usability"
+    }],
+    "href": "ch01.xhtml",
+    "title": "1. Introduction"
+}, {
+    "children": [{
+        "children": [{
+            "href": "ch02.xhtml#_data_integrity",
+            "title": "Data Integrity"
+        }, {
+            "href": "ch02.xhtml#_separation_of_style",
+            "title": "Separation of Style"
+        }, {
+            "href": "ch02.xhtml#_semantic_inflection",
+            "title": "Semantic Inflection"
+        }, {
+            "href": "ch02.xhtml#_language",
+            "title": "Language"
+        }, {
+            "href": "ch02.xhtml#_logical_reading_order",
+            "title": "Logical Reading Order"
+        }, {
+            "href": "ch02.xhtml#_sections_and_headings",
+            "title": "Sections and Headings"
+        }, {
+            "href": "ch02.xhtml#_context_changes",
+            "title": "Context Changes"
+        }, {
+            "href": "ch02.xhtml#_lists",
+            "title": "Lists"
+        }, {
+            "href": "ch02.xhtml#_tables",
+            "title": "Tables"
+        }, {
+            "href": "ch02.xhtml#_figures",
+            "title": "Figures"
+        }, {
+            "href": "ch02.xhtml#_images",
+            "title": "Images"
+        }, {
+            "href": "ch02.xhtml#_svg",
+            "title": "SVG"
+        }, {
+            "href": "ch02.xhtml#_mathml",
+            "title": "MathML"
+        }, {
+            "href": "ch02.xhtml#_footnotes",
+            "title": "Footnotes"
+        }, {
+            "href": "ch02.xhtml#_page_numbering",
+            "title": "Page Numbering"
+        }],
+        "href": "ch02.xhtml#_a_solid_foundation_structure_and_semantics",
+        "title": "A Solid Foundation: Structure and Semantics"
+    }, {
+        "href": "ch02s02.xhtml",
+        "title": "Getting Around: Navigating an EPUB"
+    }, {
+        "href": "ch02s03.xhtml",
+        "title": "The Untold Story: Metadata"
+    }],
+    "href": "ch02.xhtml",
+    "title": "2. Building a Better EPUB: Fundamental Accessibility"
+}, {
+    "children": [{
+        "children": [{
+            "href": "ch03.xhtml#_timed_tracks",
+            "title": "Timed Tracks"
+        }],
+        "href": "ch03.xhtml#_the_sound_and_the_fury_audio_and_video",
+        "title": "The Sound and the Fury: Audio and Video"
+    }, {
+        "children": [{
+            "href": "ch03s02.xhtml#_building_an_overlay",
+            "title": "Building an Overlay"
+        }, {
+            "href": "ch03s02.xhtml#_structural_considerations",
+            "title": "Structural Considerations"
+        }],
+        "href": "ch03s02.xhtml",
+        "title": "Talk to Me: Media Overlays"
+    }, {
+        "children": [{
+            "href": "ch03s03.xhtml#_pls_lexicons",
+            "title": "PLS Lexicons"
+        }, {
+            "href": "ch03s03.xhtml#_ssml",
+            "title": "SSML"
+        }, {
+            "href": "ch03s03.xhtml#_css3_speech",
+            "title": "CSS3 Speech"
+        }],
+        "href": "ch03s03.xhtml",
+        "title": "Tell It Like It Is: Text-to-Speech (TTS)"
+    }, {
+        "href": "ch03s04.xhtml",
+        "title": "The Coded Word: Scripted Interactivity"
+    }, {
+        "children": [{
+            "href": "ch03s05.xhtml#_custom_controls",
+            "title": "Custom Controls"
+        }, {
+            "href": "ch03s05.xhtml#_forms",
+            "title": "Forms"
+        }, {
+            "href": "ch03s05.xhtml#_live_regions",
+            "title": "Live Regions"
+        }],
+        "href": "ch03s05.xhtml",
+        "title": "A Little Help: WAI-ARIA"
+    }, {
+        "href": "ch03s06.xhtml",
+        "title": "A Blank Slate: Canvas"
+    }],
+    "href": "ch03.xhtml",
+    "title": "3. It’s Alive: Rich Content Accessibility"
+}, {
+    "children": [{
+        "children": [{
+            "href": "ch04.xhtml#_about_the_book",
+            "title": "About the Book"
+        }],
+        "href": "ch04.xhtml#_epub_3_best_practices_teaser",
+        "title": "EPUB 3 Best Practices Teaser"
+    }],
+    "href": "ch04.xhtml",
+    "title": "4. Conclusion"
+}]
