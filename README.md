@@ -19,8 +19,9 @@ If you are interested in participating to this exciting project, contact us via 
 
 ## Active Projects
 
-* [Streamer](https://github.com/Feedbooks/r2-streamer-go) - Written in Go
-* [Streamer](https://github.com/ArtBookMagazine/r2-streamer-swift) - Written in Swift
+* [Streamer](https://github.com/Feedbooks/r2-streamer-go) -  Go
+* [Streamer](https://github.com/readium/r2-streamer-swift) - Swift
+* [Streamer](https://github.com/codetoart/r2-streamer-java) - Java
 
 ## Prototypes
 
