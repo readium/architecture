@@ -22,6 +22,7 @@ If you are interested in participating to this exciting project, contact us via 
 * [Streamer](https://github.com/readium/r2-streamer-go) -  Go
 * [Streamer](https://github.com/readium/r2-streamer-swift) - Swift
 * [Streamer](https://github.com/codetoart/r2-streamer-java) - Java
+* [NYPL/webpub-viewer](https://github.com/NYPL-Simplified/webpub-viewer) - An iframe-based navigator, written in TypeScript
 
 ## Prototypes
 
