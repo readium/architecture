@@ -7,8 +7,8 @@
 | Key  | EPUB 3.1 |
 | ---- | -------- |
 | [identifier](#identifier) | dc:identifier |
-| [title](#title) | http://schema.org/name  | dc:title |
-| [sort_as](#title)  | title@opf:file-as |
+| [title](#title)  | dc:title |
+| [sort_as](#title)  | dc:title@opf:file-as |
 | [author](#contributors) | dc:creator |
 | [translator](#contributors) | dc:contributor@opf:role="trl" |
 | [editor](#contributors) | dc:contributor@opf:role="edt" |
