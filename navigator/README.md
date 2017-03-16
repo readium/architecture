@@ -1,3 +1,5 @@
+**NOTE**: Further discussion of the various choices that must be made in any implementation of a navigator can be found in [Navigator Design Dilemmas](design-dilemmas.md).
+
 # Architecture for the Navigator Module
 
 The navigator is a module that directly interacts with the streamer, either by:
@@ -34,8 +36,8 @@ This information is contained in the `properties` object of each link object:
 
 ```
 {
-  "href": "page1.jpg", 
-  "type": "image/jpeg", 
+  "href": "page1.jpg",
+  "type": "image/jpeg",
   "properties": {"page": "left"}
 }
 ```
