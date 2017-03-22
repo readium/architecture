@@ -3,6 +3,9 @@
 A repo for storing documents about Readium-2 modules and discussing the overall architecture of the project.
 
 Look at the project Workplan and Documents in the [Readium-2 Wiki](https://github.com/readium/readium-2/wiki).
+
+Check the project board in the [Readium-2 board](https://github.com/readium/readium-2/projects/1).
+
 Follow the brainstorming by looking at the project [Issues](https://github.com/readium/readium-2/issues).
 
 If you are interested in participating to this exciting project, contact us via [Slack](https://readium.slack.com) using the readium-2 channel.    
