@@ -1,20 +1,24 @@
 # Readium-2
 
-A repo for storing documents about Readium-2 modules and discussing the overall architecture of the project.
+A repo for storing documents and discussing Readium-2.
 
-Look at the project Workplan and Documents in the [Readium-2 Wiki](https://github.com/readium/readium-2/wiki).
+There are multiple ways to keep track of the on-going activity and participate:
 
-Check the project board in the [Readium-2 board](https://github.com/readium/readium-2/projects/1).
-
-Follow the brainstorming by looking at the project [Issues](https://github.com/readium/readium-2/issues).
-
-If you are interested in participating to this exciting project, contact us via [Slack](https://readium.slack.com) using the readium-2 channel.    
+* discussions on [the issue tracker](https://github.com/readium/readium-2/issues)
+* action items and epics on [the project board](https://github.com/readium/readium-2/projects/1)
+* weekly calls with [our archive of meeting notes and recordings](https://drive.google.com/drive/folders/0BzaNaBNAB6FjbzR5NWFVWVo2dDg?hl=en)
+* multiple channels on the [Slack team for Readium](https://readium.slack.com) (#readium-2, #r2-swift and #r2-java)
 
 
 ## Modules
 
+### Main Modules
+
 * [Streamer](/streamer)
 * [Navigator](/navigator)
+
+### Other Modules
+
 * [Pagination](/pagination)
 * [Locators](/locators)
 * [Media Overlay](/media-overlay)
@@ -24,9 +28,15 @@ If you are interested in participating to this exciting project, contact us via 
 
 * [Streamer](https://github.com/readium/r2-streamer-go) -  Go
 * [Streamer](https://github.com/readium/r2-streamer-swift) - Swift
-* [Streamer](https://github.com/codetoart/r2-streamer-java) - Java
+* [CodeToArt/Streamer](https://github.com/codetoart/r2-streamer-java) - Java
 * [NYPL/webpub-viewer](https://github.com/NYPL-Simplified/webpub-viewer) - An iframe-based navigator, written in TypeScript
+
+## Readium-2 Enabled Projects
+
+* [epub.js](https://github.com/futurepress/epub.js/) - Support for the streamer is in development as part of the v0.3 release
 
 ## Prototypes
 
-* [webpub-viewer](https://github.com/HadrienGardeur/webpub-viewer) - An iframe-based navigator, written in JS
+* [HadrienGardeur/webpub-viewer](https://github.com/HadrienGardeur/webpub-viewer) - An `iframe` based navigator, written in JS
+* [HadrienGardeur/comics-viewer](https://github.com/HadrienGardeur/comics-viewer) - An `img` based navigator for comics, written in JS
+* [HadrienGardeur/audiobook-player](https://github.com/HadrienGardeur/audiobook-player) - An `audio` based navigator for audiobooks, written in JS
