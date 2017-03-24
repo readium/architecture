@@ -26,17 +26,23 @@ There are multiple ways to keep track of the on-going activity and participate:
 
 ## Active Projects
 
-* [Streamer](https://github.com/readium/r2-streamer-go) -  Go
-* [Streamer](https://github.com/readium/r2-streamer-swift) - Swift
-* [CodeToArt/Streamer](https://github.com/codetoart/r2-streamer-java) - Java
-* [NYPL/webpub-viewer](https://github.com/NYPL-Simplified/webpub-viewer) - An iframe-based navigator, written in TypeScript
+### Hosted By Readium
+
+* [r2-streamer-go](https://github.com/readium/r2-streamer-go) -  Go version of the streamer
+* [r2-streamer-swift](https://github.com/readium/r2-streamer-swift) - Swift version of the streamer
+* [r2-launcher-swift](https://github.com/readium/r2-launcher-swift) - A basic launcher in Swift
+
+### External
+
+* [r2-streamer-java](https://github.com/codetoart/r2-streamer-java) - Java port of the streamer (Code To Art)
+* [webpub-viewer](https://github.com/NYPL-Simplified/webpub-viewer) - An iframe-based navigator, written in TypeScript (NYPL)
 
 ## Readium-2 Enabled Projects
 
-* [epub.js](https://github.com/futurepress/epub.js/) - Support for the streamer is in development as part of the v0.3 release
+* [epub.js](https://github.com/futurepress/epub.js/) - Support for the streamer is in development as part of the v0.3 release (Future Press)
 
 ## Prototypes
 
-* [HadrienGardeur/webpub-viewer](https://github.com/HadrienGardeur/webpub-viewer) - An `iframe` based navigator, written in JS
-* [HadrienGardeur/comics-viewer](https://github.com/HadrienGardeur/comics-viewer) - An `img` based navigator for comics, written in JS
-* [HadrienGardeur/audiobook-player](https://github.com/HadrienGardeur/audiobook-player) - An `audio` based navigator for audiobooks, written in JS
+* [webpub-viewer](https://github.com/HadrienGardeur/webpub-viewer) - An `iframe` based navigator, written in JS (Hadrien Gardeur)
+* [comics-viewer](https://github.com/HadrienGardeur/comics-viewer) - An `img` based navigator for comics, written in JS (Hadrien Gardeur)
+* [audiobook-player](https://github.com/HadrienGardeur/audiobook-player) - An `audio` based navigator for audiobooks, written in JS (Hadrien Gardeur)
