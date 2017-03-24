@@ -16,6 +16,7 @@ There are multiple ways to keep track of the on-going activity and participate:
 
 * [Streamer](/streamer)
 * [Navigator](/navigator)
+* [Web Publication Manifest](https://github.com/readium/webpub-manifest)
 
 ### Other Modules
 
