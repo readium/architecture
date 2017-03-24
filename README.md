@@ -7,7 +7,7 @@ There are multiple ways to keep track of the on-going activity and participate:
 * discussions on [the issue tracker](https://github.com/readium/readium-2/issues)
 * action items and epics on [the project board](https://github.com/readium/readium-2/projects/1)
 * weekly calls with [our archive of meeting notes and recordings](https://drive.google.com/drive/folders/0BzaNaBNAB6FjbzR5NWFVWVo2dDg?hl=en)
-* multiple channels on the [Slack team for Readium](https://readium.slack.com) (#readium-2, #r2-swift and #r2-java)
+* multiple channels on the [Slack team for Readium](https://readium.slack.com) ([#readium-2](https://readium.slack.com/messages/readium-2/), [#r2-swift](https://readium.slack.com/messages/r2-swift/) and [#r2-java](https://readium.slack.com/messages/r2-java/))
 
 
 ## Modules
