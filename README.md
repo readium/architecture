@@ -31,11 +31,11 @@ There are multiple ways to keep track of the on-going activity and participate:
 
 * [r2-streamer-go](https://github.com/readium/r2-streamer-go) -  Go version of the streamer
 * [r2-streamer-swift](https://github.com/readium/r2-streamer-swift) - Swift version of the streamer
+* [r2-streamer-java](https://github.com/readium/r2-streamer-java) - Java version of the streamer
 * [r2-launcher-swift](https://github.com/readium/r2-launcher-swift) - A basic launcher in Swift
 
 ### External
 
-* [r2-streamer-java](https://github.com/codetoart/r2-streamer-java) - Java port of the streamer (Code To Art)
 * [webpub-viewer](https://github.com/NYPL-Simplified/webpub-viewer) - An iframe-based navigator, written in TypeScript (NYPL)
 
 ## Readium-2 Enabled Projects
