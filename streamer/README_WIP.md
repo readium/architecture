@@ -1,8 +1,8 @@
 # Readium-2 Streamer
 
-The streamer is one of the main module of the Readium-2 project.
+The streamer is one of the main modules of the Readium-2 project.
 
-Each implementation of the streamer is usually divided into four different parts:
+The streamer is usually divided into four different parts:
 
 - in-memory models
 - [parser](parser/)
