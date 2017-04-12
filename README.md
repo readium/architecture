@@ -37,6 +37,7 @@ There are multiple ways to keep track of the on-going activity and participate:
 ### External
 
 * [webpub-viewer](https://github.com/NYPL-Simplified/webpub-viewer) - An iframe-based navigator, written in TypeScript (NYPL)
+* [r2-streamer-js](https://github.com/edrlab/r2-streamer-js) - Typescript version of the streamer (EDRLab)
 
 ## Readium-2 Enabled Projects
 
