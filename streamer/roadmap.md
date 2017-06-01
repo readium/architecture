@@ -38,6 +38,7 @@ This document is based on the current consensus between implementers of what the
 * Search
   * basic keyword search across the entire publication
   * returns at least one or two locators
+* Synthetic Page List
 * Optimized support for decryption (range)
 
 
