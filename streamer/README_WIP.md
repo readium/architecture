@@ -1,4 +1,4 @@
-# Readium-2 Streamer
+# Streamer
 
 The streamer is one of the main modules of the Readium-2 project.
 
@@ -9,12 +9,17 @@ The streamer is usually divided into four different parts:
 - fetcher
 - [server](server/)
 
-Each implementation should attempt to make each of these parts as independent as possible, to make sure that they can also be reused for other use cases.
+Every implementation should attempt to make each of these parts as independent as possible, to make sure that they can also be reused for other use cases.
 
 ## Parser
 
 * access packaged or exploded publications
 * parse EPUB 2.x and 3.x
+  * metadata
+  * spine & manifest
+  * table of contents (NCX, Navigation Document)
+  * media overlays
+  * encrypted resources
 
 ## Fetcher
 
