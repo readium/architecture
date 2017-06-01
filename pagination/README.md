@@ -76,7 +76,7 @@ The Locator Object is shared across a number of different Readium-2 services, in
 | Key  | Definition | Format |
 | ---- | ---------- | ------ | 
 | cfi  | Contains the right-most part of a [Canonical Fragment Identifier  (CFI)](http://www.idpf.org/epub/linking/cfi/epub-cfi.html).  | CFI |
-| id  | Contains a specific id available in the resource.  | CFI |
+| id  | Contains a specific id available in the resource.  | String |
 
 If a single page is requested, the service returns a single reference using both `href` and `locators`.
 
