@@ -9,19 +9,18 @@ The Readium-2 architecture has a lot of room for extensibility, for instance thr
 The search service is exposed in `links` in the Web Publication Manifest using a link object with:
 
 * its `rel` set to search
-* a URI template that contains `{searchTerms}`
+* a URI template that contains `{?query}`
 
 ```
 "links": [
   {
-    "href": "/search?q={searchTerms}",
+    "href": "/search{?query}",
     "rel": "search",
     "templated": true
   }
 ]
 ```
 
-The syntax for this URI template is compatible with the Open Search syntax for a good reason: an existing search module based on Open Search can also be compatible with Readium-2.
 
 ## Response Document
 
@@ -44,14 +43,14 @@ A search module can return an HTML document as a response to a search query, but
 
 > Syntax TBD, but the core idea is that we'll respond with locators. 
 > 
-> `totalResults`, `startIndex` and `itemsPerPage` are extracted from the Open Search Response Document syntax and could be useful if we paginate this document. 
+> `numberOfItems`, `currentPage` and `itemsPerPage` are aligned with OPDS 2.0.
 
 
 ```
 {
   "query": "Laurent",
-  "totalResults": 256,
-  "startIndex": 1,
+  "numberOfItems": 256,
+  "currentPage": 1,
   "itemsPerPage": 10,
   "results":
   [

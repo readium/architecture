@@ -21,8 +21,8 @@ Publications that contain at least one resource with a media overlay will advert
 ```json
 "links": [
   {
-    "href": "/media-overlay?resource={path}",
-    "rel": "media-overlay",
+    "href": "/media-overlay{?href}",
+    "rel": "http://readium.org/media-overlay",
     "type": "application/vnd.readium.mo+json",
     "templated": true
   }
@@ -44,7 +44,7 @@ At a resource-level, the presence of a media overlay can also be detected by loo
     "href": "chapter1.html",
     "type": "text/html",
     "properties": {
-      "media-overlay": "/media-overlay?resource=chapter1.html"
+      "media-overlay": "/media-overlay?href=chapter1.html"
     }
   }
 ]
@@ -62,11 +62,9 @@ This information will show up in `metadata` of the Web Publication Manifest:
 "metadata": {
   "title": "Moby-Dick",
   "author": "Herman Melville",
-  "EPUB": {
-    "media-overlay": {
-      "active-class": "-epub-media-overlay-active",
-      "playback-active-class": "-epub-media-overlay-playing"
-    }
+  "media-overlay": {
+    "active-class": "-epub-media-overlay-active",
+    "playback-active-class": "-epub-media-overlay-playing"
   }
 }
 ```

@@ -18,7 +18,7 @@ It can be identified by its media-type (`application/vnd.readium.page-list+json`
 {
   "href": "https://example.com/page-list{?page}",
   "type": "application/vnd.readium.page-list+json",
-  "rel": "http://readium.org/r2/page-list",
+  "rel": "http://readium.org/page-list",
   "templated": true
 }
 ```
