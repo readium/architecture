@@ -1,4 +1,4 @@
-# Architecture for the Search Module
+# Search
 
 Keyword search is one of the most common features in reading apps, and one of the missing piece of Readium-1.
 

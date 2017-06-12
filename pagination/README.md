@@ -11,7 +11,7 @@ The goal of this service is to provide such references, no matter what the initi
 
 Synthetic pagination is a service exposed in the manifest using a Link Object. 
 
-It can be identified by its media-type (`application/vnd.readium.page-list+json`) and its relationship (`http://readium.org/r2/page-list`).
+It can be identified by its media-type (`application/vnd.readium.page-list+json`) and its relationship (`http://readium.org/page-list`).
 
 
 ```json

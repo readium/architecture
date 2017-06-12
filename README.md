@@ -18,12 +18,12 @@ There are multiple ways to keep track of the on-going activity and participate:
 * [Navigator](/navigator)
 * [Web Publication Manifest](https://github.com/readium/webpub-manifest)
 
-### Other Modules
+### Services
 
-* [Pagination](/pagination)
-* [Locators](/locators)
+* [Locator Resolver](/locators)
 * [Media Overlay](/media-overlay)
 * [Search](/search)
+* [Synthetic Page List](/pagination)
 
 ## Active Projects
 
@@ -38,6 +38,7 @@ There are multiple ways to keep track of the on-going activity and participate:
 
 * [webpub-viewer](https://github.com/NYPL-Simplified/webpub-viewer) - An iframe-based navigator, written in TypeScript (NYPL)
 * [r2-streamer-js](https://github.com/edrlab/r2-streamer-js) - Typescript version of the streamer (EDRLab)
+* [NYPLNavigator-iOS](https://github.com/NYPL-Simplified/NYPLNavigator-iOS) - An iOS navigator written in Swift (NYPL)
 
 ## Readium-2 Enabled Projects
 

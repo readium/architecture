@@ -1,4 +1,4 @@
-# Architecture for the Media Overlay Module
+# Media Overlay
 
 The media overlay module is in charge of implementing support for the [new media overlay syntax](syntax.md) introduced by Readium-2.
 
