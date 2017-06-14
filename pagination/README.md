@@ -1,4 +1,4 @@
-# Page List
+# Synthetic Page List
 
 While reading a publication, users may need to reference or access a specific location in a book.
 
@@ -11,14 +11,14 @@ The goal of this service is to provide such references, no matter what the initi
 
 Synthetic pagination is a service exposed in the manifest using a Link Object. 
 
-It can be identified by its media-type (`application/vnd.readium.page-list+json`) and its relationship (`http://readium.org/page-list`).
+It can be identified by its media-type (`application/vnd.readium.synth-page-list+json`) and its relationship (`http://readium.org/synth-page-list`).
 
 
 ```json
 {
   "href": "https://example.com/page-list{?page}",
-  "type": "application/vnd.readium.page-list+json",
-  "rel": "http://readium.org/page-list",
+  "type": "application/vnd.readium.synth-page-list+json",
+  "rel": "http://readium.org/synth-page-list",
   "templated": true
 }
 ```
@@ -34,12 +34,13 @@ GET https://example.com/page-list
 
 {
   "total": 156,
-  "pages": [
+  "references": [
     {
-      "page": 1,
-      "href": "http://example.com/chapter1",
+      "href": "http://example.com/chapter2",
       "locators": [
-        "cfi": "/4[body01]"
+        "cfi": "/4[body01]",
+        "page": 27,
+        "location": 0.07289
       ]
     }
   ]
@@ -49,12 +50,14 @@ GET https://example.com/page-list
 In addition to the full list, the service can also return the reference to a single page using the `page` query parameters included in the URI template.
 
 ```
-GET https://example.com/page-list?page=1
+GET https://example.com/page-list?page=27
 
 {
-  "href": "http://example.com/chapter1",
+  "href": "http://example.com/chapter2",
   "locators": [
-    "cfi": "/4[body01]"
+    "cfi": "/4[body01]",
+    "page": 27,
+    "location": 0.07289
   ]
 }
 ```
@@ -77,10 +80,12 @@ The Locator Object is shared across a number of different Readium-2 services, in
 | ---- | ---------- | ------ | 
 | cfi  | Contains the right-most part of a [Canonical Fragment Identifier  (CFI)](http://www.idpf.org/epub/linking/cfi/epub-cfi.html).  | CFI |
 | id  | Contains a specific id available in the resource.  | String |
+| page  | Contains a synthetic page number.  | String |
+| position  | Contains an overall position in the publication.  | Float between 0 and 1 |
 
 If a single page is requested, the service returns a single reference using both `href` and `locators`.
 
-If the full list is requested, the service returns an array of references in `pages` along with a total number of pages in `total`.
+If the full list is requested, the service returns an array of references in `references` along with a total number of pages in `total`.
 
 ## Navigator
 
@@ -97,7 +102,6 @@ In order to facilitate the support of page references in full apps, navigators s
 There are a number of ways that page references can be calculated:
 
 * for image or page based publications, each page reference can simply point to the resource (`href`) without any additional locator
-* for publications that contain page references, the service should attempt to resolve them and provide additional locators for them
 * for publications that do not contain any explicit or implicit page references, the service should calculate that each page in a text-based publication contains 1024 characters
 
 
