@@ -1,0 +1,40 @@
+html {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+
+body {
+  /* Note:
+    Getting the margin right is tricky with this pagination method:
+    the margin and padding absolutely needs to be reset for the columns to work
+    right.
+    If the reference document were loaded in an iframe then we get a level of
+    seperation where this might not be necessary
+   */
+  margin: 0 !important;
+  padding: 0 !important;
+
+  column-count: 1;
+  column-gap: 0;
+  column-width: auto;
+  column-fill: auto;
+
+  /* firefox still needs these to be prefixed */
+  -moz-column-count: 1;
+  -moz-column-gap: 0;
+  -moz-column-width: auto;
+  -moz-column-fill: auto;
+
+  /* safari needs this, 'auto' doesn't work for some reason */
+  -webkit-column-width: 1vw;
+
+  height: 100%;
+}
+
+main {
+  /* The margin that was there originally on the body. See the note above. */
+  margin: 2em;
+}

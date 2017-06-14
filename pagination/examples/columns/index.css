@@ -1,0 +1,268 @@
+@font-face {
+  font-family: "STIXGeneral";
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/STIXGeneral.otf');
+  }
+@font-face {
+  font-family: "STIXGeneral";
+  font-weight: bold;
+  font-style: normal;
+  src: url('../fonts/STIXGeneralBol.otf');
+  }
+@font-face {
+  font-family: "STIXGeneral";
+  font-weight: bold;
+  font-style: italic;
+  src: url('../fonts/STIXGeneralBolIta.otf');
+  }
+@font-face {
+  font-family: "STIXGeneral;";
+  font-weight: normal;
+  font-style: italic;
+  src: url('../fonts/STIXGeneralItalic.otf');
+  }
+
+@page {
+size: 100vh 100vh;
+margin: 3em;
+@top-center { content: 'Moby Dick';}
+}
+
+p {
+font-family: 'STIXGeneral', 'Adobe Caslon Pro', serif;
+margin: 0;
+text-indent: 0;
+line-height: 1.4em;
+text-align: justify;
+hyphens: auto;
+}
+
+p + p { text-indent: 1em; }
+
+a.chapter {
+text-decoration: none;
+color: black;
+}
+
+
+
+
+@supports (-webkit-initial-letter: 3) {
+    div.title-block-rw + p::first-letter {
+-webkit-initial-letter: 3 3;
+color: red;
+}
+}
+
+
+
+.title-num-rw {
+text-align: center;
+text-indent: 0;
+font-style: italic;
+}
+
+h1 {
+font-family: 'STIXGeneral', 'Adobe Caslon Pro', serif;
+text-align: center;
+font-weight: normal;
+font-size: 1.4em;
+text-transform: uppercase;
+letter-spacing: 4px;
+}
+
+.title-block-rw {
+height: auto;
+min-height: 8em;
+}
+
+
+
+.decoration-rw {
+text-align: center;
+padding-top: 1em;
+padding-bottom: 1em;
+padding-left: 0em;
+padding-right: 0em;
+}
+
+.copyright-rw {
+font-size: .8em;
+line-height: 1em;
+text-align: left;
+padding-top: 2em;
+}
+
+.copyright-rw p {
+margin-bottom: 1em;
+text-indent: 0;
+}
+
+.dedication-rw p {
+text-align: center;
+text-indent: 0;
+}
+
+.Dedication-rw {
+margin-top: 3em;
+}
+
+.leading-line-rw {
+height: 1.33em;
+}
+
+.fp-rw {
+text-indent: 0;
+}
+
+
+h2 {
+text-align: center;
+font-size: 1.33em;
+line-height: 1.2em;
+text-align: center;
+padding-bottom: 0em;
+text-align: center;
+text-transform: uppercase;
+font-weight: normal;
+letter-spacing: 3px;
+}
+
+.title-author-rw {
+text-align: center;
+font-size: 1.5em;
+margin-bottom: 1em;
+margin-top: 2em;
+text-indent: 0;
+}
+
+.title-num-rw {
+text-align: center;
+font-size: 1.5em;
+text-indent: 0;
+margin-top: 1em;
+margin-bottom: 1em;
+-webkit-font-feature-settings: "onum";
+font-variant-numeric: oldstyle-nums;
+-webkit-font-feature-settings:"ss01", "onum";
+
+
+}
+
+.title-sub-rw {
+text-align: center;
+font-size: 1.2em;
+text-indent: 0;
+margin-bottom: 1em;
+margin-top: 1em;
+}
+
+.title-other-rw {
+text-align: center;
+text-indent: 0;
+font-style: italic;
+}
+
+
+.imprint-rw {
+text-align: center;
+}
+
+.extract-verse-rw {
+margin-top: 1.33em;
+margin-bottom: 1.33em;
+padding-left: 20pt;
+}
+
+.extract-rw {
+margin-top: 1.33em;
+margin-bottom: 1.33em;
+padding-left: 20pt;
+}
+
+.extract-verse-rw p {
+text-align: left;
+text-indent: -20pt;
+margin-left: 20pt;
+}
+
+.dialog-rw p {
+text-align: left;
+text-indent: -20pt;
+margin-left: 20pt;
+}
+
+span.speaker-rw {
+font-variant: small-caps;
+text-transform: lowercase;
+}
+
+p.stage-direction-rw {
+font-style: italic;
+text-indent: 0 !important;
+margin-left: 0 !important;
+}
+
+span.stage-direction-rw {
+font-style: italic;
+text-transform: lowercase;
+}
+
+.epigraph-rw {
+margin-top: 1.33em;
+margin-bottom: 1.33em;
+padding-left: 20pt;
+padding-right: 20pt;
+}
+
+   .source-rw {
+margin-bottom: 0em;
+text-align: right !important;
+font-style: italic;
+page-break-before: avoid;
+}
+
+.sc-rw {
+font-size: 75%;
+}
+.block-rw {
+margin-top: 1em;
+margin-bottom: 1em;
+margin-left: 20pt;
+margin-right: 20pt;
+}
+
+span.dropcap-rw {
+float: left;
+font-size: 2.7em;
+line-height: .87em;
+}
+
+
+.signature-rw {
+margin-left: 50%;
+text-align: left;
+text-indent: 0;
+}
+
+.cover-rw {
+margin: 0 auto;
+}
+
+.cover-rw img {
+width: 100%;
+}
+
+body {
+  margin: 2em;
+}
+
+.right {
+  float: right;
+}
+
+nav {
+  margin-top: 1em;
+  padding-bottom: 2em;
+}

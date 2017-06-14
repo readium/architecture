@@ -1,0 +1,4196 @@
+{
+    "author": "Herman Melville",
+    "description": "",
+    "epub_version": "3.0",
+    "id": "urn:isbn:9780316000000",
+    "language": "en-US",
+    "modified_date": "2012-01-13T01:13:00Z",
+    "ncx": "",
+    "pubdate": "",
+    "publisher": "Harper & Brothers, Publishers",
+    "rights": "",
+    "title": "Moby-Dick",
+    "rendition_orientation": "",
+    "rendition_layout": "",
+    "rendition_spread": "",
+    "rendition_flow": "",
+    "rendition_viewport": "",
+    "rendition_viewports": [],
+    "spine": {
+        "direction": "ltr",
+        "items": [{
+            "idref": "cover",
+            "href": "cover.xhtml",
+            "manifest_id": "cover",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "no",
+            "properties": ""
+        }, {
+            "idref": "titlepage",
+            "href": "titlepage.xhtml",
+            "manifest_id": "titlepage",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "brief-toc",
+            "href": "toc-short.xhtml",
+            "manifest_id": "brief-toc",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xpreface_001",
+            "href": "preface_001.xhtml",
+            "manifest_id": "xpreface_001",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xintroduction_001",
+            "href": "introduction_001.xhtml",
+            "manifest_id": "xintroduction_001",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xepigraph_001",
+            "href": "epigraph_001.xhtml",
+            "manifest_id": "xepigraph_001",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_001",
+            "href": "chapter_001.xhtml",
+            "manifest_id": "xchapter_001",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "chapter_001_overlay",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_002",
+            "href": "chapter_002.xhtml",
+            "manifest_id": "xchapter_002",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "chapter_002_overlay",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_003",
+            "href": "chapter_003.xhtml",
+            "manifest_id": "xchapter_003",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_004",
+            "href": "chapter_004.xhtml",
+            "manifest_id": "xchapter_004",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_005",
+            "href": "chapter_005.xhtml",
+            "manifest_id": "xchapter_005",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_006",
+            "href": "chapter_006.xhtml",
+            "manifest_id": "xchapter_006",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_007",
+            "href": "chapter_007.xhtml",
+            "manifest_id": "xchapter_007",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_008",
+            "href": "chapter_008.xhtml",
+            "manifest_id": "xchapter_008",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_009",
+            "href": "chapter_009.xhtml",
+            "manifest_id": "xchapter_009",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_010",
+            "href": "chapter_010.xhtml",
+            "manifest_id": "xchapter_010",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_011",
+            "href": "chapter_011.xhtml",
+            "manifest_id": "xchapter_011",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_012",
+            "href": "chapter_012.xhtml",
+            "manifest_id": "xchapter_012",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_013",
+            "href": "chapter_013.xhtml",
+            "manifest_id": "xchapter_013",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_014",
+            "href": "chapter_014.xhtml",
+            "manifest_id": "xchapter_014",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_015",
+            "href": "chapter_015.xhtml",
+            "manifest_id": "xchapter_015",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_016",
+            "href": "chapter_016.xhtml",
+            "manifest_id": "xchapter_016",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_017",
+            "href": "chapter_017.xhtml",
+            "manifest_id": "xchapter_017",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_018",
+            "href": "chapter_018.xhtml",
+            "manifest_id": "xchapter_018",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_019",
+            "href": "chapter_019.xhtml",
+            "manifest_id": "xchapter_019",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_020",
+            "href": "chapter_020.xhtml",
+            "manifest_id": "xchapter_020",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_021",
+            "href": "chapter_021.xhtml",
+            "manifest_id": "xchapter_021",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_022",
+            "href": "chapter_022.xhtml",
+            "manifest_id": "xchapter_022",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_023",
+            "href": "chapter_023.xhtml",
+            "manifest_id": "xchapter_023",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_024",
+            "href": "chapter_024.xhtml",
+            "manifest_id": "xchapter_024",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_025",
+            "href": "chapter_025.xhtml",
+            "manifest_id": "xchapter_025",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_026",
+            "href": "chapter_026.xhtml",
+            "manifest_id": "xchapter_026",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_027",
+            "href": "chapter_027.xhtml",
+            "manifest_id": "xchapter_027",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_028",
+            "href": "chapter_028.xhtml",
+            "manifest_id": "xchapter_028",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_029",
+            "href": "chapter_029.xhtml",
+            "manifest_id": "xchapter_029",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_030",
+            "href": "chapter_030.xhtml",
+            "manifest_id": "xchapter_030",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_031",
+            "href": "chapter_031.xhtml",
+            "manifest_id": "xchapter_031",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_032",
+            "href": "chapter_032.xhtml",
+            "manifest_id": "xchapter_032",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_033",
+            "href": "chapter_033.xhtml",
+            "manifest_id": "xchapter_033",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_034",
+            "href": "chapter_034.xhtml",
+            "manifest_id": "xchapter_034",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_035",
+            "href": "chapter_035.xhtml",
+            "manifest_id": "xchapter_035",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_036",
+            "href": "chapter_036.xhtml",
+            "manifest_id": "xchapter_036",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_037",
+            "href": "chapter_037.xhtml",
+            "manifest_id": "xchapter_037",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_038",
+            "href": "chapter_038.xhtml",
+            "manifest_id": "xchapter_038",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_039",
+            "href": "chapter_039.xhtml",
+            "manifest_id": "xchapter_039",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_040",
+            "href": "chapter_040.xhtml",
+            "manifest_id": "xchapter_040",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_041",
+            "href": "chapter_041.xhtml",
+            "manifest_id": "xchapter_041",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_042",
+            "href": "chapter_042.xhtml",
+            "manifest_id": "xchapter_042",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_043",
+            "href": "chapter_043.xhtml",
+            "manifest_id": "xchapter_043",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_044",
+            "href": "chapter_044.xhtml",
+            "manifest_id": "xchapter_044",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_045",
+            "href": "chapter_045.xhtml",
+            "manifest_id": "xchapter_045",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_046",
+            "href": "chapter_046.xhtml",
+            "manifest_id": "xchapter_046",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_047",
+            "href": "chapter_047.xhtml",
+            "manifest_id": "xchapter_047",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_048",
+            "href": "chapter_048.xhtml",
+            "manifest_id": "xchapter_048",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_049",
+            "href": "chapter_049.xhtml",
+            "manifest_id": "xchapter_049",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_050",
+            "href": "chapter_050.xhtml",
+            "manifest_id": "xchapter_050",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_051",
+            "href": "chapter_051.xhtml",
+            "manifest_id": "xchapter_051",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_052",
+            "href": "chapter_052.xhtml",
+            "manifest_id": "xchapter_052",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_053",
+            "href": "chapter_053.xhtml",
+            "manifest_id": "xchapter_053",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_054",
+            "href": "chapter_054.xhtml",
+            "manifest_id": "xchapter_054",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_055",
+            "href": "chapter_055.xhtml",
+            "manifest_id": "xchapter_055",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_056",
+            "href": "chapter_056.xhtml",
+            "manifest_id": "xchapter_056",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_057",
+            "href": "chapter_057.xhtml",
+            "manifest_id": "xchapter_057",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_058",
+            "href": "chapter_058.xhtml",
+            "manifest_id": "xchapter_058",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_059",
+            "href": "chapter_059.xhtml",
+            "manifest_id": "xchapter_059",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_060",
+            "href": "chapter_060.xhtml",
+            "manifest_id": "xchapter_060",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_061",
+            "href": "chapter_061.xhtml",
+            "manifest_id": "xchapter_061",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_062",
+            "href": "chapter_062.xhtml",
+            "manifest_id": "xchapter_062",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_063",
+            "href": "chapter_063.xhtml",
+            "manifest_id": "xchapter_063",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_064",
+            "href": "chapter_064.xhtml",
+            "manifest_id": "xchapter_064",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_065",
+            "href": "chapter_065.xhtml",
+            "manifest_id": "xchapter_065",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_066",
+            "href": "chapter_066.xhtml",
+            "manifest_id": "xchapter_066",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_067",
+            "href": "chapter_067.xhtml",
+            "manifest_id": "xchapter_067",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_068",
+            "href": "chapter_068.xhtml",
+            "manifest_id": "xchapter_068",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_069",
+            "href": "chapter_069.xhtml",
+            "manifest_id": "xchapter_069",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_070",
+            "href": "chapter_070.xhtml",
+            "manifest_id": "xchapter_070",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_071",
+            "href": "chapter_071.xhtml",
+            "manifest_id": "xchapter_071",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_072",
+            "href": "chapter_072.xhtml",
+            "manifest_id": "xchapter_072",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_073",
+            "href": "chapter_073.xhtml",
+            "manifest_id": "xchapter_073",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_074",
+            "href": "chapter_074.xhtml",
+            "manifest_id": "xchapter_074",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_075",
+            "href": "chapter_075.xhtml",
+            "manifest_id": "xchapter_075",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_076",
+            "href": "chapter_076.xhtml",
+            "manifest_id": "xchapter_076",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_077",
+            "href": "chapter_077.xhtml",
+            "manifest_id": "xchapter_077",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_078",
+            "href": "chapter_078.xhtml",
+            "manifest_id": "xchapter_078",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_079",
+            "href": "chapter_079.xhtml",
+            "manifest_id": "xchapter_079",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_080",
+            "href": "chapter_080.xhtml",
+            "manifest_id": "xchapter_080",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_081",
+            "href": "chapter_081.xhtml",
+            "manifest_id": "xchapter_081",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_082",
+            "href": "chapter_082.xhtml",
+            "manifest_id": "xchapter_082",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_083",
+            "href": "chapter_083.xhtml",
+            "manifest_id": "xchapter_083",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_084",
+            "href": "chapter_084.xhtml",
+            "manifest_id": "xchapter_084",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_085",
+            "href": "chapter_085.xhtml",
+            "manifest_id": "xchapter_085",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_086",
+            "href": "chapter_086.xhtml",
+            "manifest_id": "xchapter_086",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_087",
+            "href": "chapter_087.xhtml",
+            "manifest_id": "xchapter_087",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_088",
+            "href": "chapter_088.xhtml",
+            "manifest_id": "xchapter_088",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_089",
+            "href": "chapter_089.xhtml",
+            "manifest_id": "xchapter_089",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_090",
+            "href": "chapter_090.xhtml",
+            "manifest_id": "xchapter_090",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_091",
+            "href": "chapter_091.xhtml",
+            "manifest_id": "xchapter_091",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_092",
+            "href": "chapter_092.xhtml",
+            "manifest_id": "xchapter_092",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_093",
+            "href": "chapter_093.xhtml",
+            "manifest_id": "xchapter_093",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_094",
+            "href": "chapter_094.xhtml",
+            "manifest_id": "xchapter_094",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_095",
+            "href": "chapter_095.xhtml",
+            "manifest_id": "xchapter_095",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_096",
+            "href": "chapter_096.xhtml",
+            "manifest_id": "xchapter_096",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_097",
+            "href": "chapter_097.xhtml",
+            "manifest_id": "xchapter_097",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_098",
+            "href": "chapter_098.xhtml",
+            "manifest_id": "xchapter_098",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_099",
+            "href": "chapter_099.xhtml",
+            "manifest_id": "xchapter_099",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_100",
+            "href": "chapter_100.xhtml",
+            "manifest_id": "xchapter_100",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_101",
+            "href": "chapter_101.xhtml",
+            "manifest_id": "xchapter_101",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_102",
+            "href": "chapter_102.xhtml",
+            "manifest_id": "xchapter_102",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_103",
+            "href": "chapter_103.xhtml",
+            "manifest_id": "xchapter_103",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_104",
+            "href": "chapter_104.xhtml",
+            "manifest_id": "xchapter_104",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_105",
+            "href": "chapter_105.xhtml",
+            "manifest_id": "xchapter_105",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_106",
+            "href": "chapter_106.xhtml",
+            "manifest_id": "xchapter_106",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_107",
+            "href": "chapter_107.xhtml",
+            "manifest_id": "xchapter_107",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_108",
+            "href": "chapter_108.xhtml",
+            "manifest_id": "xchapter_108",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_109",
+            "href": "chapter_109.xhtml",
+            "manifest_id": "xchapter_109",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_110",
+            "href": "chapter_110.xhtml",
+            "manifest_id": "xchapter_110",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_111",
+            "href": "chapter_111.xhtml",
+            "manifest_id": "xchapter_111",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_112",
+            "href": "chapter_112.xhtml",
+            "manifest_id": "xchapter_112",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_113",
+            "href": "chapter_113.xhtml",
+            "manifest_id": "xchapter_113",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_114",
+            "href": "chapter_114.xhtml",
+            "manifest_id": "xchapter_114",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_115",
+            "href": "chapter_115.xhtml",
+            "manifest_id": "xchapter_115",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_116",
+            "href": "chapter_116.xhtml",
+            "manifest_id": "xchapter_116",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_117",
+            "href": "chapter_117.xhtml",
+            "manifest_id": "xchapter_117",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_118",
+            "href": "chapter_118.xhtml",
+            "manifest_id": "xchapter_118",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_119",
+            "href": "chapter_119.xhtml",
+            "manifest_id": "xchapter_119",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_120",
+            "href": "chapter_120.xhtml",
+            "manifest_id": "xchapter_120",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_121",
+            "href": "chapter_121.xhtml",
+            "manifest_id": "xchapter_121",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_122",
+            "href": "chapter_122.xhtml",
+            "manifest_id": "xchapter_122",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_123",
+            "href": "chapter_123.xhtml",
+            "manifest_id": "xchapter_123",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_124",
+            "href": "chapter_124.xhtml",
+            "manifest_id": "xchapter_124",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_125",
+            "href": "chapter_125.xhtml",
+            "manifest_id": "xchapter_125",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_126",
+            "href": "chapter_126.xhtml",
+            "manifest_id": "xchapter_126",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_127",
+            "href": "chapter_127.xhtml",
+            "manifest_id": "xchapter_127",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_128",
+            "href": "chapter_128.xhtml",
+            "manifest_id": "xchapter_128",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_129",
+            "href": "chapter_129.xhtml",
+            "manifest_id": "xchapter_129",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_130",
+            "href": "chapter_130.xhtml",
+            "manifest_id": "xchapter_130",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_131",
+            "href": "chapter_131.xhtml",
+            "manifest_id": "xchapter_131",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_132",
+            "href": "chapter_132.xhtml",
+            "manifest_id": "xchapter_132",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_133",
+            "href": "chapter_133.xhtml",
+            "manifest_id": "xchapter_133",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_134",
+            "href": "chapter_134.xhtml",
+            "manifest_id": "xchapter_134",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_135",
+            "href": "chapter_135.xhtml",
+            "manifest_id": "xchapter_135",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "xchapter_136",
+            "href": "chapter_136.xhtml",
+            "manifest_id": "xchapter_136",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "copyright",
+            "href": "copyright.xhtml",
+            "manifest_id": "copyright",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "yes",
+            "properties": ""
+        }, {
+            "idref": "toc",
+            "href": "toc.xhtml",
+            "manifest_id": "toc",
+            "media_type": "application/xhtml+xml",
+            "media_overlay_id": "",
+            "linear": "no",
+            "properties": ""
+        }]
+    },
+    "mediaItems": [{
+        "refines": "#chapter_001_overlay",
+        "duration": 860.5
+    }, {
+        "refines": "#chapter_002_overlay",
+        "duration": 543
+    }],
+    "media_overlay": {
+        "duration": 1403.5,
+        "narrator": "Stuart Wills",
+        "activeClass": "-epub-media-overlay-active",
+        "playbackActiveClass": "",
+        "smil_models": [{
+            "id": "",
+            "href": "",
+            "spineItemId": "cover",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "cover.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "cover.xhtml",
+                        "srcFile": "cover.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "titlepage",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "titlepage.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "titlepage.xhtml",
+                        "srcFile": "titlepage.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "brief-toc",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "toc-short.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "toc-short.xhtml",
+                        "srcFile": "toc-short.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xpreface_001",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "preface_001.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "preface_001.xhtml",
+                        "srcFile": "preface_001.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xintroduction_001",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "introduction_001.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "introduction_001.xhtml",
+                        "srcFile": "introduction_001.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xepigraph_001",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "epigraph_001.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "epigraph_001.xhtml",
+                        "srcFile": "epigraph_001.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "smilVersion": "3.0",
+            "children": [{
+                "nodeType": "seq",
+                "children": [{
+                    "nodeType": "seq",
+                    "textref": "chapter_001.xhtml",
+                    "id": "id1",
+                    "epubtype": "bodymatter chapter",
+                    "children": [{
+                        "nodeType": "par",
+                        "id": "heading1",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01h01",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01h01"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 24.5,
+                            "clipEnd": 29.268
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "word1",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01w00001",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01w00001"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 29.268,
+                            "clipEnd": 29.441
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "word2",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01w00002",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01w00002"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 29.441,
+                            "clipEnd": 29.64
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "word3",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01w00003",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01w00003"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 29.64,
+                            "clipEnd": 30.397
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "sentence2",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01s0002",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01s0002"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 30.397,
+                            "clipEnd": 44.783
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "sentence3",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01s0003",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01s0003"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 44.783,
+                            "clipEnd": 50.45
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "sentence4",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01s0004",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01s0004"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 50.45,
+                            "clipEnd": 84.3
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "sentence5",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01s0005",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01s0005"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 84.3,
+                            "clipEnd": 87.85
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "sentence6",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01s0006",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01s0006"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 87.85,
+                            "clipEnd": 95
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "sentence7",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01s0007",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01s0007"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 95,
+                            "clipEnd": 97.5
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "sentence8",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01s0008",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01s0008"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 97.5,
+                            "clipEnd": 106.45
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para2",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0002",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0002"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 106.45,
+                            "clipEnd": 134.138
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para3",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0003",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0003"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 134.138,
+                            "clipEnd": 182
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para4",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0004",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0004"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 182,
+                            "clipEnd": 225.5
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para5",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0005",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0005"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 225.5,
+                            "clipEnd": 269.3
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para6",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0006",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0006"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 269.3,
+                            "clipEnd": 412.5
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para7",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0007",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0007"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 412.5,
+                            "clipEnd": 512.5
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para8",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0008",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0008"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 512.5,
+                            "clipEnd": 570.5
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para9",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0009",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0009"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 570.5,
+                            "clipEnd": 622.75
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para10",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0010",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0010"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 622.75,
+                            "clipEnd": 671.75
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para11",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0011",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0011"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 671.75,
+                            "clipEnd": 747.5
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para12",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0012",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0012"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 747.5,
+                            "clipEnd": 751.9
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para13",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0013",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0013"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 751.9,
+                            "clipEnd": 754.5
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para14",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0014",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0014"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 754.5,
+                            "clipEnd": 757.4
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para15",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0015",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0015"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 757.4,
+                            "clipEnd": 803
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para16",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0016",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0016"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 803,
+                            "clipEnd": 858.8
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para17",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_001.xhtml#c01p0017",
+                            "srcFile": "chapter_001.xhtml",
+                            "srcFragmentId": "c01p0017"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 858.8,
+                            "clipEnd": 885
+                        }]
+                    }]
+                }]
+            }],
+            "href": "chapter_001_overlay.smil",
+            "id": "chapter_001_overlay",
+            "spineItemId": "xchapter_001"
+        }, {
+            "smilVersion": "3.0",
+            "children": [{
+                "nodeType": "seq",
+                "children": [{
+                    "nodeType": "seq",
+                    "textref": "chapter_002.xhtml",
+                    "id": "id1",
+                    "epubtype": "bodymatter chapter",
+                    "children": [{
+                        "nodeType": "par",
+                        "id": "heading1",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02h01",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02h01"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 885,
+                            "clipEnd": 888.5
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para1",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02p0001",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02p0001"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 888.5,
+                            "clipEnd": 914
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para2",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02p0002",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02p0002"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 914,
+                            "clipEnd": 984.5
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para3",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02p0003",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02p0003"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 984.5,
+                            "clipEnd": 1036.8
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para4",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02p0004",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02p0004"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 1036.8,
+                            "clipEnd": 1104
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para5",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02p0005",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02p0005"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 1104,
+                            "clipEnd": 1161.8
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para6",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02p0006",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02p0006"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 1161.8,
+                            "clipEnd": 1189.5
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para7",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02p0007",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02p0007"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 1189.5,
+                            "clipEnd": 1212.1
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para8",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02p0008",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02p0008"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 1212.1,
+                            "clipEnd": 1247.5
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para9",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02p0009",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02p0009"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 1247.5,
+                            "clipEnd": 1369.2
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para10",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02p0010",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02p0010"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 1369.2,
+                            "clipEnd": 1390
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para11",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02p0011",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02p0011"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 1390,
+                            "clipEnd": 1414
+                        }]
+                    }, {
+                        "nodeType": "par",
+                        "id": "para12",
+                        "children": [{
+                            "nodeType": "text",
+                            "src": "chapter_002.xhtml#c02p0012",
+                            "srcFile": "chapter_002.xhtml",
+                            "srcFragmentId": "c02p0012"
+                        }, {
+                            "nodeType": "audio",
+                            "src": "audio/mobydick_001_002_melville.mp4",
+                            "clipBegin": 1414,
+                            "clipEnd": 1428
+                        }]
+                    }]
+                }]
+            }],
+            "href": "chapter_002_overlay.smil",
+            "id": "chapter_002_overlay",
+            "spineItemId": "xchapter_002"
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_003",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_003.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_003.xhtml",
+                        "srcFile": "chapter_003.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_004",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_004.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_004.xhtml",
+                        "srcFile": "chapter_004.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_005",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_005.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_005.xhtml",
+                        "srcFile": "chapter_005.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_006",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_006.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_006.xhtml",
+                        "srcFile": "chapter_006.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_007",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_007.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_007.xhtml",
+                        "srcFile": "chapter_007.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_008",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_008.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_008.xhtml",
+                        "srcFile": "chapter_008.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_009",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_009.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_009.xhtml",
+                        "srcFile": "chapter_009.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_010",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_010.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_010.xhtml",
+                        "srcFile": "chapter_010.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_011",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_011.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_011.xhtml",
+                        "srcFile": "chapter_011.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_012",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_012.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_012.xhtml",
+                        "srcFile": "chapter_012.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_013",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_013.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_013.xhtml",
+                        "srcFile": "chapter_013.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_014",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_014.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_014.xhtml",
+                        "srcFile": "chapter_014.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_015",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_015.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_015.xhtml",
+                        "srcFile": "chapter_015.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_016",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_016.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_016.xhtml",
+                        "srcFile": "chapter_016.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_017",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_017.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_017.xhtml",
+                        "srcFile": "chapter_017.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_018",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_018.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_018.xhtml",
+                        "srcFile": "chapter_018.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_019",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_019.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_019.xhtml",
+                        "srcFile": "chapter_019.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_020",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_020.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_020.xhtml",
+                        "srcFile": "chapter_020.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_021",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_021.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_021.xhtml",
+                        "srcFile": "chapter_021.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_022",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_022.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_022.xhtml",
+                        "srcFile": "chapter_022.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_023",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_023.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_023.xhtml",
+                        "srcFile": "chapter_023.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_024",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_024.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_024.xhtml",
+                        "srcFile": "chapter_024.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_025",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_025.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_025.xhtml",
+                        "srcFile": "chapter_025.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_026",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_026.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_026.xhtml",
+                        "srcFile": "chapter_026.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_027",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_027.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_027.xhtml",
+                        "srcFile": "chapter_027.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_028",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_028.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_028.xhtml",
+                        "srcFile": "chapter_028.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_029",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_029.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_029.xhtml",
+                        "srcFile": "chapter_029.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_030",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_030.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_030.xhtml",
+                        "srcFile": "chapter_030.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_031",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_031.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_031.xhtml",
+                        "srcFile": "chapter_031.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_032",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_032.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_032.xhtml",
+                        "srcFile": "chapter_032.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_033",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_033.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_033.xhtml",
+                        "srcFile": "chapter_033.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_034",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_034.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_034.xhtml",
+                        "srcFile": "chapter_034.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_035",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_035.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_035.xhtml",
+                        "srcFile": "chapter_035.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_036",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_036.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_036.xhtml",
+                        "srcFile": "chapter_036.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_037",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_037.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_037.xhtml",
+                        "srcFile": "chapter_037.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_038",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_038.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_038.xhtml",
+                        "srcFile": "chapter_038.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_039",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_039.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_039.xhtml",
+                        "srcFile": "chapter_039.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_040",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_040.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_040.xhtml",
+                        "srcFile": "chapter_040.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_041",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_041.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_041.xhtml",
+                        "srcFile": "chapter_041.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_042",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_042.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_042.xhtml",
+                        "srcFile": "chapter_042.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_043",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_043.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_043.xhtml",
+                        "srcFile": "chapter_043.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_044",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_044.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_044.xhtml",
+                        "srcFile": "chapter_044.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_045",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_045.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_045.xhtml",
+                        "srcFile": "chapter_045.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_046",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_046.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_046.xhtml",
+                        "srcFile": "chapter_046.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_047",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_047.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_047.xhtml",
+                        "srcFile": "chapter_047.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_048",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_048.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_048.xhtml",
+                        "srcFile": "chapter_048.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_049",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_049.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_049.xhtml",
+                        "srcFile": "chapter_049.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_050",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_050.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_050.xhtml",
+                        "srcFile": "chapter_050.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_051",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_051.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_051.xhtml",
+                        "srcFile": "chapter_051.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_052",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_052.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_052.xhtml",
+                        "srcFile": "chapter_052.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_053",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_053.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_053.xhtml",
+                        "srcFile": "chapter_053.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_054",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_054.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_054.xhtml",
+                        "srcFile": "chapter_054.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_055",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_055.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_055.xhtml",
+                        "srcFile": "chapter_055.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_056",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_056.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_056.xhtml",
+                        "srcFile": "chapter_056.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_057",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_057.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_057.xhtml",
+                        "srcFile": "chapter_057.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_058",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_058.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_058.xhtml",
+                        "srcFile": "chapter_058.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_059",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_059.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_059.xhtml",
+                        "srcFile": "chapter_059.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_060",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_060.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_060.xhtml",
+                        "srcFile": "chapter_060.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_061",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_061.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_061.xhtml",
+                        "srcFile": "chapter_061.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_062",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_062.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_062.xhtml",
+                        "srcFile": "chapter_062.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_063",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_063.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_063.xhtml",
+                        "srcFile": "chapter_063.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_064",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_064.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_064.xhtml",
+                        "srcFile": "chapter_064.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_065",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_065.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_065.xhtml",
+                        "srcFile": "chapter_065.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_066",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_066.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_066.xhtml",
+                        "srcFile": "chapter_066.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_067",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_067.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_067.xhtml",
+                        "srcFile": "chapter_067.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_068",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_068.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_068.xhtml",
+                        "srcFile": "chapter_068.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_069",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_069.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_069.xhtml",
+                        "srcFile": "chapter_069.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_070",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_070.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_070.xhtml",
+                        "srcFile": "chapter_070.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_071",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_071.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_071.xhtml",
+                        "srcFile": "chapter_071.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_072",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_072.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_072.xhtml",
+                        "srcFile": "chapter_072.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_073",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_073.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_073.xhtml",
+                        "srcFile": "chapter_073.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_074",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_074.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_074.xhtml",
+                        "srcFile": "chapter_074.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_075",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_075.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_075.xhtml",
+                        "srcFile": "chapter_075.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_076",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_076.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_076.xhtml",
+                        "srcFile": "chapter_076.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_077",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_077.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_077.xhtml",
+                        "srcFile": "chapter_077.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_078",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_078.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_078.xhtml",
+                        "srcFile": "chapter_078.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_079",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_079.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_079.xhtml",
+                        "srcFile": "chapter_079.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_080",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_080.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_080.xhtml",
+                        "srcFile": "chapter_080.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_081",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_081.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_081.xhtml",
+                        "srcFile": "chapter_081.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_082",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_082.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_082.xhtml",
+                        "srcFile": "chapter_082.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_083",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_083.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_083.xhtml",
+                        "srcFile": "chapter_083.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_084",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_084.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_084.xhtml",
+                        "srcFile": "chapter_084.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_085",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_085.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_085.xhtml",
+                        "srcFile": "chapter_085.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_086",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_086.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_086.xhtml",
+                        "srcFile": "chapter_086.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_087",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_087.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_087.xhtml",
+                        "srcFile": "chapter_087.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_088",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_088.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_088.xhtml",
+                        "srcFile": "chapter_088.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_089",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_089.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_089.xhtml",
+                        "srcFile": "chapter_089.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_090",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_090.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_090.xhtml",
+                        "srcFile": "chapter_090.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_091",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_091.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_091.xhtml",
+                        "srcFile": "chapter_091.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_092",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_092.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_092.xhtml",
+                        "srcFile": "chapter_092.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_093",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_093.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_093.xhtml",
+                        "srcFile": "chapter_093.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_094",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_094.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_094.xhtml",
+                        "srcFile": "chapter_094.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_095",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_095.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_095.xhtml",
+                        "srcFile": "chapter_095.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_096",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_096.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_096.xhtml",
+                        "srcFile": "chapter_096.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_097",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_097.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_097.xhtml",
+                        "srcFile": "chapter_097.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_098",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_098.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_098.xhtml",
+                        "srcFile": "chapter_098.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_099",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_099.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_099.xhtml",
+                        "srcFile": "chapter_099.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_100",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_100.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_100.xhtml",
+                        "srcFile": "chapter_100.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_101",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_101.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_101.xhtml",
+                        "srcFile": "chapter_101.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_102",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_102.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_102.xhtml",
+                        "srcFile": "chapter_102.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_103",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_103.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_103.xhtml",
+                        "srcFile": "chapter_103.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_104",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_104.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_104.xhtml",
+                        "srcFile": "chapter_104.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_105",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_105.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_105.xhtml",
+                        "srcFile": "chapter_105.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_106",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_106.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_106.xhtml",
+                        "srcFile": "chapter_106.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_107",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_107.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_107.xhtml",
+                        "srcFile": "chapter_107.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_108",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_108.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_108.xhtml",
+                        "srcFile": "chapter_108.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_109",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_109.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_109.xhtml",
+                        "srcFile": "chapter_109.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_110",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_110.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_110.xhtml",
+                        "srcFile": "chapter_110.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_111",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_111.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_111.xhtml",
+                        "srcFile": "chapter_111.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_112",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_112.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_112.xhtml",
+                        "srcFile": "chapter_112.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_113",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_113.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_113.xhtml",
+                        "srcFile": "chapter_113.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_114",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_114.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_114.xhtml",
+                        "srcFile": "chapter_114.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_115",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_115.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_115.xhtml",
+                        "srcFile": "chapter_115.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_116",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_116.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_116.xhtml",
+                        "srcFile": "chapter_116.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_117",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_117.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_117.xhtml",
+                        "srcFile": "chapter_117.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_118",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_118.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_118.xhtml",
+                        "srcFile": "chapter_118.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_119",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_119.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_119.xhtml",
+                        "srcFile": "chapter_119.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_120",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_120.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_120.xhtml",
+                        "srcFile": "chapter_120.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_121",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_121.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_121.xhtml",
+                        "srcFile": "chapter_121.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_122",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_122.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_122.xhtml",
+                        "srcFile": "chapter_122.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_123",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_123.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_123.xhtml",
+                        "srcFile": "chapter_123.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_124",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_124.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_124.xhtml",
+                        "srcFile": "chapter_124.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_125",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_125.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_125.xhtml",
+                        "srcFile": "chapter_125.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_126",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_126.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_126.xhtml",
+                        "srcFile": "chapter_126.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_127",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_127.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_127.xhtml",
+                        "srcFile": "chapter_127.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_128",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_128.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_128.xhtml",
+                        "srcFile": "chapter_128.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_129",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_129.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_129.xhtml",
+                        "srcFile": "chapter_129.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_130",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_130.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_130.xhtml",
+                        "srcFile": "chapter_130.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_131",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_131.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_131.xhtml",
+                        "srcFile": "chapter_131.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_132",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_132.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_132.xhtml",
+                        "srcFile": "chapter_132.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_133",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_133.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_133.xhtml",
+                        "srcFile": "chapter_133.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_134",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_134.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_134.xhtml",
+                        "srcFile": "chapter_134.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_135",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_135.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_135.xhtml",
+                        "srcFile": "chapter_135.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "xchapter_136",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "chapter_136.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "chapter_136.xhtml",
+                        "srcFile": "chapter_136.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "copyright",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "copyright.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "copyright.xhtml",
+                        "srcFile": "copyright.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }, {
+            "id": "",
+            "href": "",
+            "spineItemId": "toc",
+            "children": [{
+                "nodeType": "seq",
+                "textref": "toc.xhtml",
+                "children": [{
+                    "nodeType": "par",
+                    "children": [{
+                        "nodeType": "text",
+                        "src": "toc.xhtml",
+                        "srcFile": "toc.xhtml",
+                        "srcFragmentId": ""
+                    }]
+                }]
+            }]
+        }],
+        "skippables": ["sidebar", "practice", "marginalia", "annotation", "help", "note", "footnote", "rearnote", "table", "table-row", "table-cell", "list", "list-item", "pagebreak"],
+        "escapables": ["sidebar", "bibliography", "toc", "loi", "appendix", "landmarks", "lot", "index", "colophon", "epigraph", "conclusion", "afterword", "warning", "epilogue", "foreword", "introduction", "prologue", "preface", "preamble", "notice", "errata", "copyright-page", "acknowledgments", "other-credits", "titlepage", "imprimatur", "contributors", "halftitlepage", "dedication", "help", "annotation", "marginalia", "practice", "note", "footnote", "rearnote", "footnotes", "rearnotes", "bridgehead", "page-list", "table", "table-row", "table-cell", "list", "list-item", "glossary"]
+    },
+    "cover_href": "images/9780316000000.jpg"
+}
