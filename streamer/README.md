@@ -5,7 +5,7 @@ Most Readium-2 implementations (mobile, desktop or Web app) can be divided in tw
 
 One contains the webview and associated rendering application, let's call it the "frontend", and the other contains the EPUB parser and the associated marshaling service, that we could call the "backend". 
 
-![frontend-backend](images/IMG_3404.JPG)
+![Readium-2 architecture](images/readium-2-archi.JPG)
 <br/>
 
 This backend is called the "streamer" in the Readium-2 architecture and it's responsible for a number of different things: parsing publications, fetching resources in them and exposing them using HTTP.
