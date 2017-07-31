@@ -17,13 +17,15 @@ There are multiple ways to keep track of the on-going activity and participate:
 * [Streamer](/streamer)
 * [Navigator](/navigator)
 * [Web Publication Manifest](https://github.com/readium/webpub-manifest)
+* [Readium CSS](https://github.com/readium/readium-css)
+* [Locators](/locators)
+
 
 ### Services
 
-* [Locator Resolver](/locators)
 * [Media Overlay](/media-overlay)
+* [Positions List](/positions)
 * [Search](/search)
-* [Synthetic Page List](/pagination)
 
 ## Active Projects
 
