@@ -21,7 +21,6 @@ The search service is exposed in `links` in the Web Publication Manifest using a
 ]
 ```
 
-
 ## Response Document
 
 ### Search Context
@@ -55,18 +54,17 @@ A search module can return an HTML document as a response to a search query, but
   "results":
   [
     {
-       "resource": "chapter1.html",
-       "title": "Chapitre 1",
-       "match": "Laurentides",
-       "text-before": "Lors de ses vacances dans les ",
-       "text-after": "il a décidé de réecrire Readium SDK",
-       "locators": 
-    	{
-    	  "cfi": "...",
-    	  "xpath": "...",
-    	  "page": 147,
-    	  "position": 0.1267
-    	}
+       "href": "chapter1.html",
+       "text": {
+         "highlight": "Laurentides",
+         "before": "Lors de ses vacances dans les ",
+         "after": "il a décidé de réecrire Readium SDK",
+       }
+       "locators": {
+         "cfi": "...",
+         "position": 147,
+         "progression": 0.1267
+       }
     }
   ]
 }

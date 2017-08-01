@@ -19,9 +19,19 @@ While locators that are tied to the structure of a resource provide a much more 
 That's one of the reason why Readium-2 recommends using a mix of different locators when implementing some of the use cases listed above.
 
 
-## List of Locators
+## The Locator Object
 
-This document defined the following list of locators for the Readium-2 project:
+Locators can be grouped together using a Locator Object.
+
+A Locator Object may contain the following keys:
+
+| Key  | Definition | Format |
+| ---- | ---------- | ------ | 
+| href  | Locator of the resource document for a given locator. | URI |
+| locators  | Contains one or more locators  | Locators |
+| text  | Contains a number of strings that can be useful to identify a locator.  | Locator Text Object |
+
+This document defines the following list of Locators for the Readium-2 project:
 
 | Key  | Definition | Format |
 | ---- | ---------- | ------ | 
@@ -29,6 +39,10 @@ This document defined the following list of locators for the Readium-2 project:
 | id  | Contains a specific id available in the resource.  | String |
 | position  | Contains an position in the publication.  | Integer |
 | progression  | Contains an overall progression (%) in the publication based on the reading order.  | Float between 0 and 1 |
+
+This document also defines the following keys for the Locator Text Object:
+
+> TODO: we need to discuss how we handle these references.
 
 ## Calculating Positions
 
