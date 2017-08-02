@@ -23,6 +23,7 @@ There are multiple ways to keep track of the on-going activity and participate:
 
 ### Services
 
+* [Locator Resolver](/locators/resolver.md)
 * [Media Overlay](/media-overlay)
 * [Positions List](/positions)
 * [Search](/search)
