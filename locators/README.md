@@ -23,15 +23,17 @@ That's one of the reason why Readium-2 recommends using a mix of different locat
 
 Locators can be grouped together using a Locator Object.
 
+A Locator Object must contain at least one locator.
+
 A Locator Object may contain the following keys:
 
 | Key  | Definition | Format |
 | ---- | ---------- | ------ | 
-| href  | Locator of the resource document for a given locator. | URI |
-| locators  | Contains one or more locators  | Locators |
+| href  | Contains the URI of the resource where the locator points to. | URI |
+| locators  | Contains one or more locators . | Locators |
 | text  | Contains a number of strings that can be useful to identify a locator.  | Locator Text Object |
 
-This document defines the following list of Locators for the Readium-2 project:
+This document defines the following list of locators:
 
 | Key  | Definition | Format |
 | ---- | ---------- | ------ | 
@@ -42,9 +44,28 @@ This document defines the following list of Locators for the Readium-2 project:
 
 This document also defines the following keys for the Locator Text Object:
 
-> TODO: we need to discuss how we handle these references.
+| Key  | Definition | Format |
+| ---- | ---------- | ------ | 
+| after  | Text after the locator.| String |
+| before  | Text before the locator.  | String |
+| highlight  | Text that corresponds to the locator.  | String |
 
-## Calculating Positions
+*Example: Pointing to the first chapter of Pride and Prejudice*
+
+```
+{
+  "href": "http://example.com/chapter1",
+  "locators": [
+    "position": 10,
+    "progression": 0.01452
+  ],
+  "text": {
+    "after": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."
+  }
+}
+```
+
+## Calculating Positions & Progression
 
 > This part is still a WIP, waiting on confirmation from Ric.
 

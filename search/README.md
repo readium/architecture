@@ -9,12 +9,12 @@ The Readium-2 architecture has a lot of room for extensibility, for instance thr
 The search service is exposed in `links` in the Web Publication Manifest using a link object with:
 
 * its `rel` set to search
-* a URI template that contains `{?query}`
+* a URI template that contains `{searchTerms}`
 
 ```
 "links": [
   {
-    "href": "/search{?query}",
+    "href": "/search?q={searchTerms}",
     "rel": "search",
     "templated": true
   }
