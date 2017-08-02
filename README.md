@@ -34,13 +34,14 @@ There are multiple ways to keep track of the on-going activity and participate:
 * [r2-streamer-go](https://github.com/readium/r2-streamer-go) -  Go version of the streamer
 * [r2-streamer-swift](https://github.com/readium/r2-streamer-swift) - Swift version of the streamer
 * [r2-streamer-java](https://github.com/readium/r2-streamer-java) - Java version of the streamer
-* [r2-launcher-swift](https://github.com/readium/r2-launcher-swift) - A basic launcher in Swift
 
 ### External
 
-* [webpub-viewer](https://github.com/NYPL-Simplified/webpub-viewer) - An iframe-based navigator, written in TypeScript (NYPL)
+* [Readium Desktop](https://github.com/edrlab/readium-desktop) - A Readium-2 based app written for desktop using Electron (EDRLab)
 * [r2-streamer-js](https://github.com/edrlab/r2-streamer-js) - Typescript version of the streamer (EDRLab)
+* [r2-navigator-swift](https://github.com/edrlab/r2-navigator-swift) - Swift based navigator with its demo app (EDRLab)
 * [NYPLNavigator-iOS](https://github.com/NYPL-Simplified/NYPLNavigator-iOS) - An iOS navigator written in Swift (NYPL)
+* [webpub-viewer](https://github.com/NYPL-Simplified/webpub-viewer) - An iframe-based navigator, written in TypeScript (NYPL)
 
 ## Readium-2 Enabled Projects
 
