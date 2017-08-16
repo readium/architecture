@@ -67,9 +67,8 @@ This document also defines the following keys for the Locator Text Object:
 
 ## Calculating Positions & Progression
 
-> This part is still a WIP, waiting on confirmation from Ric.
 
 There are a number of ways that positions can be calculated:
 
 * for image or page based publications, each position can simply point to the resource (`href`) without any additional locator
-* for other types of publications, the service should calculate that each position in a text-based publication contains 1024 characters
+* for other types of publications, the service should calculate that each position in a text-based publication contains 1024 _characters_ (not bytes) 1024 is arbitrary but matches what RMSDK uses.
