@@ -60,7 +60,7 @@ A search module can return an HTML document as a response to a search query, but
          "before": "Lors de ses vacances dans les ",
          "after": "il a décidé de réecrire Readium SDK",
        }
-       "locators": {
+       "locations": {
          "cfi": "...",
          "position": 147,
          "progression": 0.1267

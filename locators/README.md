@@ -9,31 +9,33 @@ There are many different use cases for locators:
 * current position in a publication
 * human-readable (and shareable) reference to a fragment
 
-Locators can also be divided into two different groups:
+Each locator consist of one or more locations.
 
-* locators that are tied to the structure of a resource, such as CFI or XPath
+Locations can be divided into two different groups:
+
+* locations that are tied to the structure of a resource, such as CFI or XPath
 * and those that are not related to any particular resource
 
-While locators that are tied to the structure of a resource provide a much more fine grained information, there are also more likely to break when the resource is updated.
+While locations that are tied to the structure of a resource provide a much more fine grained information, there are also more likely to break when the resource is updated.
 
-That's one of the reason why Readium-2 recommends using a mix of different locators when implementing some of the use cases listed above.
+That's one of the reason why Readium-2 recommends using a mix of different locations when implementing some of the use cases listed above.
 
 
 ## The Locator Object
 
 Locators can be grouped together using a Locator Object.
 
-A Locator Object must contain at least one locator.
+A Locator Object must contain at least one location.
 
 A Locator Object may contain the following keys:
 
 | Key  | Definition | Format |
 | ---- | ---------- | ------ | 
 | href  | Contains the URI of the resource where the locator points to. | URI |
-| locators  | Contains one or more locators . | Locators |
+| locations  | Contains one or more locators . | Locators |
 | text  | Contains a number of strings that can be useful to identify a locator.  | Locator Text Object |
 
-This document defines the following list of locators:
+This document defines the following list of locations:
 
 | Key  | Definition | Format |
 | ---- | ---------- | ------ | 
@@ -55,10 +57,10 @@ This document also defines the following keys for the Locator Text Object:
 ```
 {
   "href": "http://example.com/chapter1",
-  "locators": [
+  "locations": {
     "position": 10,
     "progression": 0.01452
-  ],
+  },
   "text": {
     "after": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."
   }

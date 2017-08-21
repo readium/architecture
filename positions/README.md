@@ -35,15 +35,23 @@ A client may request the full list of positions for the publication by sending a
 GET https://example.com/list
 
 {
-  "total": 156,
+  "total": 2,
   "positions": [
     {
-      "href": "http://example.com/chapter2",
-      "locators": [
+      "href": "http://example.com/resource",
+      "locations": {
         "cfi": "/4[body01]",
-        "position": 27,
-        "progression": 0.07289
-      ]
+        "position": 1,
+        "progression": 0.0
+      }
+    },
+    {
+      "href": "http://example.com/resource",
+      "locations": {
+        "cfi": "/18[body02]",
+        "position": 2,
+        "progression": 0.57289
+      }
     }
   ]
 }
@@ -54,9 +62,9 @@ GET https://example.com/list
 | Key  | Definition | Format |
 | ---- | ---------- | ------ | 
 | total  | Contains the total number of positions in a given publication.  | Integer |
-| positions  | Contains one or more locators.  | Locator Object |
+| positions  | Contains one or more Locator Objects.  | Locator Object |
 
-The Locator Object contains one or more locators, [as defined in the Locators document](/locators#the-locator-object).
+The Locator Object contains one or more locations, [as defined in the Locators document](/locators#the-locator-object).
 
 ## Navigator
 
