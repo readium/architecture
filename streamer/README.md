@@ -1,14 +1,6 @@
-# Architecture for Readium-2 Streamer
+# Architecture of the Readium-2 Streamer
 
-
-Most Readium-2 implementations (mobile, desktop or Web app) can be divided in two parts, which may be running on different systems or written in completely different languages. 
-
-One contains the EPUB parser and the associated marshaling service, we call this backend part the "streamer". The other one contains the webview and associated rendering application, a frontend part that we call the "navigator". 
-
-![Readium-2 architecture](images/readium-2-archi.png)
-<br/>
-
-This  "streamer" is responsible for a number of different things: parsing publications, fetching resources in them and exposing them using HTTP.
+The  "streamer" module is responsible for a number of different things: parsing publications, fetching resources in them and exposing them using HTTP.
 
 ## Features of the Parser
 
