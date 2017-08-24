@@ -16,7 +16,7 @@ All Readium-2 implementations (mobile, desktop or Web app) can be divided in two
 
 One contains the EPUB parser and the associated marshaling service, we call this backend part the "streamer". The other one contains the webview and associated rendering application, a frontend part that we call the "navigator". 
 
-![Readium-2 architecture](images/readium-2-archi.png)
+![Readium-2 architecture](images/readium-2-archi-2.png)
 
 
 ## Modules
