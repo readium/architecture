@@ -12,9 +12,10 @@ There are multiple ways to keep track of the on-going activity and participate:
 
 ## Readium-2 architecture
 
-All Readium-2 implementations (mobile, desktop or Web app) can be divided in two parts, which may be running on different systems or written in completely different languages. 
+All Readium-2 implementations (mobile, desktop or Web app) are split in two main modules, which use http for exchanging data, may therefore be running on different systems, and may be written in different languages. 
 
-One contains the EPUB parser and the associated marshaling service, we call this backend part the "streamer". The other one contains the webview and associated rendering application, a frontend part that we call the "navigator". 
+A back-end module contains a parser dedicated to a certain type of publication (EPUB or CBZ today), generates a Web Publication Manifest and exposes every resource of the publication via an http server; we call it a "streamer", as it exposes the individual resources of the publication. 
+A corresponding front-end module processes the Web Publication Manifest, renders the publication (usually on screen) and handles user navigation; we call it a "navigator". 
 
 ![Readium-2 architecture](images/readium-2-archi-2.png)
 
