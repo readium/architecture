@@ -30,23 +30,41 @@ There are multiple ways to keep track of the on-going activity and participate:
 
 ## Active Projects
 
-### Hosted By Readium
+### iOS / Swift
 
-* [r2-streamer-go](https://github.com/readium/r2-streamer-go) -  Go version of the streamer
-* [r2-streamer-swift](https://github.com/readium/r2-streamer-swift) - Swift version of the streamer
-* [r2-streamer-java](https://github.com/readium/r2-streamer-java) - Java version of the streamer
+For an overview of how Readium-2 on iOS works, we highly recommend taking a look at the [iOS Test App](https://github.com/readium/r2-testapp-swift).
 
-### External
+The Test App integrates the following modules into a single iOS application:
 
-* [Readium Desktop](https://github.com/edrlab/readium-desktop) - A Readium-2 based app written for desktop using Electron (EDRLab)
-* [r2-streamer-js](https://github.com/edrlab/r2-streamer-js) - Typescript version of the streamer (EDRLab)
-* [r2-navigator-swift](https://github.com/edrlab/r2-navigator-swift) - Swift based navigator with its demo app (EDRLab)
-* [NYPLNavigator-iOS](https://github.com/NYPL-Simplified/NYPLNavigator-iOS) - An iOS navigator written in Swift (NYPL)
+* [Shared Model](https://github.com/readium/r2-shared-swift)
+* [Streamer](https://github.com/readium/r2-streamer-swift)
+* [Navigator](https://github.com/readium/r2-navigator-swift)
+
+This app is currently tested on TestFlight by a first batch of alpha testers.
+
+### Android
+
+On Android, things are going to be changing a lot until the end of the year (2017).
+
+The only active project is a [Java implementation of the streamer](https://github.com/readium/r2-streamer-java).
+
+The current plan is to port all iOS modules to Kotlin in Q4 2017.
+
+### JavaScript
+
+EDRLab is actively working on a production app called [Readium Desktop](https://github.com/edrlab/readium-desktop) built on top of a [Typescript-based implementation of the streamer](https://github.com/edrlab/r2-streamer-js).
+
+There are also two projects implementing a JS-based navigator:
+
 * [webpub-viewer](https://github.com/NYPL-Simplified/webpub-viewer) - An iframe-based navigator, written in TypeScript (NYPL)
-
-## Readium-2 Enabled Projects
-
 * [epub.js](https://github.com/futurepress/epub.js/) - Support for the streamer is in development as part of the v0.3 release (Future Press)
+
+### Go
+
+The first implementation of a streamer was written in Go, mostly for server-side deployment.
+
+This project is active and [hosted on this organization](https://github.com/readium/r2-streamer-go).
+
 
 ## Prototypes
 
