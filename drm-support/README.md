@@ -37,17 +37,17 @@ https://github.com/readium/SDKLauncher-Android/blob/bbe16a5a8655d8e7260a2bc4a0e0
 ## Importing a protected EPUB
 An app which imports an EPUB will follow these steps:
 
-###1/ Check if the EPUB is DRM protected
+### 1/ Check if the EPUB is DRM protected
 
 An LCP protected publication is signaled by the presence of a license document (META-INF/license.lcpl) plus certain specific values in META-INF/encryption.xml which indiate which resources are encypted and with which algorthm. As the licence document is mandatory, the app must raise an error if this file is missing but the content is declared encrypted. Also, the app should check that all resources referenced in encryption.xml are found in the EPUB archive.
 
-###2/ Validate the license
+### 2/ Validate the license
 
 An LCP license must be valid (EDRLab provides a JSON schema in the EDRLab github, lcp-testing-tools) and its signature must be valid. See the LCP spec, section 5.5. The LCP client lib provides a signature verifier. Note that the provider certificate must not be in the current revocation list. 
 
 The app should also check the presence of "hint"" and "publication"" links, required by the specification.
 
-###3/ Check a license update
+### 3/ Check a license update
 
 An LCP license may contain a "status" link, i.e. a link to a status document. If it is the case, and if the app is online, it will silently (non-blocking for the user):
 
@@ -71,11 +71,11 @@ If this is not the case (revoked, returned, cancelled, expired), the app will no
 During this time the user can read the book if the current license allows for it.  
 Therefore, if the license has been extended from a library portal, the device may see an expired license. In this case the user can click a button that says “Check if the license has been updated”. This is a synchronous call, the user can wait for 5 sc; the new license is fetched and validated. 
 
-###4/ Check the rights
+### 4/ Check the rights
 
 An LCP license handles a datetime start and datetime end, which must be compared with the system datetime. It the test is negative, the app will notify the user and stop there. 
 
-###5/ Register the device / license if needed
+### 5/ Register the device / license if needed
 
 It may be a feature specific to LCP. The app must:
 
@@ -87,7 +87,7 @@ If it is the case, the app moves on.
 
 5.3/ Store the fact the the device / license has been registered.
 
-###6/ Open the publication
+### 6/ Open the publication
 
 The following is LCP specific. Each license is associated with a passphrase. The app must:
 
@@ -107,19 +107,19 @@ And then read the publication.
 ## Importing a DRM license
 An app which imports a DRM license will follow these steps:
 
-###1/ Validate the license
+### 1/ Validate the license
 
-###2/ Check a license update
+### 2/ Check a license update
 
 The process is the same as above, but the license cannot be inserted in the publication yet. 
 
-###3/ Fetch the encrypted publication
+### 3/ Fetch the encrypted publication
 
 In the LCP use case, the app will use the "publication" link. It will store the encrypted publication and insert the license as META-INF/license.lcpl. 
 
-###4/ Check the rights
+### 4/ Check the rights
 
-###5/ Register the device / license if needed
+### 5/ Register the device / license if needed
 
 
 
@@ -128,12 +128,12 @@ In the LCP use case, the app will use the "publication" link. It will store the 
 
 The app will:
 
-1/ Initialize a decryption context, with the following parameters:
+### 1/ Initialize a decryption context, with the following parameters:
 
 * encrypted content key
 * hashed passphrase
 
-2/ Decrypt each resource or chunk of the publication, passing the context as a parameter.
+### 2/ Decrypt each resource or chunk of the publication, passing the context as a parameter.
 
 
 
