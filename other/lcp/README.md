@@ -59,10 +59,11 @@ The app calls the r2-lcp-client library (C++) with the passphrase hash, the lice
 
 The r2-lcp-client library will:
 
-* check that the provider certificate was not expired when the license was last updated;
 * check the signature of the provider certificate using the embedded root certificate;
 * check that the provider certificate is not in the CRL; 
+* check that the provider certificate was not expired when the license was last updated;
 * validate the signature of the license;
+* check the user key;
 * check the date rights. An LCP license handles a datetime start and datetime end, which must be compared with the system datetime.
 * return a "context" structure, to be used later in decryption calls.
 
