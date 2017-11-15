@@ -13,7 +13,7 @@ To get more details about Reading system behavior in a Readium LCP context,  ple
 ## Being ready
 A Readium LCP compliant app must embed a root certificate provided by the DRM administrator.  
 
-A Readium LCP compliant app must update on a regular basis (maybe each time the app is launched, on a weekly basis) the certificate revocation list (CRL) associated with the DRM.
+A Readium LCP compliant app must update the Readium LCP certificate revocation list (CRL) on a regular basis (e.g. on a weekly basis, at the time the app is launched).
 
 A Readium LCP compliant app must generate a unique device id and human readable device name at install time. 
 
