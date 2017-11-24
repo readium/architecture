@@ -38,6 +38,11 @@ public typealias PubParsingCallback = (Drm?) throws -> Void
 * Testapp now call back the `PubParsingCallback` providing the `Drm`object fully filled. The remaining files are parsed, and the already existing Publication object is filled with the new informations.
 * The `Publication` object is then passed to the Navigator for displaying it.
 
+### LcpLicense (specific LCP implementation of DrmLicense)
+
+The LcpLicense object, which comforms to DrmLicense, contains helper functions and two important properties: LicenseDocument and StatusDocument.
+They are both the representation of the License Document and the Status Document. Each of these object contains helper methods (e.g. `getHint()`, `dateOfLastUpdate()` fot the LicenseDocument). They also publicly expose their properties.
+
 #### Big Picture
 Navigator will find the URL of resources in the `Publication`, will request the Streamer.WebServer for it, Streamer.WebServer will ask the Streamer.Fetcher to get it, if the resource link indicates its encrypted, the fetcher will use the `Drm.DrmLicense.decrypt()`.
 
