@@ -41,4 +41,10 @@ public typealias PubParsingCallback = (Drm?) throws -> Void
 #### Big Picture
 Navigator will find the URL of resources in the `Publication`, will request the Streamer.WebServer for it, Streamer.WebServer will ask the Streamer.Fetcher to get it, if the resource link indicates its encrypted, the fetcher will use the `Drm.DrmLicense.decrypt()`.
 
+
+#### Complementary informations
+
+ReadiumLCP uses R2LCPClient(readium2-lcp-swift), a Swift wrapper, around an Obj-c++ wrapper, around the Readium2-lcp-client C++ lib.
+
+ReadiumLCP provide a local SQLite database.
  
