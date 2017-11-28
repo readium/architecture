@@ -45,7 +45,7 @@ Each LCP license is associated with a passphrase. The app must:
 
 1/ Check if a passphrase hash has already been stored for the license. If yes, the app calls the r2-lcp-client library (C++) with the license key_check and the passphrase hash as parameters. The lib returns the passphrase hash, or an error if the passphrase is incorrect.
 
-2/ Check if one or more passphrase hash associated with licenses from the same provider have been stored. If yes, the app calls the r2-lcp-client library (C++) with the license key_check and the array of passphrase hash as parameters. The lib returns the correct passphrase, if any, or an error if none is correct.
+2/ Check if one or more passphrase hash associated with licenses from the same user (by user id) have been stored. In case the user id has not been given in the license (it is highly recommended but not required), this optimization can't be done. If one or more values are found, the app calls the r2-lcp-client library (C++) with the license key_check and the array of passphrase hash as parameters. The lib returns the correct passphrase, if any, or an error if none is correct. 
 
 3/ Display the hint and ask the passphrase to the user. The app the calls the r2-lcp-client library (C++) with the license key_check and the passphrase as parameters. Note that the hash algorithm may depend on the LCP profile used in the license; therefore the app lets the lib calculate this hash value. The lib returns the passphrase hash, or an error if the passphrase is incorrect.
 
