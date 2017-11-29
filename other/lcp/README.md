@@ -74,7 +74,9 @@ See the Readium LCP spec section 5.5 for additional details.
 
 An LCP license may contain a "status" link, i.e. a link to a status document. If it is the case and if the app is online, the app must:
 
-1/ Fetch the status document
+1/ Fetch the status document.
+
+If the Status Document is unavailable or if the client is unable to obtain an internet connection, it MUST NOT block the user from accessing the Publication tied to the License Document.
 
 2/ Validate the structure of the status document
 
@@ -82,7 +84,15 @@ An LCP license may contain a "status" link, i.e. a link to a status document. If
 
 If this is not the case (revoked, returned, cancelled, expired), the app will notify the user and stop there.
 
-### 5/ Register the device / license 
+### 5/ Get an updated license if needed
+
+If the license timestamp in the updated object of the Status Document is more recent than the timestamp contained in the local copy of the License Document, the client MUST download the License Document again and replace its previous copy with the new one. 
+
+It must then validate again the license integrity.
+
+Note: if the status value of a Status Document contradicts the corresponding up-to-date License Document, the up-to-date License Document takes precedence.
+
+### 6/ Register the device / license 
 
 If the app is online, it must silently (= non-blocking for the user):
 
@@ -106,11 +116,13 @@ An app which imports a DRM license will follow these steps (see the previous sec
 
 ### 4/ Check the license status
 
-### 5/ Fetch the encrypted publication
+### 5/ Get an updated license if needed
+
+### 6/ Fetch the encrypted publication
 
 In the LCP use case, the app will use the "publication" link. It will store the encrypted publication and insert the license as META-INF/license.lcpl. In case of error, the user is notified and the app stops there. 
 
-### 6/ Register the device / license
+### 7/ Register the device / license
 
 
 
