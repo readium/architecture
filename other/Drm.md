@@ -25,18 +25,21 @@ public protocol DrmLicense {
 public typealias PubParsingCallback = (Drm?) throws -> Void
 ```
 
-* Streamer identify the DRM type during the lightParsing (lightparsing is the preliminary parsing round where the possibly encrypted resources are not treated.)
-* Streamer returns a `Publication` and `Drm` objects partially filled (Brand and Scheme only for `Drm`) and a `PubParsingCallback`.
-* Testapp add this partially parsed `Publication` to the Streamer.WebServer. (Cover image is now accessible for library display.)
+#### A) When a book is added to the app / When the app is opened (no publication caching yet)
 
-   -- The above is done when adding book / opening the app --
-      -- Below will be done when a book is being opened --
+1. The `Streamer.parser(pathToPublication)` is called on resource X.
+Output: `((Publication, Container), PubParsingCallback())`. Note that `Container` contains a `Drm` object if some DRM has been detected in the publication.
+Why? Not all the resources can be parsed at this point.
+Some of the resource are possibly heavy, encrypted or both. 
+2. The `(Publication, Container)` is passed to the `Streamer.Server` with a endpoint parameter.
+This is done in order to make the resources available from the server.
 
-* Testapp needs to call the `PubParsingCallback` before opening the book, but some of the concerned resources (MO, NavDoc, NCX..) could be encrypted, hence it needs beforehand to resolve the `Drm` object.
-* If the publication is DRM protected, Testapp switch on the `Drm.brand`, and call the corresponding DRMModule to resolve the missing DrmLicense/profile properties. (For the extensive details see this [page](https://github.com/readium/readium-2/tree/master/other/lcp)).
-* ReadiumLcp (DRMModule for LCP) provides static utility methods to generate a `LcpLicense` (comforming to the `DrmLicense` protocol) out of a passphrase and the certificat revocation list, and get the profile.
-* Testapp now call back the `PubParsingCallback` providing the `Drm`object fully filled. The remaining files are parsed, and the already existing Publication object is filled with the new informations.
-* The `Publication` object is then passed to the Navigator for displaying it.
+#### B) When a book is going to be opened (we will use LCPLicense as an example, but it's a subclass of DrmLicense)
+
+1. If the `Container.Drm` is not nil, signifying that the `Streamer.Parser` A)1. call detected a protected publication, a switch is done on the `Drm.brand` and the apporpriate code block is called.
+2. The module ReadiumLCP(-Swift) methods are used in order to fill the missing elements of `Drm` (this is a implementation specific, but for more details see [page](https://github.com/readium/readium-2/tree/master/other/lcp)).
+3. Testapp now call back the `PubParsingCallback` providing it with the `Drm` object (fully filled). The remaining files are parsed, and the already existing `Publication` object is filled with the new informations.
+* The `Publication` object is then passed to the `Navigator` for displaying it. Resources URL are found in the `Publication`'s `Spine`/`Resources`. These resource are served by the `Streamer.WebServer` (we added it A)2.). The Streamer.WebServer uses the Streamer.Fetcher to get the resources on disk. If the resources are encrypted, the fetcher use `Drm.DrmLicense.decipher()`, hence the need to resolve the Drm beforehand.
 
 ### LcpLicense (specific LCP implementation of DrmLicense)
 
