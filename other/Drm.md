@@ -19,7 +19,15 @@ public protocol DrmLicense {
     func register()
     func renew(endDate: Date)
     func `return`()
-    // ...
+    func currentStatus() -> String
+    func lastUpdate() -> Date
+    func issued() -> Date
+    func provider() -> URL
+    func rightsEnd() -> Date?
+    func potentialRightsEnd() -> Date?
+    func rightsStart() -> Date?
+    func rightsPrints() -> Int?
+    func rightsCopies() -> Int?
 }
 
 public typealias PubParsingCallback = (Drm?) throws -> Void
