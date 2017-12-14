@@ -1,0 +1,57 @@
+{
+  "name": "Moby-Dick; or, The Whale",
+  "short_name": "Moby-Dick",
+  "author": "Herman Melville",
+  "lang": "en",
+  "categories": ["Fiction", "Literary"],
+  "published": "1851-10-18",
+  "modified": "2017-12-14T15:29:08+00:00",
+  "start_url": "https://example.com/Moby-Dick",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-large.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "background_color": "#FAFAFA",
+  "display": "standalone",
+  "reading_order":  [
+    {
+      "href": "toc.html",
+      "type": "text/html",
+      "rel": "contents"
+    },
+    {
+      "href": "introduction.html",
+      "type": "text/html"
+    },
+    {
+      "href": "chapter1.html",
+      "type": "text/html"
+    },
+    {
+      "href": "chapter2.html",
+      "type": "text/html"
+    }
+  ],
+  "resources":  [
+    {
+      "href": "cover.jpg",
+      "type": "image/jpeg"
+    },
+    {
+      "href": "font.otf",
+      "type": "application/x-font-opentype"
+    },
+    {
+      "href": "stylesheet.css",
+      "type": "text/css"
+    }
+  ]
+}
