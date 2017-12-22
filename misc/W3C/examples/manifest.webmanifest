@@ -1,4 +1,5 @@
 {
+  "publication": true,
   "name": "Moby-Dick; or, The Whale",
   "short_name": "Moby-Dick",
   "author": "Herman Melville",
@@ -7,6 +8,13 @@
   "published": "1851-10-18",
   "modified": "2017-12-14T15:29:08+00:00",
   "start_url": "https://example.com/Moby-Dick",
+  "links":  [
+    {
+      "href": "metadata.json",
+      "type": "application/json+ld",
+      "rel": "describedby"
+    }
+  ],
   "icons": [
     {
       "src": "icon.png",
