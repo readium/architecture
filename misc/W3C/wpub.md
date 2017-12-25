@@ -73,7 +73,7 @@ The W3C infoset does not mention subtitles and the ability to sort titles.
 ### 1.2. Address
 
 The W3C infoset requires the W3C Manifest to contain a reference to the WP Publication Address:
-> A Web Publication's address is a URL that represents the primary entry point for the Web Publication. This URL MUST resolve to an [html] document.
+> A Web Publication's address is a URL that represents the primary entry point for the Web Publication. This URL MUST resolve to an HTML document.
 
 The Readium Manifest has no such requirement, but it contains a generic link element that could be used for that purpose.
 
@@ -180,7 +180,7 @@ This approach is consistent with EPUB 2.x and 3.1 but it makes a larger number o
 ### 1.5. Language
 
 [The W3C infoset](https://w3c.github.io/wpub/#wp-language) specifies the following requirement for a language:
-> When specified, the language MUST be a tag that conforms to [bcp47].
+> When specified, the language MUST be a tag that conforms to BCP 47.
 
 This is very similar to the default context for the Readium Manifest:
 
@@ -248,4 +248,126 @@ The Readium Manifest can simply rely on its `links` element and this rel value t
 > How to express accessibility metadata remains to be determined. This could be a grouping of properties from schema.org, for example, or could be split out into a list of individual properties.
 
 The Readium Manifest does not explicitly list accesibility properties [in its default context document](https://github.com/readium/webpub-manifest/tree/master/contexts/default), but it contains a reference to schema.org which means that all of the accessibility properties from schema.org can be referenced without any additional extension.
+
+## 2. Collections
+
+The default reading order and the resource list are two core concept shared by the W3C and Readium manifests.
+
+### 2.1. Generic Collection Model
+
+Unlike the W3C infoset, the Readium Manifest defines a generic collection model, used by the default reading order as well as the resource list.
+
+All collections are identified by their role (such as `spine` and `resources`) and the Readium Manifest can be extended by defining new collection roles.
+
+Collections usually contain an array of links (see section 3 for additional info about `links` and the Link Object), and can optionally contain sub-collections and metadata as well.
+
+### 2.2. Default Reading Order
+
+The Readium Manifest calls its default reading order the `spine`, inspired by the term used in EPUB 2.x/3.x.
+
+One major difference between the W3C infoset and the Readium specification is expressed in the following paragraph:
+> The default reading order is either specified directly in the manifest or in an HTML `nav` element. In the latter case, the manifest MUST provide a link to the Web Publication resource that contains the nav element, with a fragment identifier that specifically identifies it.
+
+Unlike the W3C infoset, the Readium Manifest requires the default reading order to be explicitly expressed in the manifest, not indirectly through an HTML document.
+
+In the context of Readium-2, the Readium Manifest is meant to make the life of reading system developers easier and avoid situations where things are unclear. 
+
+Having an explicit default reading order in the manifest is consistent with these goals: there's no need to fetch an additional HTML document, parse HTML in addition to JSON or deduplicate references to resources in a `nav` element.
+
+In my opinion, "guessing" a reading order through an HTML document and a `nav` element is also inconsistent with the design goals of the W3C Manifest as well:
+> A Web Publication is a collection of one or more resources, organized together through a manifest into a single logical work with a default reading order. The Web Publication is uniquely identifiable and presentable using Open Web Platform technologies.
+
+The concept of a collection of Web resources is the main (and maybe only) innovation of the Web Publication WG. If the manifest can't always express this information on its own, it undermines the main reason which justifies its existence in the first place.
+
+### 2.3. Resource List
+
+Both specifications highly recommend including a list of resources used in the processing and rendering of the Web Publication.
+
+In the Readium Manifest, the resource list is identified by the `resource` collection role and MUST NOT reference resources already listed in the default reading order (`spine`).
+
+### 2.4. TOC and Additional Navigation
+
+The W3C infoset mentions the table of contents multiple times, but does not explicitly states how it is identified or expressed.
+
+The Readium Manifest provides multiple options for expressing this information:
+
+- a resource in the resource list can be identified as a TOC using the `contents` rel value
+- a minimal TOC can be extracted from the `title` of linked resources in the default reading order
+- [the EPUB extension for the Readium Manifest](https://github.com/readium/webpub-manifest/blob/master/extensions/epub.md#collection-roles) also defines a number of additional collection roles: `landmarks`,  `loa`, `loi`, `lot`, `lov`, `page-list` and `toc`
+
+Once again, this is more consistent with the Readium Manifest stated goal of being a "lossless" alternative serialization for EPUB 2.x/3.x.
+
+## 3. Links
+
+The W3C infoset never directly mentions links as a requirement, but there are multiple indirect references anyway, including but not limited to:
+
+- providing the WP Address
+- linking to the privacy policy
+- linking to the HTML document containing the default reading order
+- linking to the TOC
+
+While the serialization has yet to be defined for the W3C infoset, a generic link element could be more efficient than creating dedicated elements for all the use cases listed above.
+
+The Readium Manifest approach to links is to define two building blocks:
+
+- the `links` element, used as a generic link element at a publication level
+- the Link Object, used in the `links` element as well as the default reading order (`spine`) and the resource list (`resource`)
+
+The Readium Manifest has a single requirement for `links`: the presence of a `self` link, containing the canonical location for the manifest.
+
+```
+{
+  "rel": "self",
+  "href": "http://example.org/manifest.json",
+  "type": "application/webpub+json"
+}
+```
+
+Link Objects are fairly powerful and provide a number of hypermedia controls such as:
+
+- a required media type
+- one or more `rel` values, based on the IANA link registry
+- the ability to use URI Templates as well as URIs (using the `templated` flag to identify them)
+
+Using these hypermedia controls, links can be useful for many use cases, for instance:
+
+- the discovery of additional services (search, annotations, dictionaries)
+- alternative representations in another publication format
+
+```
+"links": [
+  {
+    "rel": "self", 
+    "href": "http://example.org/manifest.json", 
+    "type": "application/webpub+json"
+  },
+  {
+    "rel": "alternate", 
+    "href": "http://example.org/publication.epub", 
+    "type": "application/epub+zip"
+  },
+  {
+    "rel": "search", 
+    "href": "http://example.org/search?q={searchTerms}", 
+    "type": "text/html", 
+    "templated": true
+  }
+]
+```
+
+To provide full compatibility with EPUB 2.x/3.x, the Link Object can also contain [a number of properties](https://github.com/readium/webpub-manifest/blob/master/properties.md) such as (but not limited to):
+
+- `page` to indicate how a resource should be displayed in a synthetic spread
+- `orientation` to indicate the preferred orientation for displaying a resource
+
+## Conclusion
+
+While there are a few important differences (the requirement for a title and an explicit default reading order), the Readium Manifest is essentially a valid W3C Manifest as well.
+
+Everything listed in the W3C infoset is either supported natively by the Readium Manifest or easily added to it using links and the IANA link registry.
+
+Given the fact that the Readium Manifest has better forward compatibility with the EPUB specification, JSON-LD based metadata mapped to schema.org, built-in extensibility and hypermedia controls, it is a superset of the current infoset for the W3C Manifest as well.
+
+In 2018 and beyond, the WP WG will have to work on serializing their infoset in JSON. Based on this comparaison, the Readium Manifest should be seriously considered by the WP WG as a candidate as well.
+
 
