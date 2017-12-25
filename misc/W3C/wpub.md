@@ -27,7 +27,7 @@ The Readium Manifest has a very different approach, since it's based on JSON-LD 
 - additional schema.org elements
 - or the definition of new JSON-LD context documents
 
-The metadata listed in the Readium Manifest are therefore meant to be compatible with any JSON-LD enabled User Agent (including SEO bots) and a RDF graph can be extracted using the context documents.
+The metadata listed in the Readium Manifest are therefore meant to be compatible with any JSON-LD enabled User Agent (including search engine crawlers) and a RDF graph can be extracted using the context documents.
 
 ### 1.1. Title
 
@@ -100,9 +100,27 @@ If we add a `start` link as well, the `links` element would look like this:
 ]
 ```
 
-### 1.3. Creators
+### 1.3. Canonical Identifier
 
-[The W3C infoset](https://w3c.github.io/wpub/#wp-creators) does not explicitly indicate if the presence of creators is a requirement:
+[The W3C infoset](https://w3c.github.io/wpub/#wp-canonical-identifier) has an optional identifier in addition to the WP Address, called the canonical identifier:
+> A Web Publication's canonical identifier is a unique identifier that resolves to the preferred version of the Web Publication.
+
+The Readium Manifest contains a dedicated `identifier` element [in its default context](https://github.com/readium/webpub-manifest/blob/master/contexts/default/README.md#identifier) that serves the exact same purpose:
+
+```
+"identifier": "urn:isbn:9780142437247"
+```
+
+In both specifications, this canonical identifier is optional (SHOULD statement for Readium, no specific statement for the W3C infoset).
+
+In the Readium Manifest, the canonical identifier MUST be a URI, while this requirement is a little bit different for the W3C infoset:
+> The canonical identifier SHOULD be an address, but, if not, it MUST be possible to make a one-to-one mapping to an address (e.g., a DOI can be resolved to a URL via a DOI resolver).
+
+In the Readium Manifest, `identifier` is mapped to `@id` in JSON-LD, which turns this canonical identifier into the subject of many RDF triples.
+
+### 1.4. Creators
+
+[The W3C infoset](https://w3c.github.io/wpub/#wp-creators) does not explicitly indicates if the presence of creators is a requirement:
 > Creators are the individuals or entities responsible for the creation of the Web Publication.
 
 It recommends listing the role as well, which might be a hint that a creator and its role are two distinct information in its infoset:
@@ -159,8 +177,70 @@ These contributors elements are fairly consistent with how `title` works and can
 
 This approach is consistent with EPUB 2.x and 3.1 but it makes a larger number of roles first class citizens, provides the ability to localize a contributor's name in more languages and adds the ability to uniquely identify contributors.
 
+### 1.5. Language
 
-### 1.x. Accessibility
+[The W3C infoset](https://w3c.github.io/wpub/#wp-language) specifies the following requirement for a language:
+> When specified, the language MUST be a tag that conforms to [bcp47].
+
+This is very similar to the default context for the Readium Manifest:
+
+- both specifications require the use of BCP 47 language tags
+- the Readium Manifest explicitly allows one or more tags, while the W3C infoset remains a little unclear about that
+- the Readium Manifest maps `language` to `http://schema.org/inLanguage`
+
+```
+"language": "en"
+```
+
+```
+"language": ["en", "fr", "ja"]
+```
+
+In both specifications, the presence of a language is optional.
+
+### 1.6. Publication and Last Modification Dates
+
+The W3C infoset contains references to a [publication date](https://w3c.github.io/wpub/#wp-pub-date) and a [last modification date](https://w3c.github.io/wpub/#wp-mod-date).
+
+The Readium manifest also has the same two properties in its default context: `modified` and `published`, mapped respectively to `http://schema.org/dateModified` and `http://schema.org/datePublished`. 
+
+```
+"modified": "2016-02-22T11:31:38Z"
+
+```
+
+```
+"published": "2016-09-02"
+```
+
+They're both required to use an ISO 8601 time and date.
+
+### 1.7. Base Direction
+
+Both manifests contain a dedicated element for the reading direction of the publication.
+
+In the Readium Manifest, this is not currently mapped to a schema.org element since no corresponding element could be identified.
+
+### 1.8. Privacy Policy
+
+Unlike [the W3C infoset](https://w3c.github.io/wpub/#wp-privacy), the Readium Manifest does not contain any reference to a privacy policy.
+
+The IANA link registry contains the `privacy-policy` rel value with the following definition:
+> Refers to a privacy policy associated with the link's context.
+
+The Readium Manifest can simply rely on its `links` element and this rel value to include a privacy policy as well:
+
+```
+"links": [
+  {
+    "href": "/terms",
+    "type": "text/html",
+    "rel": "privacy-policy"
+  }
+]
+```
+
+### 1.9. Accessibility
 
 [The W3C infoset](https://w3c.github.io/wpub/#wp-a11y) is a bit vague regarding accesibility requirements, but it explicitly mentions schema.org properties:
 > Editor's Note:
