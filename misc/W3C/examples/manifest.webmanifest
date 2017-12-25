@@ -7,12 +7,18 @@
   "categories": ["Fiction", "Literary"],
   "published": "1851-10-18",
   "modified": "2017-12-14T15:29:08+00:00",
+  "direction": "ltr",
   "start_url": "https://example.com/Moby-Dick",
   "links":  [
     {
       "href": "metadata.json",
       "type": "application/json+ld",
       "rel": "describedby"
+    },
+    {
+      "href": "/terms",
+      "type": "text/html",
+      "rel": "privacy-policy"
     }
   ],
   "icons": [
