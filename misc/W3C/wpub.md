@@ -206,7 +206,6 @@ The Readium manifest also has the same two properties in its default context: `m
 
 ```
 "modified": "2016-02-22T11:31:38Z"
-
 ```
 
 ```
