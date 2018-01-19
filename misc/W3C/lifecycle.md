@@ -29,11 +29,11 @@ The **steps for obtaining a manifest** are given by the following algorithm. The
 ## 2. Processing the manifest
 
 1. Let json be the result of parsing text. If parsing throws an error:
-  1. Issue a developer warning with any details pertaining to the JSON parsing error.
-  2. Set json to be the result of parsing the string "{}".
+    1. Issue a developer warning with any details pertaining to the JSON parsing error.
+    2. Set json to be the result of parsing the string "{}".
 2. If Type(json) is not Object:
-  1. Issue a developer warning that the manifest needs to be an object.
-  2. Set json to be the result of parsing the string "{}".
+    1. Issue a developer warning that the manifest needs to be an object.
+    2. Set json to be the result of parsing the string "{}".
 3. Extension point: process any proprietary and/or other supported members at this point in the algorithm.
 4. Let *manifest* be the result of converting json to a `WebPublicationManifest` dictionary.
 5. Set *manifest*["spine"] to the result of running processing the `spine` member given *manifest*["spine"], *manifest URL*, and *document URL*.
