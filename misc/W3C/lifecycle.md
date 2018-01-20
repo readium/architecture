@@ -11,7 +11,7 @@ This document is an experiment based on the Readium Web Publication Manifest to 
 
 The **steps for obtaining a manifest** are given by the following algorithm. The algorithm, if successful, returns a processed manifest and the manifest URL; otherwise, it terminates prematurely and returns nothing. In the case of nothing being returned, the user agent MUST ignore the manifest declaration. In running these steps, a user agent MUST NOT delay the load event.
 
-1. From the Document of the top-level browsing context, let origin be the Document's origin, and *manifest* link be the first link element in tree order whose rel attribute contains the token `publication`.
+1. From the Document of the top-level browsing context, let origin be the Document's origin, and *manifest* link be the first link element in tree order whose `rel` attribute contains the token `publication`.
 2. If origin is an [HTML] opaque origin, terminate this algorithm.
 3. If *manifest* link is `null`, terminate this algorithm.
 4. If *manifest* link's `href` attribute's value is the empty string, then abort these steps.
@@ -44,15 +44,33 @@ The **steps for obtaining a manifest** are given by the following algorithm. The
 
 ### 3.1. Processing the default reading order
 
-TODO
+> **Note:** This is the most complex part of how the current WP Manifest is processed, mostly because we allow the default reading order to be defined in another document. I don't think that's a good idea, since it pretty much defeats the reason for having a manifest document at all.
+
+1. If *manifest*["spine"] is not empty, set the default reading order to *manifest*["spine"] and terminate this algorithm.
+2. If *manifest*["resources"] is not empty, let *navigation document URL* be the `href` of the first object where the `rel` attribute contains the `contents` token.
+3. If *manifest*["resources"] is empty, let *navigation document URL* be the `href` of the first object in *manifest*["links"] where the `rel` attribute contains the `contents` token.
+4. Let request be a new [FETCH] request, whose URL is *navigation document URL*, and whose context is `"publication"`.
+5. If the *manifest* link's `crossOrigin` attribute's value is `'use-credentials'`, then set request's credentials to `'include'`.
+6. Await the result of performing a fetch with request, letting response be the result.
+7. If response is a network error, terminate this algorithm.
+8. Let resource be the result of UTF-8 decoding response's body.
+7. If resource is not an [HTML] document, terminate this algorithm.
+9. Let *default reading order* be the result of processing resource:
+    1. If resource contains a `nav` element
+        1. Extract a list of resource paths referenced from the `href` attribute of all `a` elements.
+        2. Strip any fragment identifiers from the references.
+        3. Resolve all relative paths to full URLs.
+        4. Remove all consecutive references to the same resource, leaving only the first.
+    2. Otherwise terminate this algorithm.
+10. Return *default reading order*.
 
 ### 3.2. Processing the title
 
-TODO
+> **Note:** The FPWD has a long list of what a User Agent MIGHT do if the title is missing from the manifest. Is this something that we should have in this manifest life-cycle at all?
 
 ### 3.3. Processing the language
 
-TODO
+> **Note:** We probably need to process languages like in the WAM life-cycle.
 
 
 ## 3. WebIDL
@@ -63,7 +81,7 @@ TODO
 
 ```webidl
 dictionary WebPublicationManifest {
-    USVString           context;
+    sequence<USVString> context;
     Metadata            metadata;
     sequence<Link>      links;
     sequence<Link>      spine;
@@ -73,7 +91,7 @@ dictionary WebPublicationManifest {
 
 ### 3.2. Metadata
 
-> **Note:** This is a simplified version compared to Readium Web Publication Manifest as well, limited to the WP infoest and a simplified model for expressing strings (single language, no sortable string).
+> **Note:** This is a simplified version compared to Readium Web Publication Manifest as well, limited to the WP infoset and a simplified model for expressing strings (single language, no sortable string).
 
 ```webidl
 dictionary Metadata {
@@ -112,3 +130,10 @@ enum ProgressionDirection {
     "auto"
 };
 ```
+
+## 4. Conclusion
+
+- Obtaining a manifest for WP/RWPM is almost identical to the WAM
+- The life-cycle of a Web Publication requires a lot less processing than the WAM
+- It also has very little in common with the processing requirements of the WAM (only language is similar)
+- The most complex part (by far) is the default reading order, since we allow its definition outside of the WP Manifest in a separate document
