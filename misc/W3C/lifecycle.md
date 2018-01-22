@@ -110,7 +110,7 @@ dictionary Metadata {
 > **Note:** Simplified as well, omitted `properties` and `duration` for now.
 
 ```webidl
-dictionary Metadata {
+dictionary Link {
     required    USVString           href;          
     required    USVString           type;        
                 USVString           title;
