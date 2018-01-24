@@ -93,7 +93,9 @@ Most browsers provide a reader mode with the following features:
 - user settings (font family, font size, themes, margins, text alignment)
 - Text-to-speech
 
-A *Web Publication reader mode* is an enhanced reader mode built on top of the existing browser reader mode that follows the requirements listed "[Displaying a Web Publication](#33-displaying-a-web-publication)".
+A *Web Publication reader mode* is an enhanced reader mode which MAY be built on top of the existing browser reader mode.
+
+It MUST follow the requirements listed in "[Displaying a Web Publication](#33-displaying-a-web-publication)".
 
 ### 3.2. Dedicated native reading apps
 
