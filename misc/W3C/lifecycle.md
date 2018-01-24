@@ -36,8 +36,8 @@ The **steps for obtaining a manifest** are given by the following algorithm. The
     2. Set json to be the result of parsing the string "{}".
 3. Extension point: process any proprietary and/or other supported members at this point in the algorithm.
 4. Let *manifest* be the result of converting json to a `WebPublicationManifest` dictionary.
-5. Set *manifest*["spine"] to the result of running processing the `spine` member given *manifest*["spine"], *manifest URL*, and *document URL*.
-7. Set *manifest*["metadata"["language"]] to the result of running processing the `language` member given *manifest*["metadata"["language"]], *manifest URL*, and *document URL*.
+5. Set *manifest*["spine"] to the result of [processing the default reading order](#21-processing-the-default-reading-order) given *manifest*["spine"], *manifest URL*, and *document URL*.
+7. Set *manifest*["metadata"["language"]] to the result of [processing the language]((#23-processing-the-language)) given *manifest*["metadata"["language"]], *manifest URL*, and *document URL*.
 8. Return the manifest
 
 > **Note:** I'm not sure if *manifest*["metadata"["language"]] is valid WebIDL.
@@ -46,9 +46,9 @@ The **steps for obtaining a manifest** are given by the following algorithm. The
 
 > **Note:** This is the most complex part of how the current WP Manifest is processed, mostly because we allow the default reading order to be defined in another document. I don't think that's a good idea, since it pretty much defeats the reason for having a manifest document at all.
 
-1. If *manifest*["spine"] is not empty, set the default reading order to *manifest*["spine"] and terminate this algorithm.
+1. If *manifest*["spine"] is not empty, set the *default reading order* to *manifest*["spine"] and terminate this algorithm.
 2. If *manifest*["resources"] is not empty, let *navigation document URL* be the `href` of the first object where the `rel` attribute contains the `contents` token.
-3. If *navigation document URL* is empty, use *origin* as the *navigation document URL*.
+3. If *navigation document URL* is empty, use *document URL* as the *navigation document URL*.
 4. Let request be a new [FETCH] request, whose URL is *navigation document URL*, and whose context is `"publication"`.
 5. If the *manifest* link's `crossOrigin` attribute's value is `'use-credentials'`, then set request's credentials to `'include'`.
 6. Await the result of performing a fetch with request, letting response be the result.
