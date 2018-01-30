@@ -117,10 +117,12 @@ Suchs apps must follow the requirements listed in "[Displaying a Web Publication
 
 When a User Agent displays a Web Publication:
 
-- it MUST display the first resource in the default reading order, the first time that a Web Publication is displayed
 - it MUST provide an affordance to move forward and backward in the default reading order
+- it MUST present the resources of the publication in an accessible manner
+- it SHOULD provide an affordance to customize how the content is presented (user settings for text, playback speed for audio/video)
+- it SHOULD provide an affordance that allows the user to start the publication from the beginning (first resource in the default reading order) or continue from the resource where the publication was discovered
 - it SHOULD save the user's reading position (current resource displayed plus position in that resouce) and use it as the starting position the next time that the Web Publication is displayed
-- it SHOULD offer an affordance to enable offline reading
+- it SHOULD offer an affordance to enable offline consumption
 
 
 ## 4. WebIDL
