@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<package unique-identifier="BookId" version="3.0" xmlns="http://www.idpf.org/2007/opf">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:language>en</dc:language>
+    <dc:title>DOM Storage control</dc:title>
+    <dc:creator>Readium</dc:creator>
+    <dc:identifier id="BookId">urn:uuid:A174E4EC-84E9-47A5-882F-2AA896EAC422</dc:identifier>
+    <meta content="0.9.5" name="Sigil version"/>
+    <meta property="dcterms:modified">2018-01-31T12:23:16Z</meta>
+  </metadata>
+  <manifest>
+    <item href="toc.ncx" id="ncx" media-type="application/x-dtbncx+xml"/>
+    <item href="Text/nav.xhtml" id="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
+    <item href="Text/titlepage.xhtml" id="titlepage.xhtml" media-type="application/xhtml+xml"/>
+    <item href="Text/control-001.xhtml" id="control-001.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+    <item href="Misc/storage.js" id="storage.js" media-type="text/javascript"/>
+    <item href="Misc/console.js" id="console.js" media-type="text/javascript"/>
+  </manifest>
+  <spine toc="ncx">
+    <itemref idref="titlepage.xhtml"/>
+    <itemref idref="control-001.xhtml"/>
+  </spine>
+  <guide>
+    <reference href="Text/nav.xhtml" title="Table of Content" type="toc"/>
+  </guide>
+</package>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<package unique-identifier="BookId" version="3.0" xmlns="http://www.idpf.org/2007/opf">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:language>en</dc:language>
+    <dc:title>touchHandling.js test</dc:title>
+    <dc:creator>Readium</dc:creator>
+    <dc:identifier id="BookId">urn:uuid:26ec8223-e943-46fc-9e16-35329d497ee2</dc:identifier>
+    <meta content="0.9.5" name="Sigil version"/>
+    <meta property="dcterms:modified">2018-01-31T16:47:51Z</meta>
+  </metadata>
+  <manifest>
+    <item href="toc.ncx" id="ncx" media-type="application/x-dtbncx+xml"/>
+    <item href="Text/nav.xhtml" id="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
+    <item href="Text/titlepage.xhtml" id="titlepage.xhtml" media-type="application/xhtml+xml"/>
+    <item href="Text/test-001.xhtml" id="test-001.xhtml" media-type="application/xhtml+xml"/>
+    <item href="Text/test-002.xhtml" id="test-002.xhtml" media-type="application/xhtml+xml"/>
+    <item href="Text/test-003.xhtml" id="test-003.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+    <item href="Text/test-004.xhtml" id="test-004.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+    <item href="Text/test-005.xhtml" id="test-005.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+    <item href="Text/test-006.xhtml" id="test-006.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+    <item href="Text/test-007.xhtml" id="test-007.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+    <item href="Text/test-008.xhtml" id="test-008.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+    <item href="Text/test-009.xhtml" id="test-009.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+    <item href="Text/test-010.xhtml" id="test-010.xhtml" media-type="application/xhtml+xml"/>
+    <item href="Text/test-011.xhtml" id="test-011.xhtml" media-type="application/xhtml+xml" properties="scripted"/>
+    <item href="Misc/langPicker.js" id="langPicker.js" media-type="text/javascript"/>
+    <item href="Misc/storage.js" id="storage.js" media-type="text/javascript"/>
+    <item href="Misc/controls.js" id="controls.js" media-type="text/javascript"/>
+    <item href="Misc/links.js" id="links.js" media-type="text/javascript"/>
+    <item href="Misc/layout.js" id="layout.js" media-type="text/javascript"/>
+    <item href="Misc/canvas.js" id="canvas.js" media-type="text/javascript"/>
+    <item href="Misc/console.js" id="console.js" media-type="text/javascript"/>
+    <item href="Audio/readium.mp3" id="readium.mp3" media-type="audio/mpeg"/>
+    <item href="Misc/storage-retrieve.js" id="storage-retrieve.js" media-type="text/javascript"/>
+    <item href="Misc/processing.min.js" id="processing.min.js" media-type="text/javascript"/>
+  </manifest>
+  <spine toc="ncx">
+    <itemref idref="titlepage.xhtml"/>
+    <itemref idref="test-001.xhtml"/>
+    <itemref idref="test-002.xhtml"/>
+    <itemref idref="test-003.xhtml"/>
+    <itemref idref="test-004.xhtml"/>
+    <itemref idref="test-005.xhtml"/>
+    <itemref idref="test-006.xhtml"/>
+    <itemref idref="test-007.xhtml"/>
+    <itemref idref="test-008.xhtml"/>
+    <itemref idref="test-009.xhtml"/>
+    <itemref idref="test-010.xhtml"/>
+    <itemref idref="test-011.xhtml"/>
+  </spine>
+  <guide>
+    <reference href="Text/nav.xhtml" title="Table of Content" type="toc"/>
+  </guide>
+</package>

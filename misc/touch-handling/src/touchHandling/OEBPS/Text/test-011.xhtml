@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>touchHandling</title>
+  <script type="application/javascript" src="../Misc/processing.min.js"></script>
+</head>
+
+<body>
+  <h2>Canvas</h2>
+
+  <p>The drawing should start when the page is visible, not loaded, visible in the viewport. Click the canvas to reset.</p>
+
+<script type="application/processing">
+<![CDATA[
+int num = 2000;
+int range = 8;
+float[] ax = new float[num];
+float[] ay = new float[num]; 
+void setup() {
+  size(300,300);
+  for(int i = 0; i < num; i++) {
+    ax[i] = width/2;
+    ay[i] = height/3;
+  }
+  smooth();
+  frameRate(30);
+}
+void draw() {
+	background(252, 252, 252);
+  	fill(23, 23, 23);
+  for(int i = 1; i < num; i++) {
+    ax[i-1] = ax[i];
+    ay[i-1] = ay[i];
+  }
+  ax[num-1] += random(-range, range);
+  ay[num-1] += random(-range, range);
+  ax[num-1] = constrain(ax[num-1], 0, width);
+  ay[num-1] = constrain(ay[num-1], 0, height);
+  for(int i=1; i<num; i++) {    
+    float val = float(i)/num * 135.0 + 1;
+    stroke(val);
+    line(ax[i-1], ay[i-1], ax[i], ay[i]);
+  }
+}
+void mouseClicked() {
+  setup();
+}
+]]>
+</script>
+  <canvas id="canvas">
+    <p>Sorry, this Reading App doesn’t support canvas.</p>
+  </canvas>
+</body>
+</html>

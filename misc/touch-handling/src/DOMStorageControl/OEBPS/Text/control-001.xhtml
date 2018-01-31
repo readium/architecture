@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>DOM Storage control</title>
+</head>
+<body>
+  <h2>DOM Storage</h2>
+
+  <p>For security reasons, each publication (EPUB file) should be its own domain. Please set an item in <code>localStorage</code> from this page in order to see if you can access them in the <code>touchHandling.epub</code> file.</p>
+
+  <p>This item is using a <code>rth-control-</code> prefix. You shouldn’t be able to retrieve it from any other file. Alternatively, if you can get items with a <code>rth-local-</code> prefix or any other item, it means the document’s origin is the entire app, which raises security issues.</p>
+
+  <button id="set-local" type="button">Set item in localStorage</button>
+
+  <button id="get-local" type="button">Get item in localStorage</button>
+
+  <button id="get-all" type="button">Get all items in localStorage</button>
+
+  <button id="clear-local" type="button">Clear localStorage</button>
+
+  <p>Console:</p>
+
+  <pre id="console">This should update if DOM Storage works.</pre>
+
+  <script type="application/javascript" src="../Misc/console.js"></script>
+
+  <script type="application/javascript" src="../Misc/storage.js"></script>
+</body>
+</html>
