@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ncx version="2005-1" xmlns="http://www.daisy.org/z3986/2005/ncx/">
+  <head>
+    <meta content="26ec8223-e943-46fc-9e16-35329d497ee2" name="dtb:uid"/>
+    <meta content="3" name="dtb:depth"/>
+    <meta content="0" name="dtb:totalPageCount"/>
+    <meta content="0" name="dtb:maxPageNumber"/>
+  </head>
+  <docTitle>
+    <text>touchHandling.js test</text>
+  </docTitle>
+  <navMap>
+    <navPoint id="navPoint1">
+      <navLabel>
+        <text>touchHandling.js test</text>
+      </navLabel>
+      <content src="Text/titlepage.xhtml"/>
+      <navPoint id="navPoint2">
+        <navLabel>
+          <text>Form elements</text>
+        </navLabel>
+        <content src="Text/test-001.xhtml"/>
+      </navPoint>
+      <navPoint id="navPoint3">
+        <navLabel>
+          <text>Contenteditable</text>
+        </navLabel>
+        <content src="Text/test-002.xhtml"/>
+      </navPoint>
+      <navPoint id="navPoint4">
+        <navLabel>
+          <text>Scripted form element</text>
+        </navLabel>
+        <content src="Text/test-003.xhtml"/>
+      </navPoint>
+      <navPoint id="navPoint5">
+        <navLabel>
+          <text>Audio controls with div</text>
+        </navLabel>
+        <content src="Text/test-004.xhtml"/>
+      </navPoint>
+      <navPoint id="navPoint6">
+        <navLabel>
+          <text>Audio controls with buttons</text>
+        </navLabel>
+        <content src="Text/test-005.xhtml"/>
+      </navPoint>
+      <navPoint id="navPoint7">
+        <navLabel>
+          <text>Links</text>
+        </navLabel>
+        <content src="Text/test-006.xhtml"/>
+      </navPoint>
+      <navPoint id="navPoint8">
+        <navLabel>
+          <text>DOM Storage</text>
+        </navLabel>
+        <content src="Text/test-007.xhtml"/>
+        <navPoint id="navPoint9">
+          <navLabel>
+            <text>sessionStorage</text>
+          </navLabel>
+          <content src="Text/test-007.xhtml#sigil_toc_id_1"/>
+        </navPoint>
+        <navPoint id="navPoint10">
+          <navLabel>
+            <text>localStorage</text>
+          </navLabel>
+          <content src="Text/test-007.xhtml#sigil_toc_id_2"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="navPoint11">
+        <navLabel>
+          <text>Retrieve DOM Storage</text>
+        </navLabel>
+        <content src="Text/test-008.xhtml"/>
+      </navPoint>
+      <navPoint id="navPoint12">
+        <navLabel>
+          <text>Layout Change</text>
+        </navLabel>
+        <content src="Text/test-009.xhtml"/>
+      </navPoint>
+      <navPoint id="navPoint13">
+        <navLabel>
+          <text>Details</text>
+        </navLabel>
+        <content src="Text/test-010.xhtml"/>
+      </navPoint>
+      <navPoint id="navPoint14">
+        <navLabel>
+          <text>Canvas</text>
+        </navLabel>
+        <content src="Text/test-011.xhtml"/>
+      </navPoint>
+    </navPoint>
+  </navMap>
+</ncx>
