@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="en" xmlns:xml="http://www.w3.org/XML/1998/namespace">
+<head>
+  <meta charset="utf-8"/>
+  <title>touchHandling</title>
+  <style type="text/css">
+    label {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h2>Form elements</h2>
+
+    <form>
+	<div>
+      <p>Hello, what’s your name?</p>
+
+      <input type="text"/>
+	</div>
+
+    <div>
+      <p>How do you do?</p>
+	  <label>
+        <input type="radio"/>
+	    <span>I’m fine, thanks!</span>
+	   </label>
+
+	  <label>
+        <input type="radio"/>
+	    <span>I’m not great but we will fix this issue and it will be awesome!</span>
+	   </label>
+     </div>
+
+    <div>
+      <p>Have you ever?</p>
+	  <label>
+        <input type="checkbox"/>
+	    <span>Used Readium 2 parser</span>
+	   </label>
+
+	  <label>
+        <input type="checkbox"/>
+	    <span>Used Readium 2 navigator</span>
+	   </label>
+
+	  <label>
+        <input type="checkbox"/>
+	    <span>Used Readium CSS</span>
+	   </label>
+
+	  <label>
+        <input type="checkbox"/>
+	    <span>Implemented <code>epub:switch</code></span>
+	   </label>
+
+	  <label>
+        <input type="checkbox"/>
+	    <span>Implemented <code>epub:trigger</code></span>
+	   </label>
+
+	  <label>
+        <input type="checkbox"/>
+	    <span>Implemented <code>navigator.epubReadingSystem</code></span>
+	   </label>
+     </div>
+
+   <div>
+    <p>What is your favorite ebook format?</p>
+
+      <select>
+        <optgroup label="Group 1">
+		  <option value="value0">.txt</option>
+		  <option value="value1">PDF</option>
+          <option value="value2">The format we can’t name</option>
+        </optgroup>
+
+        <optgroup label="Group 2">
+          <option value="value3">EPUB 2</option>
+          <option value="value4">EPUB 3</option>
+        </optgroup>
+      </select>
+	</div>
+
+	<div>
+		<p>Any comment you’d like to add?</p>
+
+      <textarea cols="40" rows="10"></textarea>
+	</div>
+
+      <input type="reset"/>
+
+      <input type="submit"/></form>
+</body>
+</html>

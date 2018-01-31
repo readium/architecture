@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>touchHandling</title>
+  <style type="text/css">
+    #controls {
+      display: none;
+    }
+    #bar {
+      background-color: rgba(0, 0, 0, 0.9);
+      height: 10px;
+      width: 0;
+    }
+    #controls div {
+	  display: inline-block;
+	  border: 1px solid;
+	  padding: 2px 10px;
+	  cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Audio controls with div</h2>
+
+<div id="wrap">
+  <audio id="track" controls="controls" src="../Audio/readium.mp3">Sorry, this Reading App doesn’t support audio</audio>
+
+  <div id="controls">
+    <div id="Play">Play</div>
+
+    <div id="Pause">Pause</div>
+
+    <div id="Stop">Stop</div>
+  </div>
+</div>
+
+  <script type="application/javascript" src="../Misc/controls.js"></script>
+</body>
+</html>
