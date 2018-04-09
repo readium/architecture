@@ -61,7 +61,7 @@ Another module processes the Web Publication Manifest, renders the publication (
 
 For an overview of how Readium-2 on iOS works, we highly recommend taking a look at the [iOS Test App](https://github.com/readium/r2-testapp-swift).
 
-The Test App integrates the following modules into a single iOS application:
+The Test App integrates the following modules (all written in Swift) into a single iOS application:
 
 * [Shared Model](https://github.com/readium/r2-shared-swift)
 * [Streamer](https://github.com/readium/r2-streamer-swift)
@@ -71,11 +71,19 @@ This app is currently tested on TestFlight by a first batch of alpha testers.
 
 ### Android
 
-On Android, things are going to be changing a lot until the end of the year (2017).
+The Android implementation is still catching up with iOS in early 2018, but has now reached a stage where it can be built and tested by any developer.
 
-The only active project is a [Java implementation of the streamer](https://github.com/readium/r2-streamer-java).
+For an overview of how Readium-2 on Android works, we highly recommend taking a look at the [Android Test App](https://github.com/readium/r2-testapp-kotlin).
 
-The current plan is to port all iOS modules to Kotlin in Q4 2017.
+The Test App integrates the following modules (all written in Kotlin) into a single Android application:
+
+* [Shared Model](https://github.com/readium/r2-shared-kotlin)
+* [Streamer](https://github.com/readium/r2-streamer-kotlin)
+* [Navigator](https://github.com/readium/r2-navigator-kotlin)
+
+This app is currently tested on HockeyApp by a first batch of alpha testers.
+
+An earlier [Java implementation of the streamer](https://github.com/readium/r2-streamer-java) is available as well, but Kotlin is the preferred target language in the Readium-2 community.
 
 ### JavaScript
 
