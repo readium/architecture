@@ -45,9 +45,9 @@ Each LCP license is associated with a passphrase. Providers usually provide the 
 
 The app must therefore do the following:
 
-a/ If the user id has been indicated in the license (it is highly recommended but not required), check if one or more passphrase hash associated with licenses from the same user (by origin + user id) have been stored. If one or more values are found, call the r2-lcp-client library (C++) with the json license and the array of passphrase hash as parameters. The lib returns the correct passphrase, if any, or an error if none is correct. If ok jump to 3/, if not jump to c/.
+a/ If the user id has been indicated in the license (it is highly recommended but not required), check if one or more passphrase hash associated with licenses from the same user (by origin + user id) have been stored. If one or more values are found, call the r2-lcp-client library (C++) with the json license and the array of passphrase hash as parameters. The lib returns the correct passphrase, if any, or an error if none is correct. If ok jump to 3/.
 
-b/ Check if a passphrase hash has already been stored for the license. If yes, the app calls the r2-lcp-client library (C++) with the json license and the passphrase hash as parameters. The lib returns the passphrase hash if it can decrypt the license key_check, or an error if the passphrase is incorrect. If ok jump to 3/., if not jump to c/.
+b/ Check if a passphrase hash has already been stored for the license. If yes, the app calls the r2-lcp-client library (C++) with the json license and the passphrase hash as parameters. The lib returns the passphrase hash if it can decrypt the license key_check, or an error if the passphrase is incorrect. If ok jump to 3/.
 
 c/ Display the hint and ask the passphrase to the user. The app the calls the r2-lcp-client library (C++) with the license and the passphrase hash as parameters. The lib returns the passphrase hash if it can decrypt the license key_check, or an error if the passphrase is incorrect. Loop until the user enters the correct passphrase or quits. 
 
@@ -59,9 +59,9 @@ Note also that the hash algorithm may depend on the LCP profile used in the lice
 
 Before checking the license status, it's good to verify the license integrity.
 
-The app calls the r2-lcp-client library (C++) with the license, the passphrase hash and CRL as parameters.
+The app calls the r2-lcp-client library (createContext()) with the license, the passphrase hash and CRL as parameters.
 
-The r2-lcp-client library will verify the license integrity and create a "DRM contect", i.e.:
+The r2-lcp-client library will verify the license integrity and create a DRM context, i.e.:
 
 * check the signature of the provider certificate using the embedded root certificate;
 * check that the provider certificate is not in the CRL; 
