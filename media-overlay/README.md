@@ -68,3 +68,7 @@ This information will show up in `metadata` of the Web Publication Manifest:
   }
 }
 ```
+
+## Some links
+
+https://docs.google.com/document/d/1_4tsFq_4Xr-jVbqY3brkVXAL3_UJLQiZWl47SH-I0bM/edit
