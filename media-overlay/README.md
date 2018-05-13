@@ -71,4 +71,6 @@ This information will show up in `metadata` of the Web Publication Manifest:
 
 ## Some links
 
-https://docs.google.com/document/d/1_4tsFq_4Xr-jVbqY3brkVXAL3_UJLQiZWl47SH-I0bM/edit
+Technical information on the [implementation of Media Overlays in the Readium SDK](https://docs.google.com/document/d/1_4tsFq_4Xr-jVbqY3brkVXAL3_UJLQiZWl47SH-I0bM/)
+
+Notes from D.Weck about the [implementation of Media Overlays in the Readium SDK](https://docs.google.com/document/d/1rMiBSaH65Io3RW21NYgSBdqsETA5-BCREJ4LJ_nRt-w/).
