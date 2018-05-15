@@ -26,6 +26,7 @@ One can:
 * modify all Readium CSS defined user settings (incl. DYS* related like letter/word/line spacing, relies on Readium CSS alpha), font selection (shipped dyslexic + font selector for system fonts)
 * read RTL written publications (arabic, hebrew; relies on Readium CSS alpha); the UI is still not localized
 * read FXL publications / one page, with zooming (pitch)
+* read CBZ BD-Comics-Manga
 * import publications from OPDS feeds (navigation and acquisition of free ebooks, OPDS 1 and 2, no authentication)
 * manage bookmarks (using a “jump to page x” implementation that may be naive, glue milestone 1)
 
@@ -44,18 +45,17 @@ One can:
 * read FXL publications / 2 page spreads
 * get access to popup/popin footnotes (relies on GlueJS’s touchhandling.js milestone 2)
 * use a11y navigation -> VoiceOver on iOS, TalkBack Android, JAWS / NVDA window, etc. screen readers on Desktop
-* use TTS with sentence highlight (independently of screen readers, contuous or word per word).
 * search text in the publication (relies on GlueJS’s search.js, milestones 3)
 * load Web Publications (using Readium WP Manifest as manifest format), from a URI (and an OPDS feed?)
 
 # V3
 One can:
 
-* use media overlays
-* manage customizable “themes” (relies on Readium CSS beta)
 * listen to audiobooks (prototype format, with a11y features like escapability)
-* read CBZ BD-Comics-Manga
-* read EPUB4 BD-Comics-Manga (prototype format)
+* use TTS with sentence highlight (independently of screen readers, contuous or word per word).
+* use media overlays
+* read EPUB4 visual narratives (prototype format)
+* manage customizable “themes” (relies on Readium CSS beta)
 * use more dyslexia related features (from Luc Maumet’s study)
 
 
