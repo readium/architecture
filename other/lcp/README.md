@@ -80,7 +80,7 @@ An LCP license may contain a "status" link, i.e. a link to a status document. If
 
 1/ Fetch the status document.
 
-If the Status Document is unavailable or if the client is unable to obtain an internet connection, it MUST NOT block the user from accessing the Publication tied to the License Document.
+If the Status Document is unavailable or if the client is unable to obtain an internet connection, it MUST NOT block the user from accessing the Publication tied to the License Document. Jump to step 7.
 
 2/ Validate the structure of the status document. If the structure is not valid, the app must jump to the next step, as if no status link was present in the license. 
 
@@ -109,6 +109,7 @@ If the app is online, it must silently (= non-blocking for the user):
 
 3/ Store the fact the the device / license has been registered.
 
+### 7/ Open the publication 
 
 ## Import a DRM license
 
@@ -129,6 +130,8 @@ An app which imports a DRM license will follow these steps (see the previous sec
 In the LCP use case, the app will use the "publication" link. It will store the encrypted publication and insert the license as META-INF/license.lcpl. In case of error, the user is notified and the app stops there. 
 
 ### 7/ Register the device / license
+
+### 8/ Open the publication 
 
 
 
