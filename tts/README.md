@@ -46,6 +46,14 @@ The Readium "1" implementation was inspired by the "BeneSpeak" utility:
 
 https://github.com/benetech/BeneSpeak/blob/master/speech.js
 
+### Firefox reader mode "narrator"
+
+Word-level highlighting inside each paragraph-level utterance (note the DOM tree walker implementations to "tokenize" the document into palatable utterances, and to map word boundary events):
+https://dxr.mozilla.org/mozilla-central/source/toolkit/components/narrate/Narrator.jsm
+
+Also see:
+https://support.mozilla.org/en-US/kb/firefox-reader-view-clutter-free-web-pages
+
 ## Technical Breakdown
 
 (DRAFT)
