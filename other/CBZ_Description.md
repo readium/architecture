@@ -7,11 +7,8 @@ Unlike the EPUB format, CBZ doesn’t have any mandatory extra files with metada
 authors’ names, description, etc .. ), even if some metadata efforts have emerged some years ago ( c.f.: Metadata in CBZ ).
 Note also that CBZ is a DRM-less format ( c.f.: What is a digital comic file ).
 
-Usually a list of ‘*.jpg’ or ‘*.png’ files, CBZ files are formated to have the same root name, let’s call it for example
-ComicBookImage_X.jpg, where X is the page number. Naturally, the range of numbers depends on the size of the artwork.
-Zero padding is required for consistent ordering of pages:  let’s say we have 95 pages in our comic book, page numbers can
-be represented as a range from 01 to 95, but the most common usage is a representation going from 001 to 095. These rules
-are important to have a correct ordering without any table of content.
+Usually a list of ‘*.jpg’ or ‘*.png’ files which are alphanumeric ordered. That means CBZ files are formated to have the same root name, let’s call it for example ComicBookImage_X.jpg, where X is the page number. Naturally, the range of numbers
+depends on the size of the artwork. Zero padding is required for consistent ordering of pages:  let’s say we have 95 pages in our comic book, page numbers can be represented as a range from 01 to 95, but the most common usage is a representation going from 001 to 095. These rules are important to have a correct ordering without any table of content.
 
 
 Sources :
