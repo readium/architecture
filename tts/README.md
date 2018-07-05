@@ -67,3 +67,17 @@ Major Javascript implementation blocks:
 * Playback engine that starts a TTS utterance and detects its end (i.e. listens to the appropriate event), also that is capable of interrupting the current TTS utterance (stop command), resume playback, increase the speech rate, configure voice options (prosody), etc.
 * Visual emphasis manager that highlights / outlines / underlines (using CSS styling) active textual fragments and optionally the word boundaries within the current TTS utterance.
 * Interaction handler that deals with user keyboard / pointing device / touch input, so as to ensure synchronization of the auditory output (e.g. user touches / clicks on word / sentence / paragraph => playback starts at referenced location).
+
+## Next Step
+
+See Readium 2 call notes from June 27 https://docs.google.com/document/d/18bYgFsqvLlZ51jaZe9qs9eCepLfuZ0kqxJqibapWZ9Q/edit
+
+The next step that eKitabu and @kevinmainairungu in particular are working on is to essentially re-write BeneSpeak.js using the Web Speech API instead of Chrome.TTS.
+
+For testing purposes, we will start with a simple XHTML file from 1 chapter of one of the Kenyan early grade reading storybooks we are working on. See for example: https://github.com/eKitabu/UNICEF-eKitabu-Kenya-Pilot-Digital-Accessible-Textbook/tree/master/samples
+
+Web Speech API is here:
+https://caniuse.com/#feat=speech-synthesis
+
+SAPI 5 Kiswahili voice on Windows: 441 Swahili (Kenya)
+https://msdn.microsoft.com/en-us/library/hh362866(v=office.14).aspx
