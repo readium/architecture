@@ -32,8 +32,8 @@ An LCP protected publication is signaled by the presence of a license document (
 As the licence document is mandatory, the app must raise an error if this file is missing but the content is declared encrypted. Also, the app should check that all resources referenced in encryption.xml are found in the EPUB archive.
 
 
-## Open a protected publication
-An app which imports or opens an EPUB will follow these steps:
+## Import a protected publication
+An app which imports or opens an EPUB protected by LCP (i.e. containing its license) will follow these steps:
 
 ### 1/ Validate the license structure
 
@@ -86,14 +86,18 @@ If the Status Document is unavailable or if the client is unable to obtain an in
 
 3/ Check that the status is "ready" or "active".
 
-If this is not the case (revoked, returned, cancelled, expired), the app will notify the user and stop there.
+If this is not the case (revoked, returned, cancelled, expired), the app will notify the user and stop there. The message to the user must be clear about the status of the license: don't display "expired" if the status is "revoked". The date and time corresponding to the new status should be displayed (e.g. "The license expired on 01 January 2018").
+
+If the license has been revoked, the user message should display the number of devices which registered to the server. This count can be calculated from the number of "register" events in the status document. If no event is logged in the status document, no such message should appear (certainly not "The license was registered by 0 devices"). 
 
 ### 5/ Get an updated license if needed
 
 If the license timestamp in the updated object of the Status Document is more recent than the timestamp contained in the local copy of the License Document, the client MUST download the License Document again. 
 
 It must then validate *again* the license structure and integrity.
-It the license is ok, it must then replace its previous copy with the new one.
+The expiration date is tested again at this time (the license take precedence over the status document). 
+
+If the license is ok, the app replaces the previous copy with the new one.
 
 Note 1: it implies that if the user has changed his passphrase on the provider's end, the "old" passphrase is still ok until the license info is modified (e.g. a loan return). 
 
@@ -110,6 +114,7 @@ If the app is online, it must silently (= non-blocking for the user):
 3/ Store the fact the the device / license has been registered.
 
 ### 7/ Open the publication 
+
 
 ## Import a DRM license
 
@@ -134,38 +139,16 @@ In the LCP use case, the app will use the "publication" link. It will store the 
 ### 8/ Open the publication 
 
 
+## Open a protected publication stored in the app catalog
+
+The process is a  simpler than when the protected publication is imported, as some information about the license is stored in the database, especially the license identifier. 
+
+The process start on step 4 (Check the license status), followed by step 5 (Get an updated license if needed) if needed. If everything is ok, the publication can be read. 
+
 
 ## Decrypt a publication
 
 For each encrypted resource or chunk, the app will call r2-lcp-lib (C++), passing the context previously initialized and the encrypted content as parameters.
-
-
-
-## Update a license
-
-The update of a license is processed in two cases:
-
-1/ **At the time the publication is closed**. This is because a license update can take some time in case of bad network connectivity, therefore doing so when the publication is open, after downloading a status document (which is mandatory and may already take some time) is not the best approach. Also, the update of the license in the publication must be done when the publication is closed, not during its use by the streamer.
-
-2/ **From the app "catalog view"**, i.e. at the time the user can choose to open a publication. 
- 
-This is a special case, when the user faces an _expired_ publication (displayed as an icon on the catalog view), for a loan which may have been extended from a library portal. In this case the user can click a **call to action** meaning “This license has expired : check if the loan has been extended”. This is a synchronous call, the user can wait for a few seconds; the new license is fetched and stored, then the publication is open. The user has also the possibility to remove the publication from the catalog. 
-
-In each case, if the app is online, the status document has been fetched correctly and the date of update of the license is more recent that the date of the current license, the app must silently:
-
-1/ Get the 'license' link in the status document.
-
-2/ Fetch the updated license.
-
-3/ Validate the structure of the updated license. In cas of error, the app must keep the current license. 
-
-4/ Replace the current license by the updated one in the EPUB archive. 
-
-If the user has explicitly requested a license update, the new status is displayed in the catalog view.   
-
-
-
-
 
 ## Check the print & copy rights
 
