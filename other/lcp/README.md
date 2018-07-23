@@ -111,7 +111,7 @@ If the app is online, it must silently (= non-blocking for the user):
 
 2/  call the "register" link associated with the license id, passing a device id and device name as parameters. In case of error, the app must let the user read the publication. 
 
-3/ Store the fact the the device / license has been registered.
+3/ If the registration was successful, store the fact the the device / license has been registered.
 
 ### 7/ Open the publication 
 
