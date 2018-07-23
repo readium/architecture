@@ -92,14 +92,14 @@ If the license has been revoked, the user message should display the number of d
 
 ### 5/ Get an updated license if needed
 
-If the license timestamp in the updated object of the Status Document is more recent than the timestamp contained in the local copy of the License Document, the client MUST download the License Document again. 
+If the license timestamp in the 'updated' object of the Status Document is more recent than the timestamp contained in the local copy of the License Document, the client MUST download the License Document again. 
 
 It must then validate *again* the license structure and integrity.
 The expiration date is tested again at this time (the license take precedence over the status document). 
 
 If the license is ok, the app replaces the previous copy with the new one.
 
-Note 1: it implies that if the user has changed his passphrase on the provider's end, the "old" passphrase is still ok until the license info is modified (e.g. a loan return). 
+Note 1: it implies that if the user has changed his passphrase on the provider's end, the "old" passphrase is still ok until the 'updated' timestamp of the status document is modified (e.g. after a loan return). 
 
 Note 2: if the status value of a Status Document contradicts the corresponding up-to-date License Document, the up-to-date License Document takes precedence.
 
