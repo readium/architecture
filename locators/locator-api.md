@@ -34,7 +34,7 @@ The term "page" refers here to the notion of printed page, as optionally specifi
 
 Returns an array of Locator objects, where each Locator object references a printed page. Each Locator object contains all available location keys.
 
-## Test Location in Page
+## Test Locations in Page
 
 The term "page" will refer here to the notion of synthetic page in the current resource.
 
@@ -44,3 +44,15 @@ Returns the subset of the array of Locator objects that fits with the page, or n
 
 
 
+# Testing Locations in a Page
+
+This is particularly useful for checking if a bookmark icon should be activated in the current page.
+
+The app is aware of the current page number and the number of pages in the current resource. It easily get the list of bookmarks in the resource via Get Bookmarks. 
+
+The function transforms each progression in the list of bookmarks to a page reference, via int(bookmark-progression * number-of-pages)+1 (page numbers start at 1).
+It return the array of bookmark Locators for which the page reference is equal to the current page number. 
+
+Note: A page may contain two bookmarks (or more) if they were set with different user settings or device characteristics.
+
+A simple example: Let's take a resource with 10 pages (1 to 10). We are on page 4. Bookmark progressions in the resource are [15.111%, 17.222%, 45.333%, 50.444%]. It is clear that the only bookmark in the page is the third. 
