@@ -55,4 +55,4 @@ It return the array of bookmark Locators for which the page reference is equal t
 
 Note: A page may contain two bookmarks (or more) if they were set with different user settings or device characteristics.
 
-A simple example: Let's take a resource with 10 pages (1 to 10). We are on page 4. Bookmark progressions in the resource are [15.111%, 17.222%, 45.333%, 50.444%]. It is clear that the only bookmark in the page is the third. 
+A simple example: Let's take a resource with 10 pages (1 to 10). We are on page 4. Bookmark progressions in the resource are [15.111%, 17.222%, 35.333%, 50.444%]. It is clear that the only bookmark in the page is the third. 
