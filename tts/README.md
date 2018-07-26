@@ -18,7 +18,7 @@ The same design pattern applies to "read aloud" functionality built directly int
 
 ### Open Web Platform vs. "native" code
 
-Because the textual content to be read aloud by the TTS engine is expressed using HTML markup, and because the visual emphasis of text (highlight / outline) is ultimately performed at the DOM level (CSS styling), at least some logic must be implemented in cross-platform Javascript ("glue JS"?).
+Because the textual content to be read aloud by the TTS engine is expressed using HTML markup, and because the visual emphasis of text (highlight / outline) is ultimately performed at the DOM level (CSS styling), at least some logic must be implemented in cross-platform Javascript ("glue JS" https://github.com/readium/r2-glue-js).
 
 In fact, most of the "read aloud" logic could arguably be performed within the scripted runtime of the web browser engine (webview component), thereby limiting the responsibility of platform-specific code (iOS, Android, etc.) to handling the bi-directional communication with global application-level controls / state, such as start/stop commands, and progress events (e.g. continuous timed playback of auditory utterances, signaling of word boundaries inside sentences, etc.).
 
@@ -77,7 +77,7 @@ The next step that eKitabu and @kevinmainairungu in particular are working on is
 For testing purposes, we will start with a simple XHTML file from 1 chapter of one of the Kenyan early grade reading storybooks we are working on. See for example: https://github.com/eKitabu/UNICEF-eKitabu-Kenya-Pilot-Digital-Accessible-Textbook/tree/master/samples
 
 Web Speech API is here:
-https://caniuse.com/#feat=speech-synthesis
+https://w3c.github.io/speech-api/speechapi.html
 
 SAPI 5 Kiswahili voice on Windows: 441 Swahili (Kenya)
 https://msdn.microsoft.com/en-us/library/hh362866(v=office.14).aspx
