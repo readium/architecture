@@ -35,9 +35,11 @@ As the licence document is mandatory, the app must raise an error if this file i
 ## Import a protected publication
 An app which imports or opens an EPUB protected by LCP (i.e. containing its license) will follow these steps:
 
-### 1/ Validate the license structure
+### 1/ Validate the license structure and check its profile identifier
 
-The app checks that the license is valid (EDRLab provides a JSON schema for LCP licenses in the EDRLab github, lcp-testing-tools). 
+The app checks that the license is valid (EDRLab provides a JSON schema for LCP licenses in the EDRLab github, lcp-testing-tools). It the license is invalid, the user gets a notification like "This Readium LCP license is invalid, the publication cannot be processed". 
+
+The app checks that the profile identifier in the license can be processed. If it is not the case, the user gets a notification like "This Readium LCP license has a profile identifier that this app cannot handle, the publication cannot be processed". 
 
 ### 2/ Get the passphrase associated with the license
 
@@ -120,7 +122,7 @@ If the app is online, it must silently (= non-blocking for the user):
 
 An app which imports a DRM license will follow these steps (see the previous section for more details):
 
-### 1/ Validate the license structure
+### 1/ Validate the license structure and check its profile identifier
 
 ### 2/ Get the passphrase associated with the license
 
