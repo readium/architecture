@@ -29,7 +29,7 @@ It is now evident that the progression in the publication is the sum of the rela
 
 With the values used for our sample, the result is (8/24 + 0,5*4/24) = 1/3 + 1/12 = 5/12. 
 
-This value is not exact, because the unit used for calculating the size of spine items (bytes in a possibly encrypted file) is currently different from the unit used for calculating the progression in a spine item (pixels in a rendered web resource). Nevertheless, we can the  that the approximation is sufficient to provide a good experience to the user. 
+This value is not exact, because the unit used for calculating the size of spine items (bytes in a possibly encrypted file) is currently different from the unit used for calculating the progression in a spine item (pixels in a rendered web resource). Nevertheless, that approximation is sufficient to provide a good experience to the user. 
 
 
 
