@@ -56,6 +56,12 @@ Also see:
 
 https://support.mozilla.org/en-US/kb/firefox-reader-view-clutter-free-web-pages
 
+### (Proprietary) ReadSpeaker
+
+Note the rich set of configurable options:
+
+https://www.readspeaker.com/
+
 ### (Proprietary) BookCreator
 
 Note the TTS voice choice menu, auto page turn switch, speed selector, etc.
