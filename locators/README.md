@@ -28,8 +28,7 @@ A Locator Object contains the following keys:
 
 | Key  | Definition | Format |
 | ---- | ---------- | ------ | 
-| publicationId  | The identifier of the publication the locator is relative to. | string, required |
-| spineIndex  | The index of the spine item the locator points at. | integer, required |
+| href  | The href of the resource the locator points at. | string, required |
 | created  | The datetime of creation of the locator. | datetime, required |
 | title  | The title of the chapter or section which is more relevant in the context of this locator.| URI, required |
 | locations  | One or more alternative expressions of the location. | Locations, required  |
@@ -40,12 +39,23 @@ A Locations Object contains differents ways to express a location inside a resou
 | Key  | Definition | Format |
 | ---- | ---------- | ------ | 
 | id  |  A specific fragment id in the resource.  | String |
-| cfi  |  The right-most part of a [Canonical Fragment Identifier  (CFI)](http://www.idpf.org/epub/linking/cfi/epub-cfi.html).  | CFI |
-| css  |  A css selector.  | String |
+| cfi  |  The right-most part of a [Canonical Fragment Identifier (CFI)](http://www.idpf.org/epub/linking/cfi/epub-cfi.html).  | String |
+| cssSelector  |  A css selector in the resource.  | String |
+| xpath  |  An xpath in the resource.  | String |
 | progression  | A percentage of progression in the resource.  | Double between 0 and 1 |
-| position  | The index of a segment in the resource.  | Integer |
+| position  | An index in the resource.  | Integer, 1+ |
 
 A Locations object must contain at least one location key.
+
+### About the notion of position 
+
+A "position" is similar to a page in a printed book. It will be used by the reading system to generate a page list (if such page list is absent from the EPUB file) and allows multiple readers (e.g. students) to move to the same position in the ebook, using segments of 1024 _characters_ (not bytes); 1024 is arbitrary but matches what RMSDK is using. 
+
+A segment (i.e the interval between two adjacent positions) does not cross the boundaries of a resource, therefore the size of the last segment of a resource may be less than 1024 characters; a practical advantage being that chapters usually correspond to resources: the start of a chapter is therefore usually aligned with a "position".  
+
+Users are manipulating positions in the overall publication, but we are storing positions in a resource. To map a position in a resource to a position in the publication, please read [this page](locator-api.md).
+
+## The Locator Text Object
 
 A Locator Text Object contains different types of text fragments, useful to give a context to the Locator:
 
@@ -68,7 +78,7 @@ THe only differences btw the in-memory object and the serialized JSON object exp
   "title": "Chapter 1",
   "locations": {
     "position": 1,
-    "progression": 1.3401
+    "progression": 0.13401
   },
   "text": {
     "after": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."
@@ -84,7 +94,7 @@ THe only differences btw the in-memory object and the serialized JSON object exp
   "title": "Chapter 30",
   "locations": {
     "position": 4,
-    "progression": 50.7379
+    "progression": 0.507379
   },
   "text": {
     "before": "In this quiet way, "

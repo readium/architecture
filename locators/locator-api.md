@@ -54,7 +54,7 @@ This function is used when a bookmark or annotation is deleted from the correspo
 The function takes as a parameter the index of the Locator object in the array of Locators, and the array itself. 
 
 
-# PLying with Synthetic Pages
+# Playing with Synthetic Pages
 
 The term "page" refers here to the notion of synthetic page in the current resource.
 
@@ -85,22 +85,23 @@ It returns the array of bookmark Locators for which the page reference is equal 
 
 A simple example: Let's take a resource with 10 synthetic pages (1 to 10). We are on page 4. Bookmark progressions in the resource are [15.111%, 17.222%, 35.333%, 50.444%]. It is clear that the only bookmark in the page is the third. 
 
-
-# Calculating the current Progression 
+# Calculating the current Progression in the resource 
 
 For image based and pre-paginated publications, each Locator simply points to the resource (by its spine index) without any additional expression of a progression.
 
-For other types of publications, to calculate the current progression, the service currently (July 2018) simply divides the current scroll position in the rendered resource (in pixels) by the total height of the resource (in pixels). This is not the best long term solution, because it is impossible to calculate this value without rendering the resource and using this information as unique source of the progression value; therefore calculating a progression from e.g. a cfi is impossible.
+For other types of publications, to calculate the current progression in the resource, the service currently (July 2018) simply divides the current scroll position in the rendered resource (in pixels) by the total height of the resource (in pixels). This is not the best long term solution, because it is impossible to calculate this value without rendering the resource and using this information as unique source of the progression value; therefore calculating a progression from e.g. a cfi is impossible.
 
 A better solution seems in practice to use the number of characters from the start of the resource to the current location, divided by the total number of characters in the resource. This does not take into account images and videos, but will be more reliable for resources that are not rendered. 
 
-# Calculating the current Position 
+To calculate the overall progression in the publication, read [this page](timeline.md).
 
-For image based and pre-paginated publications, each Locator simply points to the resource (by its spine index) without any additional expression of a position.
+# Calculating the current Position in the resource and in the publication
 
-For other types of publications, to calculate the current position, the service should consider that each segment of the resource contains 1024 _characters_ (not bytes); 1024 is arbitrary but matches what RMSDK is using. Therefore the current position corresponds to the current character offset divided by 1024, + one (for getting 1 based positions). 
+For image based and pre-paginated publications, each Locator simply points to the resource (by its spine index) without any additional expression of a position in the resource. Therefore the position in the publication is simply the index of the resource in reading order (starting at 1). 
 
-Note: A segment (i.e the interval between two adjacent positions) does not cross the boundaries of a resource, therefore the size of the last segment of a resource may be less than 1024 characters; an advantage of resource based segments (beside the simplicity of calculation of the current segment) being that chapters usually correspond to resources, therefore the start of a chapter usually corresponds to a new segment. 
+For other types of publications, to calculate the current position in the resource, the service will consider that each segment of the resource contains 1024 _characters_ (not bytes). Therefore the current position in the resource corresponds to the current character offset divided by 1024, + one (for getting 1 based positions). 
+
+To get the overall position in the publication, simply add to the current position in the resource the "highest position in the publication" related to the preceding resource (in reading order). To do this efficiently, a map (resource -> highest position) must be build when the publication is open, and kept in memory.
 
 # Calculating the current cfi 
 
