@@ -56,6 +56,12 @@ Also see:
 
 https://support.mozilla.org/en-US/kb/firefox-reader-view-clutter-free-web-pages
 
+### (Proprietary) Microsoft Immersive Reader
+
+Note the part of speech segmentation in the settings:
+
+https://www.onenote.com/learningtools
+
 ### (Proprietary) ReadSpeaker
 
 Note the rich set of configurable options:
