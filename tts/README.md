@@ -56,6 +56,20 @@ Also see:
 
 https://support.mozilla.org/en-US/kb/firefox-reader-view-clutter-free-web-pages
 
+### Talkify
+
+Note how text highlighting is an optional feature:
+
+https://github.com/Hagsten/Talkify
+
+Also note the text chunking / tokenizing process:
+
+https://github.com/Hagsten/Talkify/blob/master/src/talkify-html5-speechsynthesis-player.js#L223
+
+...in addition to breaking down the actual HTML markup:
+
+https://github.com/Hagsten/Talkify/blob/master/src/talkify-textextractor.js
+
 ### (Proprietary) Microsoft Immersive Reader
 
 Note the part of speech segmentation in the settings:
