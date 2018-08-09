@@ -62,6 +62,12 @@ Note the TTS voice choice menu, auto page turn switch, speed selector, etc.
 
 https://bookcreator.com/2018/04/read-books-come-book-creator-chrome/
 
+### (Proprietary) ResponsiveVoice
+
+Note the predefined list of voices (depends on operating system):
+
+https://code.responsivevoice.org/responsivevoice.src.js
+
 ## Technical Breakdown
 
 (DRAFT)
