@@ -56,6 +56,12 @@ Also see:
 
 https://support.mozilla.org/en-US/kb/firefox-reader-view-clutter-free-web-pages
 
+### (Proprietary) BookCreator
+
+Note the TTS voice choice menu, auto page turn switch, speed selector, etc.
+
+https://bookcreator.com/2018/04/read-books-come-book-creator-chrome/
+
 ## Technical Breakdown
 
 (DRAFT)
