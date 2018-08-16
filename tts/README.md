@@ -70,6 +70,12 @@ https://github.com/Hagsten/Talkify/blob/master/src/talkify-html5-speechsynthesis
 
 https://github.com/Hagsten/Talkify/blob/master/src/talkify-textextractor.js
 
+### RIDI reader
+
+Pretty good illustration of how complex the text parsing / normalization process(es) get with non-Latin language scripts:
+
+https://github.com/ridi/Reader.js/tree/master/src/common/tts
+
 ### (Proprietary) Microsoft Immersive Reader
 
 Note the part of speech segmentation in the settings:
