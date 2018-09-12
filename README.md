@@ -40,7 +40,7 @@ The Test App integrates the following modules (all written in Swift) into a sing
 * [Streamer](https://github.com/readium/r2-streamer-swift)
 * [Navigator](https://github.com/readium/r2-navigator-swift)
 
-This app is currently tested on TestFlight by a first batch of alpha testers.
+The iOS Test App can also be downloaded from the [AppStore as R2 Reader](https://itunes.apple.com/us/app/r2-reader/id1363963230).
 
 ### Android
 
@@ -54,9 +54,7 @@ The Test App integrates the following modules (all written in Kotlin) into a sin
 * [Streamer](https://github.com/readium/r2-streamer-kotlin)
 * [Navigator](https://github.com/readium/r2-navigator-kotlin)
 
-This app is currently tested on HockeyApp by a first batch of alpha testers.
-
-An earlier [Java implementation of the streamer](https://github.com/readium/r2-streamer-java) is available as well, but Kotlin is the preferred target language in the Readium-2 community.
+The Android Test App can also be downloaded from the [Play Store as R2 Reader](https://play.google.com/store/apps/details?id=org.readium.r2reader&hl=en_US).
 
 ### JavaScript
 
