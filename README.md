@@ -10,7 +10,7 @@ The "[navigator](navigator)" is meant to navigate in the resources of a publicat
 
 These modules are not necessarily meant to be deployed on the same device or written in the same language, which lets developers select the best implementation based on their requirements.
 
-![Readium-2 architecture](images/readium-2-archi-2.png)
+![Diagram of the Readium Architecture](images/architecture.svg)
 
 ## Components
 
@@ -36,11 +36,3 @@ These modules are not necessarily meant to be deployed on the same device or wri
 ## Projects
 
 [See all active projects](projects) based on the Readium Architecture.
-
-## Keeping Track
-
-There are multiple ways to keep track of the on-going activity and participate:
-
-* discussions on [the issue tracker](https://github.com/readium/architecture/issues)
-* weekly calls with [our archive of meeting notes and recordings](https://drive.google.com/drive/folders/0BzaNaBNAB6FjbzR5NWFVWVo2dDg?hl=en)
-* multiple channels on the [Slack team for Readium](https://readium.slack.com) ([#architecture](https://readium.slack.com/messages/architecture/), [#r2-swift](https://readium.slack.com/messages/r2-swift/) and [#r2-kotlin](https://readium.slack.com/messages/r2-kotlin/))

@@ -1,6 +1,14 @@
 # Projects
 
-## iOS / Swift
+## Keeping Track
+
+There are multiple ways to keep track of the on-going activity and participate:
+
+* discussions on [the issue tracker](https://github.com/readium/architecture/issues)
+* weekly calls with [our archive of meeting notes and recordings](https://drive.google.com/drive/folders/0BzaNaBNAB6FjbzR5NWFVWVo2dDg?hl=en)
+* multiple channels on the [Slack team for Readium](https://readium.slack.com) ([#architecture](https://readium.slack.com/messages/architecture/), [#r2-swift](https://readium.slack.com/messages/r2-swift/) and [#r2-kotlin](https://readium.slack.com/messages/r2-kotlin/))
+
+## iOS
 
 For an overview of how Readium-2 on iOS works, we highly recommend taking a look at the [iOS Test App](https://github.com/readium/r2-testapp-swift).
 
