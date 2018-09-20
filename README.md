@@ -35,4 +35,4 @@ These modules are not necessarily meant to be deployed on the same device or wri
 
 ## Projects
 
-[See all active projects](projects) based on the Readium Architecture.
+[See all active projects](projects.md) based on the Readium Architecture.
