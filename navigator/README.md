@@ -1,16 +1,14 @@
-**NOTE**: Further discussion of the various choices that must be made in any implementation of a navigator can be found in [Navigator Design Dilemmas](design-dilemmas.md).
-
-# Architecture for the Navigator Module
+# Navigator
 
 The navigator is a module that directly interacts with the streamer, either by:
 
 * using the in-memory model produced by the streamer
-* or by fetching in HTTP the JSON manifest
+* or by fetching in HTTP the JSON manifest through the shared model
 
 The navigator is responsible for a number of things:
 
-* it is responsible for displaying the resources contained in the spine of the publication
-* it can also be responsible for navigating between resources (either by following the spine or displaying anciliary resources)
+* it is responsible for providing access to the resources contained in the reading order of the publication
+* it can also be responsible for navigating between resources (either by following the order or displaying anciliary resources)
 * in some implementations, the navigator module may also be responsible for injecting CSS/JS in a resource
 
 ## Displaying Resources
@@ -42,7 +40,7 @@ This information is contained in the `properties` object of each link object:
 }
 ```
 
-There are also a number of other use cases where a navigator might handle multiple spine resources at the same time:
+There are also a number of other use cases where a navigator might handle multiple resources in the reading order at the same time:
 
 * continuous scroll, where you can read an entire publication using vertical or horizontal scrolling
 * pre-rendering, where the navigator module loads next/previous resources in order to speed things up
@@ -51,7 +49,7 @@ There are also a number of other use cases where a navigator might handle multip
 
 The navigator module can be either:
 
-* directly responsible for the navigation between spine items, by detecting when the user reaches the start/end of a resource and loading the next/previous resources
+* directly responsible for the navigation between items in the reading order, by detecting when the user reaches the start/end of a resource and loading the next/previous resources
 * or indirectly responsible, by injecting content in the resource or passing information to the pagination module
 
 It can also implement special display modes for anciliary resources, for example:
@@ -75,29 +73,8 @@ For example, a Web-based app where both the streamer and the navigator modules a
 While implementations can adopt different strategies, adapting to the strengths of each platform, the following principles should be followed for a default implementation of the navigator module:
 
 * prioritize the in-memory representation provided by the streamer over the JSON manifest for native implementations
-* if the navigator relies on the JSON manifest, stick to the de-serialized object instead of using a different model
+* if the navigator relies on the JSON manifest, stick to the shared model instead of using a different one
 * avoid fetching the JSON manifest over HTTP more than once, even if it is cached by an HTTP library
 * prioritize the use of webviews over iframes for HTML/XHTML documents
 * prioritize the use of native APIs to handle audio/video/images over a webview
 * avoid injecting JS/CSS/HTML if another option is available
-
-## Examples
-
-### Readium-1
-
-> Note: I'll let Ric & Daniel improve the following section.
-
-In Readium-1, the navigator is part of Readium Shared-JS:
-
-* it is responsible for parsing the JSON provided by the Core SDK (streamer), and has its own in-memory model of a publication
-* it uses an iframe to display the content, using multiple iframes to handle spreads in fixed layout publication
-* it is also responsible for injecting JS/CSS in each resource to handle pagination, CFI support and media overlays among other things
-
-### Folio Reader
-
-In the iOS version of Folio Reader Kit, there's also an equivalent of the navigator:
-
-* it uses the same in-memory model exposed by the parser
-* resources are fetched locally on the file system (each EPUB is unzipped)
-* CSS and JS files are injected in the HTML source before it is passed to the webview
-* it cycles between two or three UIWebview elements to handle pre-rendering and continuous scrolling, but doesn't support FXL
