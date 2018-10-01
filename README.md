@@ -1,6 +1,4 @@
----
-title:  "Overview of the Readium Architecture"
----
+# architecture
 
 [![Readium Logo](https://readium.org/assets/logos/readium-logo.png)](https://readium.org)
 
