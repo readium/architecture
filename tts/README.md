@@ -121,7 +121,7 @@ The next step that eKitabu and @kevinmainairungu in particular are working on is
 For testing purposes, we will start with a simple XHTML file from 1 chapter of one of the Kenyan early grade reading storybooks we are working on. See for example: https://github.com/eKitabu/UNICEF-eKitabu-Kenya-Pilot-Digital-Accessible-Textbook/tree/master/samples
 
 Web Speech API is here:
-https://w3c.github.io/speech-api/speechapi.html
+https://w3c.github.io/speech-api/
 
 SAPI 5 Kiswahili voice on Windows: 441 Swahili (Kenya)
 https://msdn.microsoft.com/en-us/library/hh362866(v=office.14).aspx
