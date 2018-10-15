@@ -114,7 +114,8 @@ Major Javascript implementation blocks:
 
 ## Next Step
 
-See Readium 2 call notes from June 27 https://docs.google.com/document/d/18bYgFsqvLlZ51jaZe9qs9eCepLfuZ0kqxJqibapWZ9Q/edit
+See Readium 2 call notes from June 27 https://docs.google.com/document/d/18bYgFsqvLlZ51jaZe9qs9eCepLfuZ0kqxJqibapWZ9Q
+and August 1 https://docs.google.com/document/d/1-nwcSUKUh0XmUbG8hFcsLvdVzVmCBMXj4J2NCSDP-1g
 
 The next step that eKitabu and @kevinmainairungu in particular are working on is to essentially re-write BeneSpeak.js using the Web Speech API instead of Chrome.TTS.
 
