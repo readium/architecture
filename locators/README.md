@@ -1,12 +1,13 @@
 # Locators
 
-Locators are meant to provide a precise location in a publication in a format that can be shared outside of the publication.
+Locators are meant to provide a precise location in a publication in a format that can be stored and shared.
 
 There are many different use cases for locators:
 
 * get back to the last position in a publication when opening it
-* bookmarks
-* annotations
+* managing the ToC, a page list
+* managing bookmarks
+* managing annotations
 * search results
 * current chapter localization
 * human-readable (and shareable) reference to a fragment
@@ -20,7 +21,7 @@ Locations can be divided into two different groups:
 
 While locations that are tied to the structure of a resource provide a much more fine grained information, there are also more likely to break if the resource is updated.
 
-That's one of the reason why Readium-2 recommends using a mix of different locations when implementing some of the use cases listed above.
+That's one of the reason why Readium recommends using a mix of different locations when implementing some of the use cases listed above.
 
 ## The Locator Object
 
@@ -40,12 +41,10 @@ A Locations Object contains differents ways to express a location inside a resou
 | ---- | ---------- | ------ | 
 | id  |  A specific fragment id in the resource.  | String |
 | cfi  |  The right-most part of a [Canonical Fragment Identifier (CFI)](http://www.idpf.org/epub/linking/cfi/epub-cfi.html).  | String |
-| cssSelector  |  A css selector in the resource.  | String |
-| xpath  |  An xpath in the resource.  | String |
 | progression  | A percentage of progression in the resource.  | Double between 0 and 1 |
 | position  | An index in the resource.  | Integer, 1+ |
 
-A Locations object must contain at least one location key.
+A `Locations` object must contain at least one location key.
 
 ### About the notion of position 
 
