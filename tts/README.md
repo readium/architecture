@@ -76,6 +76,12 @@ Pretty good illustration of how complex the text parsing / normalization process
 
 https://github.com/ridi/Reader.js/tree/master/src/common/tts
 
+### Articulate.js
+
+Simple/basic, but the fundamental architecture is interesting:
+
+https://github.com/acoti/articulate.js/blob/master/articulate.js
+
 ### (Proprietary) Microsoft Immersive Reader
 
 Note the part of speech segmentation in the settings:
