@@ -78,7 +78,7 @@ https://github.com/ridi/Reader.js/tree/master/src/common/tts
 
 ### Articulate.js
 
-Simple/basic, but the fundamental architecture is interesting:
+Limited/basic functionality, but the fundamental architecture is valid:
 
 https://github.com/acoti/articulate.js/blob/master/articulate.js
 
