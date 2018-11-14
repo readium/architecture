@@ -41,6 +41,7 @@ A Locations Object contains differents ways to express a location inside a resou
 | ---- | ---------- | ------ | 
 | id  |  A specific fragment id in the resource.  | String |
 | cfi  |  The right-most part of a [Canonical Fragment Identifier (CFI)](http://www.idpf.org/epub/linking/cfi/epub-cfi.html).  | String |
+| cssSelector  |  A css selector in the resource.  | String |
 | progression  | A percentage of progression in the resource.  | Double between 0 and 1 |
 | position  | An index in the resource.  | Integer, 1+ |
 
