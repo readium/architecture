@@ -1,16 +1,8 @@
 # Projects
 
-## Keeping Track
-
-There are multiple ways to keep track of the on-going activity and participate:
-
-* discussions on [the issue tracker](https://github.com/readium/architecture/issues)
-* weekly calls with [our archive of meeting notes and recordings](https://drive.google.com/drive/folders/0BzaNaBNAB6FjbzR5NWFVWVo2dDg?hl=en)
-* multiple channels on the [Slack team for Readium](https://readium.slack.com) ([#architecture](https://readium.slack.com/messages/architecture/), [#r2-swift](https://readium.slack.com/messages/r2-swift/) and [#r2-kotlin](https://readium.slack.com/messages/r2-kotlin/))
-
 ## iOS
 
-For an overview of how Readium-2 on iOS works, we highly recommend taking a look at the [iOS Test App](https://github.com/readium/r2-testapp-swift).
+For an overview of how Readium on iOS works, we highly recommend taking a look at the [iOS Test App](https://github.com/readium/r2-testapp-swift).
 
 The Test App integrates the following modules (all written in Swift) into a single iOS application:
 
@@ -21,11 +13,11 @@ The Test App integrates the following modules (all written in Swift) into a sing
 
 The iOS Test App can also be downloaded from the [AppStore as R2 Reader](https://itunes.apple.com/us/app/r2-reader/id1363963230).
 
-## Android
+While this project is dedicated to iOS for now, it is expected to support macOS as well in the future.
 
-The Android implementation is still catching up with iOS in early 2018, but has now reached a stage where it can be built and tested by any developer.
+## Android & Chrome OS
 
-For an overview of how Readium-2 on Android works, we highly recommend taking a look at the [Android Test App](https://github.com/readium/r2-testapp-kotlin).
+For an overview of how Readium on Android works, we highly recommend taking a look at the [Android Test App](https://github.com/readium/r2-testapp-kotlin).
 
 The Test App integrates the following modules (all written in Kotlin) into a single Android application:
 
@@ -36,24 +28,44 @@ The Test App integrates the following modules (all written in Kotlin) into a sin
 
 The Android Test App can also be downloaded from the [Play Store as R2 Reader](https://play.google.com/store/apps/details?id=org.readium.r2reader&hl=en_US).
 
-## JavaScript
+## Web
 
-EDRLab is actively working on a production app called [Readium Desktop](https://github.com/edrlab/readium-desktop) built on top of a [Typescript-based implementation of the streamer](https://github.com/edrlab/r2-streamer-js).
+Readium Web is in the process of being gradually moved to Readium repos.
 
-There are also two projects implementing a JS-based navigator:
+Currently, the following repos are available on Github:
 
-* [webpub-viewer](https://github.com/NYPL-Simplified/webpub-viewer) - An iframe-based navigator, written in TypeScript (NYPL)
-* [epub.js](https://github.com/futurepress/epub.js/) - Support for the streamer is in development as part of the v0.3 release (Future Press)
+* [Shared Model](https://github.com/evidentpoint/r2-webpub-model-js)
+* [Navigator](https://github.com/evidentpoint/r2-navigator-web)
+
+Unlike our other projects, Readium Web does not necessarily require running a [streamer](streamer/).
+Publications can be served unpackaged using static assets and the Readium Web Publication Manifest or through a streamer hosted on a server such as the [Node.js](https://github.com/readium/r2-streamer-js) or [Go](https://github.com/readium/r2-streamer-go) projects.
+
+## Desktop
+
+Readium Desktop is built on top of Node.js and Electron.
+
+For an overview of how Readium on Desktop works, we highly recommend taking a look at the [Desktop Test App](https://github.com/readium/r2-testapp-js).
+
+The Test App integrates the following modules (all written in TypeScript) into a single Electron application:
+
+* [Shared Model](https://github.com/readium/r2-shared-kotlin)
+* [Streamer](https://github.com/readium/r2-streamer-js)
+* [Navigator](https://github.com/readium/r2-shared-js)
 
 ## Go
 
 The first implementation of a streamer was written in Go, mostly for server-side deployment.
 
-This project is active and [hosted on this organization](https://github.com/readium/r2-streamer-go).
+It is primarily meant to be used as a back-end for Web apps built on top of Readium Web.
 
+This project is active and [hosted on this organization](https://github.com/readium/r2-streamer-go).
 
 ## Prototypes
 
 * [webpub-viewer](https://github.com/HadrienGardeur/webpub-viewer) - An `iframe` based navigator, written in JS (Hadrien Gardeur)
 * [comics-viewer](https://github.com/HadrienGardeur/comics-viewer) - An `img` based navigator for comics, written in JS (Hadrien Gardeur)
 * [audiobook-player](https://github.com/HadrienGardeur/audiobook-player) - An `audio` based navigator for audiobooks, written in JS (Hadrien Gardeur)
+
+## Contributing
+
+If you'd like to contribute to these projects, make sure that you take a look at [our dedicated page](https://readium.org/development/contributing/).
