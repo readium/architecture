@@ -8,10 +8,13 @@ While the default context is very flexible in the way each metadata can be repre
 
 The `title` of a publication is an object where each key is a BCP 47 language tag and each value of this key is a string.
 
+In addition to `title`, a publication may also contain a `sortAs` string, used to sort the title as well.
+
 When parsing an EPUB, we need to establish:
 
 * which title is the primary one
-* the language(s) used to express the primary title
+* the language(s) used to express the primary title along with the associated strings
+* the string used to sort the title of the publication
 * the default language for metadata
 
 ### EPUB 2.x
