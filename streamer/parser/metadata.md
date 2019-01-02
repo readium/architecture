@@ -1,27 +1,26 @@
-#Parsing EPUB Metadata
+# Parsing EPUB Metadata
 
-> Work in progress, will need to be updated on a regular basis until we reach a 1.0 version of the streamer.
+The goal of this document is to provide directions that each implementation of Readium can follow when parsing EPUB 2.x and 3.x publications.
 
-## Mapping to EPUB 3.1
+While the default context is very flexible in the way each metadata can be represented, when parsing a publication in the streamer we always use the most complex form for each metadata to harmonize our output.
 
-| Key  | EPUB 3.1 |
-| ---- | -------- |
-| [identifier](#identifier) | dc:identifier |
-| [title](#title)  | dc:title |
-| [sort_as](#title)  | dc:title@opf:file-as |
-| [author](#contributors) | dc:creator |
-| [translator](#contributors) | dc:contributor@opf:role="trl" |
-| [editor](#contributors) | dc:contributor@opf:role="edt" |
-| [illustrator](#contributors)| dc:contributor@opf:role="ill" |
-| [narrator](#contributors) | dc:contributor@opf:role="nrt" |
-| [contributor](#contributors) | dc:contributor |
-| [	language](#language) | dc:language |
-| [subject](#subjects) | dc:subject |
-| [	publisher](#publisher) | dc:publisher |
-| [modified](#identifier) | dcterms:modified |
-| [	published](#publication-date) | dc:date |
-| [	description](#description) | dc:description |
-| numberOfPages  | schema:numberOfPages |
+## Title
 
-## Identity
+The `title` of a publication is an object where each key is a BCP 47 language tag and each value of this key is a string.
 
+In addition to `title`, a publication may also contain a `sortAs` string, used to sort the title as well.
+
+When parsing an EPUB, we need to establish:
+
+* which title is the primary one
+* the language(s) used to express the primary title along with the associated strings
+* the string used to sort the title of the publication
+* the default language for metadata
+
+### EPUB 2.x
+
+...
+
+### EPUB 3.0
+
+...
