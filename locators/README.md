@@ -4,81 +4,95 @@ Locators are meant to provide a precise location in a publication in a format th
 
 There are many different use cases for locators:
 
-* get back to the last position in a publication when opening it
-* managing the ToC, a page list
-* managing bookmarks
-* managing annotations
+* getting back to the last position in a publication
+* bookmarks
+* highlights & annotations
 * search results
-* current chapter localization
-* human-readable (and shareable) reference to a fragment
+* human-readable (and shareable) reference in a publication
 
-Each locator consist of one or more locations.
+Each locator must contain a reference to a resource in a publication (`href` and `type`).
 
-Locations can be divided into two different groups:
+It may also contain:
 
-* locations that are tied to the structure of a resource, such as CFI or XPath.
-* and locations that are not related to any particular resource structure.
-
-While locations that are tied to the structure of a resource provide a much more fine grained information, there are also more likely to break if the resource is updated.
-
-That's one of the reason why Readium recommends using a mix of different locations when implementing some of the use cases listed above.
+* a title (`title`)
+* one or more locations in a resource (`locations`)
+* one or more text references, if the resource is a document (`text`)
 
 ## The Locator Object
 
-A Locator Object contains the following keys:
+| Key  | Definition | Format | Required |
+| ---- | ---------- | ------ | -------- |
+| href  | The URI of the resource that the Locator Object points to. | URI | Yes |
+| type  | The media type of the resource that the Locator Object points to. | Media Type | Yes |
+| title  | The title of the chapter or section which is more relevant in the context of this locator.| String | No |
+| locations  | One or more alternative expressions of the location. | [Location Object](#the-location-object) | No |
+| text  |  Textual context of the locator.  | [Locator Text Object](#the-locator-text-object) | No |
 
-| Key  | Definition | Format |
-| ---- | ---------- | ------ | 
-| href  | The href of the resource the locator points at. | string, required |
-| created  | The datetime of creation of the locator. | datetime, required |
-| title  | The title of the chapter or section which is more relevant in the context of this locator.| URI, required |
-| locations  | One or more alternative expressions of the location. | Locations, required  |
-| text  |  Textual context of the locator.  | Locator Text Object |
+## The Location Object
 
-A Locations Object contains differents ways to express a location inside a resource:
+| Key  | Definition | Format | Required |
+| ---- | ---------- | ------ | -------- |
+| fragment  |  Contains one or more fragment in the resource referenced by the Locator Object.  | String | No |
+| progression  | Progression in the resource expressed as a percentage.  | Float between 0 and 1 | No |
+| position  | An index in the publication.  | Integer where the value is > 1 | No |
 
-| Key  | Definition | Format |
-| ---- | ---------- | ------ | 
-| id  |  A specific fragment id in the resource.  | String |
-| cfi  |  The right-most part of a [Canonical Fragment Identifier (CFI)](http://www.idpf.org/epub/linking/cfi/epub-cfi.html).  | String |
-| cssSelector  |  A css selector in the resource.  | String |
-| progression  | A percentage of progression in the resource.  | Double between 0 and 1 |
-| position  | An index in the resource.  | Integer, 1+ |
 
-A `Locations` object must contain at least one location key.
+## The Locator Text Object
 
-### About the notion of position 
+A Locator Text Object contains multiple text fragments, useful to give a context to the Locator or for highlights.
 
-A "position" is similar to a page in a printed book. It will be used by the reading system to generate a page list (if such page list is absent from the EPUB file) and allows multiple readers (e.g. students) to move to the same position in the ebook, using segments of 1024 _characters_ (not bytes); 1024 is arbitrary but matches what RMSDK is using. 
+| Key  | Definition | Format | Required |
+| ---- | ---------- | ------ | -------- |
+| after  | The text after the locator.| String | No |
+| before  | The text before the locator.  | String | No |
+| highlight  | The text at the locator.  | String | No |
+
+
+## Fragments
+
+Given the flexible nature of the Readium Web Publication Manifest, we need the ability to provide locations into all sorts of resources (text, audio, video, images).
+
+Fragments are flexible enough to achieve that goal. They also provide a natural extension point for our locator model since any media-type can define its own fragment identifiers.
+
+They're by nature media-specific and should always be understood in the context of the resource that the locator points to (by looking at `href` and `type`).
+
+For this purpose, this document identifies the following specifications along with their scope:
+
+| Specification | Scope | Examples |
+| ------------- | ----- | ------- |
+| [HTML](https://html.spec.whatwg.org/) | HTML or XHTML | `id` |
+| [Media Fragment URI 1.0](https://www.w3.org/TR/media-frags/) | Audio, Video and Images | `t=67`, `xywh=160,120,320,240`|
+| [PDF](http://tools.ietf.org/rfc/rfc3778) | PDF | `page=12`, `viewrect=50,50,640,480`|
+
+In addition to these specifications, this document defines two additional media fragments:
+
+| Name | Scope | Definition | Example |
+| ---- | ----- | ---------- | ------- |
+| CSS Selector | HTML or XHTML | Contains a CSS Selector as defined in [Selectors Level 3](https://www.w3.org/TR/selectors-3/).| `css(.content:nth-child(2))` |
+| Partial CFI | XHTML, strictly in EPUB documents | Contains the right-most part of a Canonical Fragment Identifier as defined in [EPUB Canonical Fragment Identifiers 1.1](http://www.idpf.org/epub/linking/cfi/epub-cfi.html).| `partialcfi(/10[para05]/3:10)` |
+
+## Positions 
+
+A "position" is similar to a page in a printed book. It will be used by the reading system to generate a list and allows multiple readers (e.g. students) to move to the same position in the ebook, using segments of 1024 characters (not bytes); 1024 is arbitrary but matches what Adobe's RMSDK is using. 
 
 A segment (i.e the interval between two adjacent positions) does not cross the boundaries of a resource, therefore the size of the last segment of a resource may be less than 1024 characters; a practical advantage being that chapters usually correspond to resources: the start of a chapter is therefore usually aligned with a "position".  
 
 Users are manipulating positions in the overall publication, but we are storing positions in a resource. To map a position in a resource to a position in the publication, please read [this page](locator-api.md).
 
-## The Locator Text Object
 
-A Locator Text Object contains different types of text fragments, useful to give a context to the Locator:
-
-| Key  | Definition | Format |
-| ---- | ---------- | ------ | 
-| after  | The text after the locator.| String |
-| before  | The text before the locator.  | String |
-| highlight  | The text at the locator.  | String |
+## Examples
 
 
-## The Locator JSON object
-
-THe only differences btw the in-memory object and the serialized JSON object exposed by a streamer are that the spineIndex is mapped to the spine item href; the publicationId is not mapped (it is inferred).
-
-*Example: Pointing to the start of Pride and Prejudice*
+*Example 1: Pointing to the start of Pride and Prejudice*
 
 ```
 {
   "href": "http://example.com/chapter1",
+  "type": "text/html",
   "title": "Chapter 1",
   "locations": {
-    "position": 1,
-    "progression": 0.13401
+    "position": 4,
+    "progression": 0.03401
   },
   "text": {
     "after": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."
@@ -86,20 +100,30 @@ THe only differences btw the in-memory object and the serialized JSON object exp
 }
 ```
 
-*Example: Pointing somewhere in the middle of Pride and Prejudice*
+*Example 2: Pointing somewhere in the middle of an audiobook*
 
 ```
 {
-  "href": "http://example.com/chapter30",
-  "title": "Chapter 30",
+  "href": "http://example.com/track6",
+  "type": "audio/ogg",
+  "title": "Chapter 5",
   "locations": {
-    "position": 4,
+    "fragment": "t=389.84",
     "progression": 0.507379
-  },
-  "text": {
-    "before": "In this quiet way, "
-    "highlight": "the first fortnight of her visit."
-    "after": " soon passed away."
+  }
+}
+```
+
+*Example 3: Pointing to the fifth page in a PDF*
+
+```
+{
+  "href": "http://example.com/document",
+  "type": "application/pdf",
+  "title": "Page 5",
+  "locations": {
+    "fragment": "page=5",
+    "progression": 0.12703
   }
 }
 ```
