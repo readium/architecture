@@ -214,11 +214,16 @@ The string is the value of the `meta` element whose `property` attribute has the
 
 ## Subjects
 
-The `subject` of a publication is a string or an array.
+The `subject` of a publication is a key whose value is string or an array.
 
 Although each subject should have its own `<dc:subject>` element, this is not necessarily the case in practice, authors and authoring tools often separating multiple subjects using commas or semicolons in the same element.
 
-TBD + comment: so huh yeah… what if the subject has commas in the scheme it belongs to?
+To retrive the value of the `subject` key:
+
+1. if there is a one single `<dc:subject>` element, make sure keywords are not separated using commas or semicolons;
+    1. if it doesn’t, the string is the value;
+    2. if it does, split the string to build an array;
+2. if there are more than one `<dc:subject>` elements, build an array using their values.
 
 ## Collections and Series
 
