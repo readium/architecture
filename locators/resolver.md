@@ -16,7 +16,7 @@ It can be identified by:
 
 ```json
 {
-  "href": "https://example.com/resolve{?href,cfi,id,position,progression}",
+  "href": "https://example.com/resolve{?href,fragment,position,progression}",
   "type": "application/vnd.readium.locator-resolver+json",
   "rel": "http://readium.org/locator-resolver",
   "templated": true
@@ -29,8 +29,8 @@ In order to use the location resolver, a client must send a location to the serv
 
 Locations can be broken down into two categories:
 
-- global locations (`position` and `progression`) for which a single query parameter is required
-- local locations (`cfi` and `id`) for which the request must include both a reference to the resource (`href`) along with a location
+- global locations (`position`) for which a single query parameter is required
+- local locations (`fragment` and `progression`) for which the request must include a reference to the resource (`href`) along with a location
 
 If the location can be resolved, the service returns a [Locator Object](/locators#the-locator-object).
 
@@ -39,8 +39,9 @@ GET https://example.com/resolver?position=27
 
 {
   "href": "http://example.com/chapter2",
+  "type": "application/xhtml+xml",
   "locations": {
-    "cfi": "/4[body01]",
+    "fragment": "partialcfi(/4[body01])",
     "position": 27,
     "progression": 0.07289
   },
