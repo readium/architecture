@@ -1,10 +1,10 @@
 # Positions List
 
-While reading a publication, users may need to reference or access a specific position in a book.
+While reading a publication, users may need to reference or access a specific position.
 
 While some formats have an implicit (image based publications) or an optional explicit option (EPUB 3.x) to express such references, clients need references even for publication formats that do not provide anything.
 
-The goal of this service is to provide such references, no matter what the initial publication format contains.
+The goal of this service is to provide such references, no matter what the original publication format contains.
 
 
 ## Manifest
@@ -39,16 +39,18 @@ GET https://example.com/list
   "positions": [
     {
       "href": "http://example.com/resource",
+      "type": "application/xhtml+xml",
       "locations": {
-        "cfi": "/4[body01]",
+        "fragment": "partialcfi(/4[body01])",
         "position": 1,
         "progression": 0.0
       }
     },
     {
       "href": "http://example.com/resource",
+      "type": "application/xhtml+xml",
       "locations": {
-        "cfi": "/18[body02]",
+        "fragment": "partialcfi(/18[body02])",
         "position": 2,
         "progression": 0.57289
       }
