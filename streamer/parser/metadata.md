@@ -121,7 +121,7 @@ The following mapping should be used to determine the key of the contributor’s
 | dc:contributor | art                | artist      |
 | dc:contributor | clr                | colorist    |
 | dc:contributor | nrt                | narrator    |
-| dc:contributor | <empty> or <other> | contributor |
+| dc:contributor | \<empty\> or \<other\> | contributor |
 
 Where `opf:role` is the value of the attribute of the `<dc:element>`.
 
@@ -142,7 +142,7 @@ The following mapping should be used to determine to key of the contributor’s 
 | dc:contributor | art                | artist      |
 | dc:contributor | clr                | colorist    |
 | dc:contributor | nrt                | narrator    |
-| dc:contributor | <empty> or <other> | contributor |
+| dc:contributor | \<empty\> or \<other\> | contributor |
 
 Where `role` is the value of the refine whose `scheme` is a value of `marc:relators`.
 
