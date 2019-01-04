@@ -313,6 +313,8 @@ If the publication either has a `com.kobobooks.display-options.xml` or `com.appl
 </display_options>
 ```
 
+If it does, then the value of the `layout` key is `pre-paginated`.
+
 #### EPUB 3.X
 
 The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:layout`.
