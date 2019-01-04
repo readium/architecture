@@ -91,7 +91,7 @@ To determine the scheme, first look if there is a refine whose property is `iden
 
 If there is none, then the `identifier` must be value parsed in order to guess it.
 
-The valid URI is the result of this second step e.g. `urn:doi:10.1016/j.iheduc.2008.03.001`.
+The valid URI is the result of this second step e.g. `urn:isbn:123456789X`.
 
 ## Contributors
 
@@ -125,7 +125,7 @@ The following mapping should be used to determine the key of the contributor’s
 
 Where `opf:role` is the value of the attribute of the `<dc:element>`.
 
-The name of the contributor is the value of the element.
+The `name` of the contributor is the value of the element.
 
 Finally, the string used to sort the name of the contributor is the value of the `opf:file-as` attribute of this element.
 
@@ -146,7 +146,7 @@ The following mapping should be used to determine to key of the contributor’s 
 
 Where `role` is the value of the refine whose `scheme` is a value of `marc:relators`.
 
-To handle the name of the contributor:
+To handle the `name` of the contributor:
 
 1. check if there is a refine whose propery is `alternate-script` and its corresponding `xml:lang` value;
 2. if there is none, use the value of the `<dc:element>`.
@@ -266,9 +266,9 @@ The `position` of the publication is the value of the refine whose `property` ha
 
 The `readingProgression` of a publication is a key whose value is a string amongst the following:
 
-* auto;
-* ltr;
-* rtl;
+* `auto`;
+* `ltr`;
+* `rtl`.
 
 This string is the value of the `page-progression-direction` attribute of the `<spine>` element.
 
