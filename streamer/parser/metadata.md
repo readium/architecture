@@ -19,8 +19,6 @@ When parsing an EPUB, we need to establish:
 
 ### EPUB 2.x
 
-TBD as I’m very unfamiliar with this (never encountered corner cases there)
-
 The first `<dc:title>` element should be considered the primary one.
 
 To determine the language of the `title` element, check:
@@ -227,15 +225,42 @@ To retrive the value of the `subject` key:
 
 ## Collections and Series
 
-TBD, calibre meta + https://github.com/w3c/publ-epub-revision/issues/326
+The `belongsTo` of a publication is an object containing a `collection` or `series` object.
+
+This latter object contains `name`, `sortAs` and `identifier` keys, whose values are a string, and a `position` key, whose value is a number.
+
+When parsing an EPUB, we need to establish:
+
+* which object to use;
+* the name of the collection/series;
+* the string used to sort the name of the collection/series;
+* the URI for the collection/series;
+* the position of the publication in this collection/series.
 
 ### EPUB 2.x
 
-...
+The object to use will always be `series`.
+
+The string for its `name` is the value of the `content` attribute in the `<meta>` element whose `name` attribute has the value `calibre:series`.
+
+The `position` of the publication is the value of the `content` attribute – converted to a number – in the `<meta>` element whose `name` attribute has the value `calibre:series_index`.
+
+Please be aware that it can be a floating point number with up to two digits of precision e.g. `1.01`, and zero and negative numbers are allowed.
 
 ### EPUB 3.x
 
-...
+The object to use depends on the refine whose `property` has the value of `collection-type`:
+
+1. if it is `series`, use `series`;
+2. else use `collection`.
+
+The string for its `name` is the value of the `<meta>` element whose `property` has the value of `belongs-to-collection` and which is refined.
+
+The `sortAs` string used to sort the name is the value of the refine whose `property` has the value of `file-as`.
+
+The `identifier` string is the value of the refine whose `property` has the value of `dcterms:identifier`.
+
+The `position` of the publication is the value of the refine whose `property` has the value of `group-position`.
 
 ## Progression Direction
 
@@ -249,4 +274,91 @@ This string is the value of the `page-progression-direction` attribute of the `<
 
 ## Rendition
 
-TBD
+The `rendition` of a publication is an object containing the following keys: 
+
+- `overflow`;
+- `layout`;
+- `orientation`;
+- `spread`.
+
+The value of each key is a string that must conform to the allowed values in the EPUB specification.
+
+### Overflow
+
+The `overflow` of a publication is a key whose value can be the following string: 
+
+- `auto`;
+- `paginated`;
+- `scrolled-continuous`;
+- `scrolled-doc`.
+
+The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:flow`.
+
+### Layout
+
+The `layout` of a publication is a key whose value can be the following string: 
+
+- `reflowable`;
+- `pre-paginated`.
+
+#### EPUB 2.X
+
+If the publication either has a `com.kobobooks.display-options.xml` or `com.apple.ibooks.display-options.xml` in its `META-INF` folder, then check whether an `<option>` element whose `name` attribute is `fixed-layout` has a value of `true` e.g.
+
+```
+<display_options>
+  <platform name="*">
+    <option name="fixed-layout">true</option>
+  </platform>
+</display_options>
+```
+
+#### EPUB 3.X
+
+The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:layout`.
+
+### Orientation
+
+The `orientation` of a publication is a key whose value can be the following string: 
+
+- `auto`;
+- `landscape`;
+- `portrait`.
+
+#### EPUB 2.X
+
+If the publication has a `com.apple.ibooks.display-options.xml` in its `META-INF` folder, then: 
+
+1. prioritize the `platform` element whose `name` attribute has a value of `*`;
+2. if there is none, then prioritize `ipad`;
+3. if there is still none, then fall back on `iphone`.
+
+The string is the value of the `<option>` element whose `name` attribute is `orientation-lock` with the following mapping: 
+
+| option         | value     |
+|----------------|-----------|
+| none           | auto      |
+| landscape-only | landscape |
+| portrait-only  | portrait  |
+
+#### EPUB 3.X
+
+The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:orientation`.
+
+### Spread
+
+The `spread` of a publication is a key whose value can be the following string: 
+
+- `none`;
+- `auto`;
+- `landscape`;
+- `portrait`;
+- `both`.
+
+#### EPUB 2.X
+
+Does not apply.
+
+#### EPUB 3.X
+
+The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:spread`.
