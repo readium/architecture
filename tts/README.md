@@ -82,6 +82,12 @@ Limited/basic functionality, but the fundamental architecture is valid:
 
 https://github.com/acoti/articulate.js/blob/master/articulate.js
 
+### Read Aloud Chrome / Firefox extensions
+
+Text partitioner:
+
+https://github.com/ken107/read-aloud/blob/master/js/speech.js
+
 ### (Proprietary) Microsoft Immersive Reader
 
 Note the part of speech segmentation in the settings:
