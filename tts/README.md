@@ -82,6 +82,14 @@ Limited/basic functionality, but the fundamental architecture is valid:
 
 https://github.com/acoti/articulate.js/blob/master/articulate.js
 
+### Spoken Word
+
+Chunkifier:
+
+https://github.com/westonruter/spoken-word/blob/master/src/chunkify.js
+
+https://github.com/westonruter/spoken-word/blob/master/src/speech.js#L532
+
 ### Read Aloud Chrome / Firefox extensions
 
 Text partitioner:
