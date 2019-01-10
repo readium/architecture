@@ -15,6 +15,7 @@ When parsing an EPUB, we need to establish:
 * which title is the primary one
 * the language(s) used to express the primary title along with the associated strings
 * the string used to sort the title of the publication
+* the subtitle of the publication
 * the default language for metadata
 
 ### EPUB 2.x
@@ -29,6 +30,8 @@ To determine the language of the `title` element, check:
 
 The string for `sortAs` is the value of `content` in a `meta` whose `name` is `calibre:title_sort` and `content` is the value to use.
 
+The subtitle can’t be expressed.
+
 To determine the default language for metadata, check:
 
 1. if the `package` has an `xml:lang` attribute;
@@ -38,8 +41,8 @@ To determine the default language for metadata, check:
 
 The primary `title` is defined using the following logic:
 
-- it is the `<dc:title>` element whose `title-type` (refine) is `main`;
-- if there is no such refine, it is the first `<dc:title>` element. 
+1. it is the `<dc:title>` element whose `title-type` (refine) is `main`;
+2. if there is no such refine, it is the first `<dc:title>` element. 
 
 To determine the language of the `title` element, check
 
@@ -48,6 +51,8 @@ To determine the language of the `title` element, check
 3. the primary language of the publication.
 
 The string used to sort the `title` of the publication is the value of the main title’s refine whose `property` is `file-as`.
+
+The subtitle of the publication is the value of the `<dc:title>` element whose `title-type` (refine) is `subtitle`. In case there are several, check their `display-seq` (refine).
 
 To determine the default language for metadata, check:
 
@@ -272,6 +277,18 @@ The `readingProgression` of a publication is a key whose value is a string among
 
 This string is the value of the `page-progression-direction` attribute of the `<spine>` element.
 
+## Number of pages
+
+The `numberOfPages` of a publication is a key whose value is an integer.
+
+### EPUB 2.x
+
+Does not apply.
+
+### EPUB 3.x
+
+The integer is the value of the `meta` element whose `property` attribute has the value `schema:numberOfPages`.
+
 ## Rendition
 
 The `rendition` of a publication is an object containing the following keys: 
@@ -301,7 +318,7 @@ The `layout` of a publication is a key whose value can be the following string:
 - `reflowable`;
 - `pre-paginated`.
 
-#### EPUB 2.X
+#### EPUB 2.x
 
 If the publication either has a `com.kobobooks.display-options.xml` or `com.apple.ibooks.display-options.xml` in its `META-INF` folder, then check whether an `<option>` element whose `name` attribute is `fixed-layout` has a value of `true` e.g.
 
@@ -315,7 +332,7 @@ If the publication either has a `com.kobobooks.display-options.xml` or `com.appl
 
 If it does, then the value of the `layout` key is `pre-paginated`.
 
-#### EPUB 3.X
+#### EPUB 3.x
 
 The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:layout`.
 
@@ -327,7 +344,7 @@ The `orientation` of a publication is a key whose value can be the following str
 - `landscape`;
 - `portrait`.
 
-#### EPUB 2.X
+#### EPUB 2.x
 
 If the publication has a `com.apple.ibooks.display-options.xml` in its `META-INF` folder, then: 
 
@@ -343,7 +360,7 @@ The string is the value of the `<option>` element whose `name` attribute is `ori
 | landscape-only | landscape |
 | portrait-only  | portrait  |
 
-#### EPUB 3.X
+#### EPUB 3.x
 
 The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:orientation`.
 
@@ -357,10 +374,10 @@ The `spread` of a publication is a key whose value can be the following string:
 - `portrait`;
 - `both`.
 
-#### EPUB 2.X
+#### EPUB 2.x
 
 Does not apply.
 
-#### EPUB 3.X
+#### EPUB 3.x
 
 The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:spread`.
