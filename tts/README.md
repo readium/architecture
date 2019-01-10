@@ -96,6 +96,14 @@ Text partitioner:
 
 https://github.com/ken107/read-aloud/blob/master/js/speech.js
 
+### Pragmatic Segmenter / Sentence Splitter
+
+General-purpose sentence detection with multiple language / script support:
+
+https://github.com/diasks2/pragmatic_segmenter
+
+https://github.com/azu/sentence-splitter
+
 ### (Proprietary) Microsoft Immersive Reader
 
 Note the part of speech segmentation in the settings:
