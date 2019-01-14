@@ -42,7 +42,7 @@ If we apply the same origin policy, we will get the following:
 
 In this last example, we can already foresee the potential issues a Reading System will have to handle, as two different publications are sharing the same origin and will consequently be allowed to interact freely with one another – instead of being isolated.
 
-## Serving Contents
+## Serving Contents in the App Context
 
 Existing Reading Systems which leverage web views are using various methods to serve EPUB contents:
 
@@ -124,6 +124,24 @@ And storing data with `localStorage` (data stored without any expiration time) c
 In practice, using a random port impacts some APIs like [Web Storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) and possibly others, which raises authoring concerns.
 
 This is one of the reasons why a handful of Reading Systems have switched to a custom scheme.
+
+## Serving Contents in the Web Context
+
+Cloud readers is quite another issue as all publications will usually be served on the same origin, the Reading System’s.
+
+This is a problem that could eventually be solved by the [suborigins specification](https://w3c.github.io/webappsec-suborigins/), which defines a mechanism for programmatically defining origins to isolate different applications running in the same physical origin. 
+
+As it allows a server to specify a namespace on a resource response which is paired with the scheme/host/port origin tuple, it could also be used to define origins isolating different publications served in the Reading System’s origin.
+
+Currently, the only options to protect against attacks ([see “Security Concerns” section](#security-concerns)) are: 
+
+- [`iframe` sandboxing](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox);
+- [the Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP);
+- [the Feature Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy).
+
+One should note that if a cloud reader aims to support JavaScript, all publications will at least share the same database, which means it is possible for an author to access data that originated in a different publication.
+
+Unfortunately, suborigins is the missing piece of this cloud reader puzzle, suborigins being an attempt to fill some of the gaps from the other policies.
 
 ## Applicable Issues
 
