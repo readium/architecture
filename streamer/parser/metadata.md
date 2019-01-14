@@ -117,15 +117,15 @@ When parsing an EPUB, we need to establish:
 
 The following mapping should be used to determine the key of the contributor’s object: 
 
-| element        | opf:role           | key         |
-|----------------|--------------------|-------------|
-| dc:creator     | aut                | author      |
-| dc:contributor | trl                | translator  |
-| dc:contributor | est                | editor      |
-| dc:contributor | ill                | illustrator |
-| dc:contributor | art                | artist      |
-| dc:contributor | clr                | colorist    |
-| dc:contributor | nrt                | narrator    |
+| element        | opf:role               | key         |
+|----------------|------------------------|-------------|
+| dc:creator     | aut                    | author      |
+| dc:contributor | trl                    | translator  |
+| dc:contributor | est                    | editor      |
+| dc:contributor | ill                    | illustrator |
+| dc:contributor | art                    | artist      |
+| dc:contributor | clr                    | colorist    |
+| dc:contributor | nrt                    | narrator    |
 | dc:contributor | \<empty\> or \<other\> | contributor |
 
 Where `opf:role` is the value of the attribute of the `<dc:element>`.
@@ -138,15 +138,15 @@ Finally, the string used to sort the name of the contributor is the value of the
 
 The following mapping should be used to determine to key of the contributor’s object: 
 
-| element        | role               | key         |
-|----------------|--------------------|-------------|
-| dc:creator     | aut                | author      |
-| dc:contributor | trl                | translator  |
-| dc:contributor | est                | editor      |
-| dc:contributor | ill                | illustrator |
-| dc:contributor | art                | artist      |
-| dc:contributor | clr                | colorist    |
-| dc:contributor | nrt                | narrator    |
+| element        | role                   | key         |
+|----------------|------------------------|-------------|
+| dc:creator     | aut                    | author      |
+| dc:contributor | trl                    | translator  |
+| dc:contributor | est                    | editor      |
+| dc:contributor | ill                    | illustrator |
+| dc:contributor | art                    | artist      |
+| dc:contributor | clr                    | colorist    |
+| dc:contributor | nrt                    | narrator    |
 | dc:contributor | \<empty\> or \<other\> | contributor |
 
 Where `role` is the value of the refine whose `scheme` is a value of `marc:relators`.
@@ -277,6 +277,8 @@ The `readingProgression` of a publication is a key whose value is a string among
 
 This string is the value of the `page-progression-direction` attribute of the `<spine>` element.
 
+If no value is set, it defaults to `auto`.
+
 ## Number of pages
 
 The `numberOfPages` of a publication is a key whose value is an integer.
@@ -300,7 +302,9 @@ The `rendition` of a publication is an object containing the following keys:
 
 The value of each key is a string that must conform to the allowed values in the EPUB specification.
 
-### Overflow
+### Flow
+
+The `rendition:flow` metadata is mapped to `overflow`.
 
 The `overflow` of a publication is a key whose value can be the following string: 
 
@@ -311,16 +315,18 @@ The `overflow` of a publication is a key whose value can be the following string
 
 The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:flow`.
 
+If no value is set, it defaults to `auto`.
+
 ### Layout
 
 The `layout` of a publication is a key whose value can be the following string: 
 
 - `reflowable`;
-- `pre-paginated`.
+- `paginated`.
 
 #### EPUB 2.x
 
-If the publication either has a `com.kobobooks.display-options.xml` or `com.apple.ibooks.display-options.xml` in its `META-INF` folder, then check whether an `<option>` element whose `name` attribute is `fixed-layout` has a value of `true` e.g.
+If the publication either has a `com.kobobooks.display-options.xml` or `com.apple.ibooks.display-options.xml` in its `META-INF` folder, then check whether an `<option>` element whose `name` attribute is `fixed-layout` exists e.g.
 
 ```
 <display_options>
@@ -330,11 +336,20 @@ If the publication either has a `com.kobobooks.display-options.xml` or `com.appl
 </display_options>
 ```
 
-If it does, then the value of the `layout` key is `pre-paginated`.
+- If the value is `true`, then the value of the `layout` key is `paginated`. 
+- If the value is `false`, then the value of the `layout` key is `reflowable`.
+- If no such option is set, then the value of the `layout` key defaults to `reflowable`.
 
 #### EPUB 3.x
 
-The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:layout`.
+The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:layout` with the following mapping:
+
+| rendition:layout | value      |
+|------------------|------------|
+| reflowable       | reflowable |
+| pre-paginated    | paginated  |
+
+If no value is set, it defaults to `reflowable`.
 
 ### Orientation
 
@@ -360,9 +375,13 @@ The string is the value of the `<option>` element whose `name` attribute is `ori
 | landscape-only | landscape |
 | portrait-only  | portrait  |
 
+If no such option is set, it defaults to `auto`.
+
 #### EPUB 3.x
 
 The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:orientation`.
+
+If no value is set, it defaults to `auto`.
 
 ### Spread
 
@@ -371,7 +390,6 @@ The `spread` of a publication is a key whose value can be the following string:
 - `none`;
 - `auto`;
 - `landscape`;
-- `portrait`;
 - `both`.
 
 #### EPUB 2.x
@@ -380,4 +398,14 @@ Does not apply.
 
 #### EPUB 3.x
 
-The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:spread`.
+The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:spread` with the following mapping:
+
+| rendition:spread | value     |
+|------------------|-----------|
+| none             | none      |
+| auto             | auto      |
+| landscape        | landscape |
+| portrait         | both      |
+| both             | both      |
+
+If no value is set, it defaults to `auto`.
