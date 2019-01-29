@@ -310,10 +310,23 @@ The `overflow` of a publication is a key whose value can be the following string
 
 - `auto`;
 - `paginated`;
-- `scrolled-continuous`;
-- `scrolled-doc`.
+- `scrolled`;
+- `scrolled-continuous`.
 
-The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:flow`.
+#### EPUB 2.x
+
+Does not apply.
+
+#### EPUB 3.x
+
+The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:flow` with the following mapping:
+
+| rendition:flow     | value               |
+|--------------------|---------------------|
+| auto               | auto                |
+| paginated          | paginated           |
+| scrolled-doc       | scrolled            |
+| scrolled-continous | scrolled-continuous |
 
 If no value is set, it defaults to `auto`.
 
@@ -336,7 +349,7 @@ If the publication either has a `com.kobobooks.display-options.xml` or `com.appl
 </display_options>
 ```
 
-- If the value is `true`, then the value of the `layout` key is `paginated`. 
+- If the value is `true`, then the value of the `layout` key is `fixed`. 
 - If the value is `false`, then the value of the `layout` key is `reflowable`.
 - If no such option is set, then the value of the `layout` key defaults to `reflowable`.
 
@@ -347,7 +360,7 @@ The string is the value of the `<meta>` element whose `property` attribute has t
 | rendition:layout | value      |
 |------------------|------------|
 | reflowable       | reflowable |
-| pre-paginated    | paginated  |
+| pre-paginated    | fixed      |
 
 If no value is set, it defaults to `reflowable`.
 
