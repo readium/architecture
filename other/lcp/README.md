@@ -59,7 +59,7 @@ Note also that the hash algorithm may depend on the LCP profile used in the lice
 
 ### 3/ Validate the license integrity
 
-Before checking the license status, it's good to verify the license integrity.
+Before checking the license status, it's good to verify the license integrity. This is because the status triggers reading system behaviors and therefore the link to the status document must be trusted. 
 
 The app calls the r2-lcp-client library (createContext()) with the license, the passphrase hash and CRL as parameters.
 
@@ -96,10 +96,9 @@ If the license has been revoked, the user message should display the number of d
 
 If the license timestamp in the 'updated' object of the Status Document is more recent than the timestamp contained in the local copy of the License Document, the client MUST download the License Document again. 
 
-It must then validate *again* the license structure and integrity.
-The expiration date is tested again at this time (the license take precedence over the status document). 
+It must then validate *again* the license structure, passphrase and integrity, i.e. it must pass throught steps 1, 2 and 3 again. It should not pass through step 4, as it would lead to a dirty infinite loop if the server gives buggy date information (this should not happen, thanks to EDRLab checkings).
 
-If the license is ok, the app replaces the previous copy with the new one.
+If the updated license is ok, the app replaces the previous copy with the new one.
 
 Note 1: it implies that if the user has changed his passphrase on the provider's end, the "old" passphrase is still ok until the 'updated' timestamp of the status document is modified (e.g. after a loan return). 
 
