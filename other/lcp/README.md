@@ -88,7 +88,7 @@ If the Status Document is unavailable or if the client is unable to obtain an in
 
 3/ Check that the status is "ready" or "active".
 
-If this is not the case (revoked, returned, cancelled, expired), the app will notify the user and stop there. The message to the user must be clear about the status of the license: don't display "expired" if the status is "revoked". The date and time corresponding to the new status should be displayed (e.g. "The license expired on 01 January 2018").
+If this is not the case (revoked, returned, cancelled, expired), the app will notify the user and jump to step 5 (license update). The message to the user must be clear about the status of the license: e.g. don't display "expired" if the status is "revoked". The date and time corresponding to the new status should be displayed (e.g. "The license expired on 01 January 2018").
 
 If the license has been revoked, the user message should display the number of devices which registered to the server. This count can be calculated from the number of "register" events in the status document. If no event is logged in the status document, no such message should appear (certainly not "The license was registered by 0 devices"). 
 
@@ -113,6 +113,8 @@ If the app is online, it must silently (= non-blocking for the user):
 2/  call the "register" link associated with the license id, passing a device id and device name as parameters. In case of error, the app must let the user read the publication. 
 
 3/ If the registration was successful, store the fact the the device / license has been registered.
+
+NOte: steps 5 and 6 can be played in the reverse order if it simplifies the code. It does not change the behavior of the system. 
 
 ### 7/ Open the publication 
 
