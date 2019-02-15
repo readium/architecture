@@ -76,21 +76,16 @@ The r2-lcp-client library will verify the license integrity and create a DRM con
 See the Readium LCP spec section 5.5 for additional details. 
 
 
-### 4/ Check the license status
+### 4/ Fetch the license's status document
 
 An LCP license may contain a "status" link, i.e. a link to a status document. If it is the case and if the app is online, the app must:
 
 1/ Fetch the status document.
 
-If the Status Document is unavailable or if the client is unable to obtain an internet connection, it MUST NOT block the user from accessing the Publication tied to the License Document. Jump to step 7.
+If the Status Document is unavailable or if the client is unable to obtain an internet connection, it MUST NOT block the user from accessing the Publication tied to the License Document. Jump to step 8.
 
-2/ Validate the structure of the status document. If the structure is not valid, the app must jump to the next step, as if no status link was present in the license. 
+2/ Validate the structure of the status document. If the structure is not valid, the app must jump to the step 8, as if no status link was present in the license. 
 
-3/ Check that the status is "ready" or "active".
-
-If this is not the case (revoked, returned, cancelled, expired), the app will notify the user and jump to step 5 (license update). The message to the user must be clear about the status of the license: e.g. don't display "expired" if the status is "revoked". The date and time corresponding to the new status should be displayed (e.g. "The license expired on 01 January 2018").
-
-If the license has been revoked, the user message should display the number of devices which registered to the server. This count can be calculated from the number of "register" events in the status document. If no event is logged in the status document, no such message should appear (certainly not "The license was registered by 0 devices"). 
 
 ### 5/ Get an updated license if needed
 
@@ -104,7 +99,17 @@ Note 1: it implies that if the user has changed his passphrase on the provider's
 
 Note 2: if the status value of a Status Document contradicts the corresponding up-to-date License Document, the up-to-date License Document takes precedence.
 
-### 6/ Register the device / license 
+
+### 6/ Check the license status
+
+Check that the status in the status document is "ready" or "active".
+
+If this is not the case (revoked, returned, cancelled, expired), the app will notify the user and jump to step 5 (license update). The message to the user must be clear about the status of the license: e.g. don't display "expired" if the status is "revoked". The date and time corresponding to the new status should be displayed (e.g. "The license expired on 01 January 2018").
+
+If the license has been revoked, the user message should display the number of devices which registered to the server. This count can be calculated from the number of "register" events in the status document. If no event is logged in the status document, no such message should appear (certainly not "The license was registered by 0 devices"). 
+
+
+### 7/ Register the device / license 
 
 If the app is online, it must silently (= non-blocking for the user):
 
@@ -114,9 +119,8 @@ If the app is online, it must silently (= non-blocking for the user):
 
 3/ If the registration was successful, store the fact the the device / license has been registered.
 
-NOte: steps 5 and 6 can be played in the reverse order if it simplifies the code. It does not change the behavior of the system. 
 
-### 7/ Open the publication 
+### 8/ Open the publication 
 
 
 ## Import a DRM license
@@ -129,17 +133,19 @@ An app which imports a DRM license will follow these steps (see the previous sec
 
 ### 3/ Validate the license integrity
 
-### 4/ Check the license status
+### 4/ Fetch the license's status document
 
 ### 5/ Get an updated license if needed
 
-### 6/ Fetch the encrypted publication
-
-In the LCP use case, the app will use the "publication" link. It will store the encrypted publication and insert the license as META-INF/license.lcpl. In case of error, the user is notified and the app stops there. 
+### 6/ Check the license status
 
 ### 7/ Register the device / license
 
-### 8/ Open the publication 
+### 8/ Fetch the encrypted publication
+
+In the LCP use case, the app will use the "publication" link. It will store the encrypted publication and insert the license as META-INF/license.lcpl. In case of error, the user is notified and the app stops there. 
+
+### 9/ Open the publication 
 
 
 ## Open a protected publication stored in the app catalog
