@@ -41,7 +41,7 @@ An app which imports or opens an EPUB protected by LCP (i.e. containing its lice
 The app checks that the license is valid (EDRLab provides a JSON schema for LCP licenses in the EDRLab github, lcp-testing-tools). If the license is invalid, the user gets a notification like "This Readium LCP license is invalid, the publication cannot be processed". 
 
 
-### 2/ Fetch the license's status document
+### 2/ Fetch the status document
 
 An LCP license may contain a "status" link, i.e. a link to a status document. If it is the case and if the app is online, the app must:
 
@@ -56,22 +56,20 @@ If the Status Document is unavailable or if the client is unable to obtain an in
 
 If the license timestamp in the 'updated' object of the Status Document is more recent than the timestamp contained in the local copy of the License Document, the client MUST download the License Document again. 
 
-It must then validate *again* the license structure (step 1), before going to step 4, to avoid any infinite loop if the server gives buggy date information (this should not happen, thanks to EDRLab checkings).
-
-If the updated license is ok, the app replaces the previous copy with the new one.
+It must then validate the new license structure against the JSON schema. If the updated license is ok, the app replaces the previous copy with the new one.
 
 Note: it implies that if the user has changed his passphrase on the provider's end, the "old" passphrase is still ok until the 'updated' timestamp of the status document is modified (e.g. after a loan return). 
 
 
-### 4/ Check the license status
+### 4/ Check the license status and corresponding dates
 
-Check that the status in the status document is "ready" or "active".
+Check that today is between the start and end date of the license. If it's the case, jump to 5.
 
-If this is not the case (revoked, returned, cancelled, expired), the app will notify the user and stop there. The message to the user must be clear about the status of the license: e.g. don't display "expired" if the status is "revoked". The date and time corresponding to the new status should be displayed (e.g. "The license expired on 01 January 2018").
+Otherwise, check the status in the status document, which should be "revoked", "returned", "cancelled" or "expired". If the status is "ready" or "active", the app MUST consider this is a server error and the correct status is "expired". The app MUST then notify the user and stop there.
+
+The message to the user must be clear about the status of the license: e.g. don't display "expired" if the status is "revoked". The date and time corresponding to the new status should be displayed (e.g. "The license expired on 01 January 2018").
 
 If the license has been revoked, the user message should display the number of devices which registered to the server. This count can be calculated from the number of "register" events in the status document. If no event is logged in the status document, no such message should appear (certainly not "The license was registered by 0 devices"). 
-
-Note: if the status value of a Status Document contradicts the corresponding up-to-date License Document, the up-to-date License Document takes precedence.
 
 
 ### 5/ Get the passphrase associated with the license
