@@ -61,7 +61,7 @@ It must then validate the new license structure against the JSON schema. If the 
 Note: it implies that if the user has changed his passphrase on the provider's end, the "old" passphrase is still ok until the 'updated' timestamp of the status document is modified (e.g. after a loan return). 
 
 
-### 4/ Check the license status and corresponding dates
+### 4/ Check the dates and license status
 
 Check that today is between the start and end date of the license. If it's the case, jump to 5.
 
@@ -110,13 +110,13 @@ See the Readium LCP spec section 5.5 for additional details.
 
 ### 7/ Register the device / license 
 
-If the app is online and a Status Document was fetched, it must silently (= non-blocking for the user):
+If the app is online, a Status Document was fetched and it contains a "register" link, the app must silently (= non-blocking for the user):
 
-1/ check if the device / license is already registered. If it is the case, the app moves on. 
+1/ check if the device / license has already been registered. If it is the case, jump to step 8. 
 
-2/ call the "register" link associated with the license id, passing a device id and device name as parameters. In case of error, the app must let the user read the publication. 
+2/ call the "register" link associated with the license id, passing a device id and device name as parameters. In case of error, the app must let the user read the publication, i.e. jump to step 8. 
 
-3/ If the registration was successful, store the fact the the device / license has been registered.
+3/ If the registration was successful, store the fact that the device / license has been registered.
 
 
 ### 8/ Open the publication 
@@ -128,11 +128,11 @@ An app which imports a DRM license will follow these steps (see the previous sec
 
 ### 1/ Validate the license structure
 
-### 2/ Fetch the license's status document
+### 2/ Fetch the status document
 
 ### 3/ Get an updated license if needed
 
-### 4/ Check the license status
+### 4/ Check the dates and license status
 
 ### 5/ Get the passphrase associated with the license
 
@@ -142,7 +142,7 @@ An app which imports a DRM license will follow these steps (see the previous sec
 
 ### 8/ Fetch the encrypted publication
 
-In the LCP use case, the app will use the "publication" link. It will store the encrypted publication and insert the license as META-INF/license.lcpl. In case of error, the user is notified and the app stops there. 
+The app uses the "publication" link. It stores the encrypted publication and insert the license as META-INF/license.lcpl. In case of error, the user is notified and the app stops there. 
 
 ### 9/ Open the publication 
 
