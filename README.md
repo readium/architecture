@@ -23,9 +23,10 @@ These modules are not necessarily meant to be deployed on the same device or wri
 
 ### Main Modules
 
-* [Streamer](streamer)
+* [Publication Server](server)
 * [Navigator](navigator)
 * [Readium CSS](https://readium.org/readium-css)
+* [Streamer](streamer)
 
 
 ### Services

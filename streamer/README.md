@@ -2,11 +2,10 @@
 
 The streamer is one of the main modules of the Readium Architecture.
 
-The streamer is usually divided into three different parts:
+The streamer is usually divided into two different parts:
 
 - [parser](#parser)
 - [fetcher](#fetcher)
-- [server](#server)
 
 Every implementation should attempt to make each of these parts as independent as possible, to make sure that they can also be reused for other use cases.
 
@@ -26,10 +25,3 @@ Every implementation should attempt to make each of these parts as independent a
 * deobfuscates & decrypt resources
 * injects CSS or JS in HTML resources
 * injects user settings (CSS custom properties) in HTML resources
-
-## Server
-
-* outputs a [Readium Web Publication Manifest](https://readium.org/webpub-manifest)
-* serves the publication's resources
-* provides a number of APIs to interact with the publication
-
