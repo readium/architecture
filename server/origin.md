@@ -1,10 +1,10 @@
 # Web Origin Explainer: Practical Issues and Possible Solutions 
 
-Editor: Jiminy Panoz, Jellybooks
+* **Editor:** Jiminy Panoz, *Jellybooks*
 
-Contributors: Daniel Weck, Readium & Daisy ([r2-streamer-js doc](https://github.com/readium/r2-streamer-js/blob/develop/docs/origin.md))
+* **Contributors:** Daniel Weck, *Readium & Daisy* ([r2-streamer-js doc](https://github.com/readium/r2-streamer-js/blob/develop/docs/origin.md))
 
-**Note:** This document is a draft that will evolve over the next months. Please feel free to contact the editor if you have further details, corrections and/or want to contribute improving it.
+> **Note:** This document is a draft that will evolve over the next months. Please feel free to contact the editor if you have further details, corrections and/or want to contribute improving it.
 
 This document aims to address the web origin issues implementers should take into account and the options to get around them. 
 

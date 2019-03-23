@@ -24,7 +24,7 @@ We recommend each implementation to do the following:
 
 ## Caching Publication Resources
 
-Publication resources (listed in `spine` or `resources`) served by the server are unlikely to change and should be cached more heavily than the manifest.
+Publication resources (listed in `readingOrder` or `resources`) served by the server are unlikely to change and should be cached more heavily than the manifest.
 
 Having fonts, CSS or JS in cache can have a very positive impact on rendering time for HTML in a browser or a webview.
 

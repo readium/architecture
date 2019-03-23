@@ -48,6 +48,10 @@ All implementations are free to select their preferred approach as long as they 
 
 [A separate document dedicated to HTTP caching is available](caching.md), with recommendations regarding the use of HTTP headers for both the manifest and its resources.
 
+## Web Origin
+
+One of the most challenging part of distributing Web Publications is tied to the security model of the Web. [A separate document dedicated to Web Origin](origin.md) is available to tackle this specific issue.
+
 
 <style>
 .rfc {
