@@ -15,9 +15,11 @@ This document identifies multiple levels of conformance for a Publication Server
 - The manifest and its resources <strong class="rfc">must</strong> be served over HTTPS
 - All HTTPS responses <strong class="rfc">must</strong> include CORS headers to allow access from any domain to these resources
 
+Any HTTP server can be properly configured to reach level 0 compliance for a Publication Server.
+
 ## Level 1
 
-Publication Servers which implement level 1 support are dynamic apps that usually implement the [streamer architecture](../streamer).
+Publication Servers which implement level 1 support are dynamic apps that usually follow the [streamer architecture](../streamer).
 
 - The manifest and its resources are served using dynamic routes
 - They <strong class="rfc">must</strong> have an in-memory representation of the publications that they serve
