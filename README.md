@@ -18,8 +18,9 @@ These modules are not necessarily meant to be deployed on the same device or wri
 
 ### Models
 
-* [Web Publication Manifest](https://readium.org/webpub-manifest)
+* [Readium Web Publication Manifest](https://readium.org/webpub-manifest)
 * [Locators](locators)
+* [OPDS 2.0](https://drafts.opds.io/opds-2.0)
 
 ### Main Modules
 
