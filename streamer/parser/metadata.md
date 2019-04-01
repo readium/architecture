@@ -335,7 +335,7 @@ If no value is set, it defaults to `auto`.
 The `layout` of a publication is a key whose value can be the following string: 
 
 - `reflowable`;
-- `paginated`.
+- `fixed`.
 
 #### EPUB 2.x
 
