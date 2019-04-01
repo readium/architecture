@@ -1,8 +1,8 @@
 # Streamer
 
-The streamer is one of the main modules of the Readium Architecture.
+The Streamer is one of the main modules of the Readium Architecture.
 
-The streamer is usually divided into two different parts:
+The Streamer is usually divided into two different parts:
 
 - [parser](#parser)
 - [fetcher](#fetcher)
@@ -12,12 +12,7 @@ Every implementation should attempt to make each of these parts as independent a
 ## Parser
 
 * access packaged or exploded publications
-* parses EPUB 2.x and 3.x
-  * metadata
-  * spine & manifest
-  * table of contents (NCX, Navigation Document)
-  * media overlays
-  * encrypted resources
+* [parses EPUB 2.x and 3.x](parser/metadata.md)
 
 ## Fetcher
 
@@ -25,3 +20,14 @@ Every implementation should attempt to make each of these parts as independent a
 * deobfuscates & decrypt resources
 * injects CSS or JS in HTML resources
 * injects user settings (CSS custom properties) in HTML resources
+
+## Manifest & Resources
+
+Every Streamer implementation has its own in-memory representation of a publication.
+
+In addition to this model, all Streamers provide an access to:
+
+* a [Readium Web Publication Manifest](https://readium.org/webpub-manifest)
+* the resources of the publication
+
+While most Streamers are also [Publication Servers](../server) that rely on HTTPS, each implementation is free to use a different approach for accessing the resources of a publication.
