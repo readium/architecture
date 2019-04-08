@@ -30,4 +30,4 @@ In addition to this model, all Streamers provide an access to:
 * a [Readium Web Publication Manifest](https://readium.org/webpub-manifest)
 * the resources of the publication
 
-While most Streamers are also [Publication Servers](../server) that rely on HTTPS, each implementation is free to use a different approach for accessing the resources of a publication.
+While most Streamers are also [Publication Servers](../server) that rely on HTTPS, each implementation is free to use a different approach to serve the resources of a publication.

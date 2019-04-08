@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://readium.org/architecture/schema/locator.schema.json",
+  "title": "Readium Locator",
+  "type": "object",
+  "properties": {
+    "href": {
+      "description": "URI of the resource that the Locator Object points to",
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "type": {
+      "description": "MIME type of the resource that the Locator Object points to",
+      "type": "string"
+    },
+    "title": {
+      "description": "The title of the chapter or section which is more relevant in the context of this locator",
+      "type": "string"
+    },
+    "locations": {
+      "type": "object",
+      "properties": {
+        "fragment": {
+          "description": "Contains one or more fragment in the resource referenced by the Locator Object",
+          "type": "string"
+        },
+        "progression": {
+          "description": "Progression in the resource expressed as a percentage",
+          "type": "number",
+          "minimum": 0
+        },
+        "position": {
+          "description": "An index in the publication",
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "text": {
+      "type": "object",
+      "properties": {
+        "before": {
+          "description": "The text before the locator",
+          "type": "string"
+        },
+        "highlight": {
+          "description": "The text at the locator",
+          "type": "string"
+        },
+        "after": {
+          "description": "The text after the locator",
+          "type": "string"
+        }
+      }
+    },
+  },
+  "required": [
+    "href",
+    "type"
+  ]
+}

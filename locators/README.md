@@ -127,3 +127,8 @@ Users are manipulating positions in the overall publication, but we are storing 
   }
 }
 ```
+
+
+# Appendix A - JSON Schema
+
+A reference JSON Schema is available under version control at: [https://github.com/readium/architecture/tree/master/schema/locator.schema.json](https://github.com/readium/architecture/tree/master/schema/locator.schema.json)
