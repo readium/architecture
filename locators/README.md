@@ -10,9 +10,10 @@ There are many different use cases for locators:
 * search results
 * human-readable (and shareable) reference in a publication
 
-Each locator must contain a reference to a resource in a publication (`href` and `type`).
+Each locator <strong class="rfc">must</strong> contain a reference to a resource in a publication (`href` and `type`).
+`href` <strong class="rfc">must not</strong> point to the fragment of a resource.
 
-It may also contain:
+It <strong class="rfc">may</strong> also contain:
 
 * a title (`title`)
 * one or more locations in a resource (`locations`)
@@ -22,19 +23,20 @@ It may also contain:
 
 | Key  | Definition | Format | Required |
 | ---- | ---------- | ------ | -------- |
-| href  | The URI of the resource that the Locator Object points to. | URI | Yes |
-| type  | The media type of the resource that the Locator Object points to. | Media Type | Yes |
-| title  | The title of the chapter or section which is more relevant in the context of this locator.| String | No |
-| locations  | One or more alternative expressions of the location. | [Location Object](#the-location-object) | No |
-| text  |  Textual context of the locator.  | [Locator Text Object](#the-locator-text-object) | No |
+| `href`  | The URI of the resource that the Locator Object points to. | URI | Yes |
+| `type`  | The media type of the resource that the Locator Object points to. | Media Type | Yes |
+| `title`  | The title of the chapter or section which is more relevant in the context of this locator.| String | No |
+| `locations`  | One or more alternative expressions of the location. | [Location Object](#the-location-object) | No |
+| `text`  |  Textual context of the locator.  | [Locator Text Object](#the-locator-text-object) | No |
 
 ## The Location Object
 
 | Key  | Definition | Format | Required |
 | ---- | ---------- | ------ | -------- |
-| fragment  |  Contains one or more fragment in the resource referenced by the Locator Object.  | String | No |
-| progression  | Progression in the resource expressed as a percentage.  | Float between 0 and 1 | No |
-| position  | An index in the publication.  | Integer where the value is > 1 | No |
+| `fragment` |  Contains one or more fragment in the resource referenced by the Locator Object.  | Array of strings | No |
+| `progression`  | Progression in the resource expressed as a percentage.  | Float between 0 and 1 | No |
+| `position`  | An index in the publication.  | Integer where the value is > 1 | No |
+| `totalProgression` | Progression in the publication expressed as a percentage.  | Float between 0 and 1 | No |
 
 
 ## The Locator Text Object
@@ -43,9 +45,9 @@ A Locator Text Object contains multiple text fragments, useful to give a context
 
 | Key  | Definition | Format | Required |
 | ---- | ---------- | ------ | -------- |
-| after  | The text after the locator.| String | No |
-| before  | The text before the locator.  | String | No |
-| highlight  | The text at the locator.  | String | No |
+| `after` | The text after the locator.| String | No |
+| `before` | The text before the locator.  | String | No |
+| `highlight` | The text at the locator.  | String | No |
 
 
 ## Fragments
@@ -92,7 +94,8 @@ Users are manipulating positions in the overall publication, but we are storing 
   "title": "Chapter 1",
   "locations": {
     "position": 4,
-    "progression": 0.03401
+    "progression": 0.03401,
+    "totalProgression": 0.01349
   },
   "text": {
     "after": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."
@@ -108,8 +111,9 @@ Users are manipulating positions in the overall publication, but we are storing 
   "type": "audio/ogg",
   "title": "Chapter 5",
   "locations": {
-    "fragment": "t=389.84",
-    "progression": 0.507379
+    "fragment": ["t=389.84"],
+    "progression": 0.607379,
+    "totalProgression": 0.50678
   }
 }
 ```
@@ -122,8 +126,9 @@ Users are manipulating positions in the overall publication, but we are storing 
   "type": "application/pdf",
   "title": "Page 5",
   "locations": {
-    "fragment": "page=5",
-    "progression": 0.12703
+    "fragment": ["page=5"],
+    "progression": 0.12703,
+    "totalProgression": 0.12703
   }
 }
 ```
@@ -132,3 +137,12 @@ Users are manipulating positions in the overall publication, but we are storing 
 # Appendix A - JSON Schema
 
 A reference JSON Schema is available under version control at: [https://github.com/readium/architecture/tree/master/schema/locator.schema.json](https://github.com/readium/architecture/tree/master/schema/locator.schema.json)
+
+<style>
+.rfc {
+    color: #d55;
+    font-variant: small-caps;
+    font-style: normal;
+    font-weight: normal;
+}
+</style>
