@@ -22,17 +22,27 @@
       "properties": {
         "fragment": {
           "description": "Contains one or more fragment in the resource referenced by the Locator Object",
-          "type": "string"
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
         "progression": {
           "description": "Progression in the resource expressed as a percentage",
           "type": "number",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 1
         },
         "position": {
           "description": "An index in the publication",
           "type": "integer",
           "minimum": 1
+        },
+        "totalProgression": {
+          "description": "Progression in the publication expressed as a percentage",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         }
       }
     },
