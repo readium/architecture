@@ -20,7 +20,7 @@
     "locations": {
       "type": "object",
       "properties": {
-        "fragment": {
+        "fragments": {
           "description": "Contains one or more fragment in the resource referenced by the Locator Object",
           "type": "array",
           "items": {

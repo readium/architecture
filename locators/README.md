@@ -16,7 +16,7 @@ Each locator <strong class="rfc">must</strong> contain a reference to a resource
 It <strong class="rfc">may</strong> also contain:
 
 * a title (`title`)
-* one or more locations in a resource (`locations`)
+* one or more locations in a resource (grouped together in `locations`)
 * one or more text references, if the resource is a document (`text`)
 
 ## The Locator Object
@@ -33,7 +33,7 @@ It <strong class="rfc">may</strong> also contain:
 
 | Key  | Definition | Format | Required |
 | ---- | ---------- | ------ | -------- |
-| `fragment` |  Contains one or more fragment in the resource referenced by the Locator Object.  | Array of strings | No |
+| `fragments` |  Contains one or more fragment in the resource referenced by the Locator Object.  | Array of strings | No |
 | `progression`  | Progression in the resource expressed as a percentage.  | Float between 0 and 1 | No |
 | `position`  | An index in the publication.  | Integer where the value is > 1 | No |
 | `totalProgression` | Progression in the publication expressed as a percentage.  | Float between 0 and 1 | No |
@@ -73,14 +73,6 @@ In addition to these specifications, this document defines two additional media 
 | CSS Selector | HTML or XHTML | Contains a CSS Selector as defined in [Selectors Level 3](https://www.w3.org/TR/selectors-3/).| `css(.content:nth-child(2))` |
 | Partial CFI | XHTML, strictly in EPUB documents | Contains the right-most part of a Canonical Fragment Identifier as defined in [EPUB Canonical Fragment Identifiers 1.1](http://www.idpf.org/epub/linking/cfi/epub-cfi.html).| `partialcfi(/10[para05]/3:10)` |
 
-## Positions 
-
-A "position" is similar to a page in a printed book. It will be used by the reading system to generate a list and allows multiple readers (e.g. students) to move to the same position in the ebook, using segments of 1024 characters (not bytes); 1024 is arbitrary but matches what Adobe's RMSDK is using. 
-
-A segment (i.e the interval between two adjacent positions) does not cross the boundaries of a resource, therefore the size of the last segment of a resource may be less than 1024 characters; a practical advantage being that chapters usually correspond to resources: the start of a chapter is therefore usually aligned with a "position".  
-
-Users are manipulating positions in the overall publication, but we are storing positions in a resource. To map a position in a resource to a position in the publication, please read [this page](locator-api.md).
-
 
 ## Examples
 
@@ -111,14 +103,14 @@ Users are manipulating positions in the overall publication, but we are storing 
   "type": "audio/ogg",
   "title": "Chapter 5",
   "locations": {
-    "fragment": ["t=389.84"],
+    "fragments": ["t=389.84"],
     "progression": 0.607379,
     "totalProgression": 0.50678
   }
 }
 ```
 
-*Example 3: Pointing to the fifth page in a PDF*
+*Example 3: Pointing to a rectangle in a page of a PDF*
 
 ```
 {
@@ -126,12 +118,19 @@ Users are manipulating positions in the overall publication, but we are storing 
   "type": "application/pdf",
   "title": "Page 5",
   "locations": {
-    "fragment": ["page=5"],
+    "fragments": ["page=5", "viewrect=50,50,640,480"],
     "progression": 0.12703,
     "totalProgression": 0.12703
   }
 }
 ```
+
+## Best Practices
+
+In addition to defining the Locator model, the Readium community also strongly recommend all implementations to follow a number of best practices:
+
+* Best practices for calculating locations
+* Best practices for locators per format
 
 
 # Appendix A - JSON Schema
