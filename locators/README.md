@@ -129,8 +129,8 @@ For this purpose, this document identifies the following specifications along wi
 
 In addition to defining the Locator model, the Readium community also strongly recommend all implementations to follow a number of best practices:
 
+* [Best practices for locators per format](best-practices/format.md)
 * Best practices for calculating locations
-* Best practices for locators per format
 
 
 # Appendix A - JSON Schema
