@@ -19,7 +19,7 @@ It <strong class="rfc">may</strong> also contain:
 * one or more locations in a resource (grouped together in `locations`)
 * one or more text references, if the resource is a document (`text`)
 
-## The Locator Object
+## The `locator` Object
 
 | Key  | Definition | Format | Required |
 | ---- | ---------- | ------ | -------- |
@@ -27,9 +27,9 @@ It <strong class="rfc">may</strong> also contain:
 | `type`  | The media type of the resource that the Locator Object points to. | Media Type | Yes |
 | `title`  | The title of the chapter or section which is more relevant in the context of this locator.| String | No |
 | `locations`  | One or more alternative expressions of the location. | [Location Object](#the-location-object) | No |
-| `text`  |  Textual context of the locator.  | [Locator Text Object](#the-locator-text-object) | No |
+| `text`  |  Textual context of the locator.  | [Text Object](#the-text-object) | No |
 
-## The Location Object
+## The `location` Object
 
 | Key  | Definition | Format | Required |
 | ---- | ---------- | ------ | -------- |
@@ -38,8 +38,15 @@ It <strong class="rfc">may</strong> also contain:
 | `position`  | An index in the publication.  | Integer where the value is > 1 | No |
 | `totalProgression` | Progression in the publication expressed as a percentage.  | Float between 0 and 1 | No |
 
+Additional locations <strong class="rfc">may</strong> also be included in this object, using an extension officially registered on this repository or a URI.
 
-## The Locator Text Object
+The following extensions are currently registered:
+
+| Name  |  Description |
+| ----- | ------------ |
+| [HTML Extension](extensions/html.md) | Additional locations for HTML/XHTML documents. |
+
+## The `text` Object
 
 A Locator Text Object contains multiple text fragments, useful to give a context to the Locator or for highlights.
 
@@ -65,13 +72,6 @@ For this purpose, this document identifies the following specifications along wi
 | [HTML](https://html.spec.whatwg.org/) | HTML or XHTML | `id` |
 | [Media Fragment URI 1.0](https://www.w3.org/TR/media-frags/) | Audio, Video and Images | `t=67`, `xywh=160,120,320,240`|
 | [PDF](http://tools.ietf.org/rfc/rfc3778) | PDF | `page=12`, `viewrect=50,50,640,480`|
-
-In addition to these specifications, this document defines two additional media fragments:
-
-| Name | Scope | Definition | Example |
-| ---- | ----- | ---------- | ------- |
-| CSS Selector | HTML or XHTML | Contains a CSS Selector as defined in [Selectors Level 3](https://www.w3.org/TR/selectors-3/).| `css(.content:nth-child(2))` |
-| Partial CFI | XHTML, strictly in EPUB documents | Contains the right-most part of a Canonical Fragment Identifier as defined in [EPUB Canonical Fragment Identifiers 1.1](http://www.idpf.org/epub/linking/cfi/epub-cfi.html).| `partialcfi(/10[para05]/3:10)` |
 
 
 ## Examples
