@@ -4,6 +4,8 @@ The goal of this document is to provide directions that each implementation of R
 
 While the default context is very flexible in the way each metadata can be represented, when parsing a publication in the streamer we always use the most complex form for each metadata to harmonize our output.
 
+Related Repository: [Readium’s Webpub Manifest](https://github.com/readium/webpub-manifest)
+
 ## Title
 
 The `title` of a publication is an object where each key is a BCP 47 language tag and each value of this key is a string.
@@ -291,27 +293,34 @@ Does not apply.
 
 The integer is the value of the `meta` element whose `property` attribute has the value `schema:numberOfPages`.
 
-## Rendition
+## Rendition / Presentation
 
-The `rendition` of a publication is an object containing the following keys: 
+The `presentation` of a publication is an object containing the following keys: 
 
-- `overflow`;
-- `layout`;
+- `continuous`;
 - `orientation`;
+- `overflow`;
 - `spread`.
 
-The value of each key is a string that must conform to the allowed values in the EPUB specification.
+In addition, the following elements may be included in `properties` in a Link Object from the `readingOrder` (spine overrides):
+
+- `layout`;
+- `orientation`;
+- `overflow`;
+- `page`;
+- `spread`.
 
 ### Flow
 
-The `rendition:flow` metadata is mapped to `overflow`.
+The `rendition:flow` metadata is mapped to `overflow` and `continuous`.
 
 The `overflow` of a publication is a key whose value can be the following string: 
 
 - `auto`;
 - `paginated`;
-- `scrolled`;
-- `scrolled-continuous`.
+- `scrolled`.
+
+This `overflow` can be `continuous`, which is a key whose value is a boolean: `true` or `false`
 
 #### EPUB 2.x
 
@@ -319,20 +328,33 @@ Does not apply.
 
 #### EPUB 3.x
 
+##### Global Property
+
 The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:flow` with the following mapping:
 
-| rendition:flow     | value               |
-|--------------------|---------------------|
-| auto               | auto                |
-| paginated          | paginated           |
-| scrolled-doc       | scrolled            |
-| scrolled-continous | scrolled-continuous |
+| rendition:flow      | values                                        |
+|---------------------|-----------------------------------------------|
+| auto                | "overflow": "auto" + "continuous": false      |
+| paginated           | "overflow": "paginated" + "continuous": false |
+| scrolled-doc        | "overflow": "scrolled" + "continuous": false  |
+| scrolled-continuous | "overflow": "scrolled" + "continuous": true   |
 
 If no value is set, it defaults to `auto`.
 
+##### Spine Overrides
+
+For each spine item, the value of `overflow` must be inferred from the `properties` attribute whose value contains `rendition:flow-`.
+
+| Properties                         | value     |
+|------------------------------------|-----------|
+| rendition:flow-auto                | auto      |
+| rendition:flow-paginated           | paginated |
+| rendition:flow-scrolled-doc        | scrolled  |
+| rendition:flow-scrolled-continuous | scrolled  |
+
 ### Layout
 
-The `layout` of a publication is a key whose value can be the following string: 
+The `layout` element of `properties` in the Link Object from `readingOrder` is a key whose value can be the following string: 
 
 - `reflowable`;
 - `fixed`.
@@ -353,9 +375,13 @@ If the publication either has a `com.kobobooks.display-options.xml` or `com.appl
 - If the value is `false`, then the value of the `layout` key is `reflowable`.
 - If no such option is set, then the value of the `layout` key defaults to `reflowable`.
 
+This value is then used for all spine items.
+
 #### EPUB 3.x
 
-The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:layout` with the following mapping:
+##### Global Property
+
+For all spine items, the value of `layout` is the value of the `<meta>` element whose `property` attribute has the value `rendition:layout` with the following mapping:
 
 | rendition:layout | value      |
 |------------------|------------|
@@ -363,6 +389,15 @@ The string is the value of the `<meta>` element whose `property` attribute has t
 | pre-paginated    | fixed      |
 
 If no value is set, it defaults to `reflowable`.
+
+##### Spine Overrides
+
+For each spine item, the value of `layout` must be inferred from the `properties` attribute whose value contains `rendition:layout-`.
+
+| Properties                     | value      |
+|--------------------------------|------------|
+| rendition:layout-reflowable    | reflowable |
+| rendition:layout-pre-paginated | fixed      |
 
 ### Orientation
 
@@ -392,9 +427,21 @@ If no such option is set, it defaults to `auto`.
 
 #### EPUB 3.x
 
+##### Global Property
+
 The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:orientation`.
 
 If no value is set, it defaults to `auto`.
+
+##### Spine Overrides
+
+For each spine item, the value of `orientation` must be inferred from the `properties` attribute whose value contains `rendition:orientation-`.
+
+| Properties                      | value     |
+|---------------------------------|-----------|
+| rendition:orientation-auto      | auto      |
+| rendition:orientation-landscape | landscape |
+| rendition:orientation-portrait  | portrait  |
 
 ### Spread
 
@@ -411,6 +458,8 @@ Does not apply.
 
 #### EPUB 3.x
 
+##### Global Property
+
 The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:spread` with the following mapping:
 
 | rendition:spread | value     |
@@ -422,3 +471,37 @@ The string is the value of the `<meta>` element whose `property` attribute has t
 | both             | both      |
 
 If no value is set, it defaults to `auto`.
+
+##### Spine Overrides
+
+For each spine item, the value of `spread` must be inferred from the `properties` attribute whose value contains `rendition:spread-`.
+
+| Properties                 | value     |
+|----------------------------|-----------|
+| rendition:spread-none      | none      |
+| rendition:spread-auto      | auto      |
+| rendition:spread-landscape | landscape |
+| rendition:spread-portrait  | both      |
+| rendition:spread-both      | both      |
+
+### Page-spread-* properties
+
+The `page` of a Link Object `properties` is a key whose value can be the following string:
+
+- `center`;
+- `left`;
+- `right`.
+
+#### EPUB 2.x
+
+Does not apply.
+
+#### EPUB 3.x
+
+For each spine item, the value of `page` must be inferred from the `properties` attribute whose value contains `rendition:page-spread-`.
+
+| Properties                    | value   |
+|-------------------------------|---------|
+| rendition:page-spread-center  | center  |
+| rendition:page-spread-left    | left    |
+| rendition:page-spread-right   | right   |
