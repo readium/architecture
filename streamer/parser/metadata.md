@@ -4,7 +4,7 @@ The goal of this document is to provide directions that each implementation of R
 
 While the default context is very flexible in the way each metadata can be represented, when parsing a publication in the streamer we always use the most complex form for each metadata to harmonize our output.
 
-Related Repository: [Readium’s Webpub Manifest](https://github.com/readium/webpub-manifest)
+Related Repository: [Readium Web Publication Manifest](https://github.com/readium/webpub-manifest)
 
 ## Title
 
@@ -298,6 +298,7 @@ The integer is the value of the `meta` element whose `property` attribute has th
 The `presentation` of a publication is an object containing the following keys: 
 
 - `continuous`;
+- `layout`;
 - `orientation`;
 - `overflow`;
 - `spread`.
@@ -354,7 +355,7 @@ For each spine item, the value of `overflow` must be inferred from the `properti
 
 ### Layout
 
-The `layout` element of `properties` in the Link Object from `readingOrder` is a key whose value can be the following string: 
+The `layout` of a publication is a key whose value can be the following string: 
 
 - `reflowable`;
 - `fixed`.
@@ -375,13 +376,11 @@ If the publication either has a `com.kobobooks.display-options.xml` or `com.appl
 - If the value is `false`, then the value of the `layout` key is `reflowable`.
 - If no such option is set, then the value of the `layout` key defaults to `reflowable`.
 
-This value is then used for all spine items.
-
 #### EPUB 3.x
 
 ##### Global Property
 
-For all spine items, the value of `layout` is the value of the `<meta>` element whose `property` attribute has the value `rendition:layout` with the following mapping:
+The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:layout` with the following mapping:
 
 | rendition:layout | value      |
 |------------------|------------|
