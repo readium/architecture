@@ -54,16 +54,20 @@ If the Status Document is unavailable or if the client is unable to obtain an in
 
 ### 3/ Get an updated license if needed
 
-If the license timestamp in the 'updated' object of the Status Document is more recent than the timestamp contained in the local copy of the License Document, the client MUST download the License Document again. 
+If the license timestamp in the 'updated' object of the Status Document is more recent than the timestamp contained in the local copy of the License Document, the app must try to download the License Document again. 
 
-It must then validate the new license structure against the JSON schema. If the updated license is ok, the app replaces the previous copy with the new one.
+If the download of the updated License Document does not succeed, log that update of the License Document failed and jump to 4.
 
-Note: it implies that if the user has changed his passphrase on the provider's end, the "old" passphrase is still ok until the 'updated' timestamp of the status document is modified (e.g. after a loan return). 
+The app must then validate the new license structure against the JSON schema. If the updated license is ok, the app replaces the previous copy with the new one. If not, log that update of the License Document failed .
+
+Note: if the user passphrase has been modified server side after the initial license has been generated, the updated license is generated with the new passphrase. 
 
 
 ### 4/ Check the dates and license status
 
-Check that today is between the start and end date of the license. If it's the case, jump to 5.
+If there was no need to update the License Document or its update did not fail, check that "now" is between the start and end date and time of the license. If it's the case, jump to 5.
+
+Note: this assures that if the update of the License Document failed, the status takes precedence over the initial license. 
 
 Otherwise, check the status in the status document, which should be "revoked", "returned", "cancelled" or "expired". If the status is "ready" or "active", the app MUST consider this is a server error and the correct status is "expired". The app MUST then notify the user and stop there.
 
