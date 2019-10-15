@@ -48,7 +48,7 @@ For an overview of how Readium on Desktop works, we highly recommend taking a lo
 
 The Test App integrates the following modules (all written in TypeScript) into a single Electron application:
 
-* [Shared Model](https://github.com/readium/r2-shared-kotlin)
+* [Shared Model](https://github.com/readium/r2-shared-js)
 * [Streamer](https://github.com/readium/r2-streamer-js)
 * [Navigator](https://github.com/readium/r2-shared-js)
 
