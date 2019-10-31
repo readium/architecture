@@ -30,7 +30,7 @@ Publication Servers which implement level 1 support are dynamic apps that usuall
 
 - Ability to obfuscate resources and provide access control over the manifest and its resources
 - Search within a publication or across all publications
-- [Positions List API](../positions) per publication
+- [Positions List API](../models/locators/positions) per publication
 - Dictionary/Index API per publication
 
 ## Storing and Accessing Publications
