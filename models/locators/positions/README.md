@@ -31,9 +31,7 @@ A streamer will usually be responsible for handling that service and can decide 
 
 A client may request the full list of positions for the publication by sending a simple GET request:
 
-```
-GET https://example.com/list
-
+```json
 {
   "total": 2,
   "positions": [
@@ -66,7 +64,7 @@ GET https://example.com/list
 | total  | Contains the total number of positions in a given publication.  | Integer |
 | positions  | Contains one or more Locator Objects.  | Locator Object |
 
-The Locator Object contains one or more locations, [as defined in the Locators document](/locators#the-locator-object).
+The Locator Object contains one or more locations, [as defined in the Locators document](../README.md#the-locator-object).
 
 ## Navigator
 
