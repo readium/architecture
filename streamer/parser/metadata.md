@@ -123,7 +123,7 @@ The following mapping should be used to determine the key of the contributor’s
 |----------------|------------------------|-------------|
 | dc:creator     | aut                    | author      |
 | dc:contributor | trl                    | translator  |
-| dc:contributor | est                    | editor      |
+| dc:contributor | edt                    | editor      |
 | dc:contributor | ill                    | illustrator |
 | dc:contributor | art                    | artist      |
 | dc:contributor | clr                    | colorist    |
