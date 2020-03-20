@@ -6,6 +6,17 @@ While the default context is very flexible in the way each metadata can be repre
 
 Related Repository: [Readium Web Publication Manifest](https://github.com/readium/webpub-manifest)
 
+## Localized Strings
+
+In many cases, the default context supports alternate representations of the same string in different scripts and languages by means of JSON-LD language maps.
+To fill such a map from an EPUB metadata element, proceed as follows:
+
+* Determine the language used in the content of the carrying element as defined in [the XML specification](https://www.w3.org/TR/xml/#sec-lang-tag),
+  i.e. check whether the carrying element has or inherits an `xml:lang` attribute. Otherwise, fallback to the primary language of the publication.
+* In the EPUB 3.x case, check if the element is refined by some `meta` elements that have or inherit an `xml:lang` attribute and whose property is `alternate-script`.
+  For each one, add to the map the corresponding language associated with the content of the `meta` element.
+
+
 ## Title
 
 The `title` of a publication is an object where each key is a BCP 47 language tag and each value of this key is a string.
@@ -15,29 +26,20 @@ In addition to `title`, a publication may also contain a `sortAs` string, used t
 When parsing an EPUB, we need to establish:
 
 * which title is the primary one
-* the language(s) used to express the primary title along with the associated strings
 * the string used to sort the title of the publication
-* the subtitle of the publication
-* the default language for metadata
+* a language map of the representations of the title
+* which title is the subtitle
+* a language map of the representations of the title
 
 ### EPUB 2.x
 
 The first `<dc:title>` element should be considered the primary one.
 
-To determine the language of the `title` element, check:
-
-1. if it has an `xml:lang` attribute;
-2. if it shares an `xml:lang` attribute (i.e. it is present on the `metadata` or `package` element);
-3. the primary language of the publication.
+Parse it as a [localized string](#localized-strings) to compute a language map.
 
 The string for `sortAs` is the value of `content` in a `meta` whose `name` is `calibre:title_sort` and `content` is the value to use.
 
 The subtitle can’t be expressed.
-
-To determine the default language for metadata, check:
-
-1. if the `package` has an `xml:lang` attribute;
-2. the primary language of the publication.
 
 ### EPUB 3.x
 
@@ -46,20 +48,12 @@ The primary `title` is defined using the following logic:
 1. it is the `<dc:title>` element whose `title-type` (refine) is `main`;
 2. if there is no such refine, it is the first `<dc:title>` element. 
 
-To determine the language of the `title` element, check
-
-1. if it has an `xml:lang` attribute;
-2. if it shares an `xml:lang` attribute (i.e. it is present on the `metadata` or `package` element);
-3. the primary language of the publication.
+Parse it as a [localized string](#localized-strings) to compute a language map.
 
 The string used to sort the `title` of the publication is the value of the main title’s refine whose `property` is `file-as`.
 
-The subtitle of the publication is the value of the `<dc:title>` element whose `title-type` (refine) is `subtitle`. In case there are several, check their `display-seq` (refine).
-
-To determine the default language for metadata, check:
-
-1. if the `package` has an `xml:lang` attribute;
-2. the primary language of the publication.
+The subtitle is the `<dc:title>` element whose `title-type` (refine) is `subtitle`. In case there are several, use the one with the lowest `display-seq` (refine).
+Parse it as a [localized string](#localized-strings) to compute a language map.
 
 ## Identifier
 
@@ -111,8 +105,7 @@ The contributor object may also contain a `sortAs` string, used to sort the cont
 When parsing an EPUB, we need to establish:
 
 * the key of the contributor;
-* the name of this contributor;
-* the alternate forms for this name;
+* a language map for the name of this contributor;
 * the string used to sort the name of the contributor.
 
 ### EPUB 2.x
@@ -132,7 +125,7 @@ The following mapping should be used to determine the key of the contributor’s
 
 Where `opf:role` is the value of the attribute of the `<dc:element>`.
 
-The `name` of the contributor is the value of the element.
+Parse the carrying element as a [localized string](#localized-strings) to compute a language map for his name.
 
 Finally, the string used to sort the name of the contributor is the value of the `opf:file-as` attribute of this element.
 
@@ -153,10 +146,7 @@ The following mapping should be used to determine to key of the contributor’s 
 
 Where `role` is the value of the refine whose `scheme` is a value of `marc:relators`.
 
-To handle the `name` of the contributor:
-
-1. check if there is a refine whose propery is `alternate-script` and its corresponding `xml:lang` value;
-2. if there is none, use the value of the `<dc:element>`.
+Parse the `contributor` element as a [localized string](#localized-strings) to compute a language map for his name.
 
 Finally, the string used to sort the name of the contributor is the value of a refine with a `file-as` property.
 
