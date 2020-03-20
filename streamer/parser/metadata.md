@@ -27,7 +27,7 @@ The first `<dc:title>` element should be considered the primary one.
 To determine the language of the `title` element, check:
 
 1. if it has an `xml:lang` attribute;
-2. if it shares an `xml:lang` attribute (i.e. it is present on the `package` element);
+2. if it shares an `xml:lang` attribute (i.e. it is present on the `metadata` or `package` element);
 3. the primary language of the publication.
 
 The string for `sortAs` is the value of `content` in a `meta` whose `name` is `calibre:title_sort` and `content` is the value to use.
@@ -49,7 +49,7 @@ The primary `title` is defined using the following logic:
 To determine the language of the `title` element, check
 
 1. if it has an `xml:lang` attribute;
-2. if it shares an `xml:lang` attribute (i.e. it is present on the `package` element);
+2. if it shares an `xml:lang` attribute (i.e. it is present on the `metadata` or `package` element);
 3. the primary language of the publication.
 
 The string used to sort the `title` of the publication is the value of the main title’s refine whose `property` is `file-as`.
