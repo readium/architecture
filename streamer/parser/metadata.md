@@ -211,16 +211,24 @@ The string is the value of the `meta` element whose `property` attribute has the
 
 ## Subjects
 
-The `subject` of a publication is a key whose value is string or an array.
+The `subject` of a publication is a key whose value is, in the most complex form, an array of `subject` objects.
 
-Although each subject should have its own `<dc:subject>` element, this is not necessarily the case in practice, authors and authoring tools often separating multiple subjects using commas or semicolons in the same element.
+Although each subject should have its own `dc:subject` element, this is not necessarily the case in practice, authors and authoring tools often separating multiple subjects using commas or semicolons in the same element.
+So, if there is a single `dc:subject` that is not refined by any property, split its content at every comma and semicolon and consider you have several `dc:subject` with shared attributes.
 
-To retrive the value of the `subject` key:
+Parse each `dc:subject` element as a [localized string](#localized-strings) to compute a language map for the subject's `name`.
 
-1. if there is a one single `<dc:subject>` element, make sure keywords are not separated using commas or semicolons;
-    1. if it doesn’t, the string is the value;
-    2. if it does, split the string to build an array;
-2. if there are more than one `<dc:subject>` elements, build an array using their values.
+### EPUB 2.x
+
+`sortAs`, `code` and `scheme` cannot be expressed.
+
+### EPUB 3.x
+
+The `sortAs` string used to sort the subject is the value of the refine whose `property` has the value of `file-as`.
+
+The `code` property has the same value as the refine whose `property` has the value of `term`.
+
+The `scheme` property has the same value as the refine whose `property` has the value of `authority`.
 
 ## Collections and Series
 
