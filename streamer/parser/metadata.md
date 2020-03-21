@@ -112,20 +112,23 @@ When parsing an EPUB, we need to establish:
 
 The following mapping should be used to determine the key of the contributor’s object: 
 
-| element        | opf:role               | key         |
-|----------------|------------------------|-------------|
-| dc:creator     | aut                    | author      |
-| dc:contributor | trl                    | translator  |
-| dc:contributor | edt                    | editor      |
-| dc:contributor | ill                    | illustrator |
-| dc:contributor | art                    | artist      |
-| dc:contributor | clr                    | colorist    |
-| dc:contributor | nrt                    | narrator    |
-| dc:contributor | \<empty\> or \<other\> | contributor |
+| element        | opf:role                        | key         |
+|----------------|---------------------------------|-------------|
+| dc:creator     | aut or \<empty\> or \<unknown\> | author      |
+| dc:publisher   | pbl or \<empty\> or \<unknown\> | publisher   |
+| dc:contributor | trl                             | translator  |
+| dc:contributor | edt                             | editor      |
+| dc:contributor | ill                             | illustrator |
+| dc:contributor | art                             | artist      |
+| dc:contributor | clr                             | colorist    |
+| dc:contributor | nrt                             | narrator    |
+| dc:contributor | \<empty\> or \<unknown\>        | contributor |
 
 Where `opf:role` is the value of the attribute of the `<dc:element>`.
 
-Parse the carrying element as a [localized string](#localized-strings) to compute a language map for his name.
+In case of conflict, `opf:role` overrides the XML element used. So, for example, map a `<dc:publisher>` or `<dc:contributor>` element with `opf:role` aut to an author.
+
+Parse the carrying element as a [localized string](#localized-strings) to compute a language map for the contributor's name.
 
 Finally, the string used to sort the name of the contributor is the value of the `opf:file-as` attribute of this element.
 
@@ -133,20 +136,25 @@ Finally, the string used to sort the name of the contributor is the value of the
 
 The following mapping should be used to determine to key of the contributor’s object: 
 
-| element        | role                   | key         |
-|----------------|------------------------|-------------|
-| dc:creator     | aut                    | author      |
-| dc:contributor | trl                    | translator  |
-| dc:contributor | est                    | editor      |
-| dc:contributor | ill                    | illustrator |
-| dc:contributor | art                    | artist      |
-| dc:contributor | clr                    | colorist    |
-| dc:contributor | nrt                    | narrator    |
-| dc:contributor | \<empty\> or \<other\> | contributor |
+| element        | role                            | key         |
+|----------------|---------------------------------|-------------|
+| dc:creator     | aut or \<empty\> or \<unknown\> | author      |
+| dc:publisher   | pbl or \<empty\> or \<unknown\> | publisher   |
+| dc:contributor | trl                             | translator  |
+| dc:contributor | edt                             | editor      |
+| dc:contributor | ill                             | illustrator |
+| dc:contributor | art                             | artist      |
+| dc:contributor | clr                             | colorist    |
+| dc:contributor | nrt                             | narrator    |
+| media:narrator | nrt or \<empty\> or \<unknown\> | narrator    |
+| dc:contributor | \<empty\> or \<unknown\>        | contributor |
+
 
 Where `role` is the value of the refine whose `scheme` is a value of `marc:relators`.
 
-Parse the `contributor` element as a [localized string](#localized-strings) to compute a language map for his name.
+In case of conflict, `role` overrides the XML element used. So, for example, map a `<dc:publisher>` or `<dc:contributor>` element with `role` aut to an author.
+
+Parse the `contributor` element as a [localized string](#localized-strings) to compute a language map for the contributor's name.
 
 Finally, the string used to sort the name of the contributor is the value of a refine with a `file-as` property.
 
@@ -176,12 +184,6 @@ If there is more that one `<dc:language>` elements, then the value of the key is
 The `description` of a publication is a key whose value is a string in plain text.
 
 The string is the value of the `<dc:description>` element.
-
-## Publisher
-
-The `publisher` of a publication is a key whose value is a string.
-
-The string is the value of the `<dc:publisher>` element.
 
 ## Publication Date
 
