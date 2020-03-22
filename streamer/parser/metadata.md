@@ -128,7 +128,7 @@ Where `opf:role` is the value of the attribute of the `<dc:element>`.
 
 In case of conflict, `opf:role` overrides the XML element used. For example, map a `<dc:publisher>` or `<dc:contributor>` element whose value for `opf:role` is `aut` to an author.
 
-Parse the carrying element as a [localized string](#localized-strings) to compute a language map for the contributor's name.
+Parse the carrying element as a [localized string](#localized-strings) to compute a language map for the contributor’s name.
 
 Finally, the string used to sort the name of the contributor is the value of the `opf:file-as` attribute of this element.
 
@@ -154,7 +154,7 @@ Where `role` is the value of the refine whose `scheme` is a value of `marc:relat
 
 In case of conflict, `role` overrides the XML element used. So, for example, map a `<dc:publisher>` or `<dc:contributor>` element whose value for `role` is `aut` to an author.
 
-Parse the `contributor` element as a [localized string](#localized-strings) to compute a language map for the contributor's name.
+Parse the `contributor` element as a [localized string](#localized-strings) to compute a language map for the contributor’s name.
 
 Finally, the string used to sort the name of the contributor is the value of a refine with a `file-as` property.
 
