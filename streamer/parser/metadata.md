@@ -126,7 +126,7 @@ The following mapping should be used to determine the key of the contributor’s
 
 Where `opf:role` is the value of the attribute of the `<dc:element>`.
 
-In case of conflict, `opf:role` overrides the XML element used. So, for example, map a `<dc:publisher>` or `<dc:contributor>` element with `opf:role` aut to an author.
+In case of conflict, `opf:role` overrides the XML element used. For example, map a `<dc:publisher>` or `<dc:contributor>` element whose value for `opf:role` is `aut` to an author.
 
 Parse the carrying element as a [localized string](#localized-strings) to compute a language map for the contributor's name.
 
