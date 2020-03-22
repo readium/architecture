@@ -213,10 +213,10 @@ The string is the value of the `meta` element whose `property` attribute has the
 
 The `subject` of a publication is a key whose value is, in the most complex form, an array of `subject` objects.
 
-Although each subject should have its own `dc:subject` element, this is not necessarily the case in practice, authors and authoring tools often separating multiple subjects using commas or semicolons in the same element.
+Although each subject should have its own `<dc:subject>` element, this is not necessarily the case in practice, authors and authoring tools often separating multiple subjects using commas or semicolons in the same element.
 So, if there is a single `dc:subject` that is not refined by any property, split its content at every comma and semicolon and consider you have several `dc:subject` with shared attributes.
 
-Parse each `dc:subject` element as a [localized string](#localized-strings) to compute a language map for the subject's `name`.
+Parse each `<dc:subject>` element as a [localized string](#localized-strings) to compute a language map for the subject’s `name`.
 
 ### EPUB 2.x
 
