@@ -52,7 +52,7 @@ Parse it as a [localized string](#localized-strings) to compute a language map.
 
 The string used to sort the `title` of the publication is the value of the main title’s refine whose `property` is `file-as`.
 
-The subtitle is the `<dc:title>` element whose `title-type` (refine) is `subtitle`. In case there are several, use the one with the lowest `display-seq` (refine).
+The subtitle is the value of the `<dc:title>` element whose `title-type` (refine) is `subtitle`. In case there are several, use the one with the lowest `display-seq` (refine).
 Parse it as a [localized string](#localized-strings) to compute a language map.
 
 ## Identifier
