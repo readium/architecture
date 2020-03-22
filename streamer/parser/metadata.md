@@ -152,7 +152,7 @@ The following mapping should be used to determine to key of the contributor’s 
 
 Where `role` is the value of the refine whose `scheme` is a value of `marc:relators`.
 
-In case of conflict, `role` overrides the XML element used. So, for example, map a `<dc:publisher>` or `<dc:contributor>` element with `role` aut to an author.
+In case of conflict, `role` overrides the XML element used. So, for example, map a `<dc:publisher>` or `<dc:contributor>` element whose value for `role` is `aut` to an author.
 
 Parse the `contributor` element as a [localized string](#localized-strings) to compute a language map for the contributor's name.
 
