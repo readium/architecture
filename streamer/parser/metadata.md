@@ -29,7 +29,7 @@ When parsing an EPUB, we need to establish:
 * the string used to sort the title of the publication
 * a language map of the representations of the title
 * which title is the subtitle
-* a language map of the representations of the title
+* a language map of the representations of the subtitle
 
 ### EPUB 2.x
 
