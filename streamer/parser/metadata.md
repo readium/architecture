@@ -112,17 +112,19 @@ When parsing an EPUB, we need to establish:
 
 The following mapping should be used to determine the key of the contributor’s object: 
 
-| element        | opf:role                        | key         |
-|----------------|---------------------------------|-------------|
-| dc:creator     | aut or \<empty\> or \<unknown\> | author      |
-| dc:publisher   | pbl or \<empty\> or \<unknown\> | publisher   |
-| dc:contributor | trl                             | translator  |
-| dc:contributor | edt                             | editor      |
-| dc:contributor | ill                             | illustrator |
-| dc:contributor | art                             | artist      |
-| dc:contributor | clr                             | colorist    |
-| dc:contributor | nrt                             | narrator    |
-| dc:contributor | \<empty\> or \<unknown\>        | contributor |
+| element                      | opf:role                 | key         |
+|------------------------------|--------------------------|-------------|
+| dc:creator                   | \<empty\> or \<unknown\> | author      |
+| dc:creator or dc:contributor | aut                      | author      |
+| dc:contributor               | \<empty\> or \<unknown\> | contributor |
+| dc:publisher                 | \<any\>                  | publisher   |
+| dc:creator or dc:contributor | pbl                      | publisher   |
+| dc:creator or dc:contributor | trl                      | translator  |
+| dc:creator or dc:contributor | edt                      | editor      |
+| dc:creator or dc:contributor | ill                      | illustrator |
+| dc:creator or dc:contributor | art                      | artist      |
+| dc:creator or dc:contributor | clr                      | colorist    |
+| dc:creator or dc:contributor | nrt                      | narrator    |
 
 Where `opf:role` is the value of the attribute of the `<dc:element>`.
 
@@ -136,19 +138,20 @@ Finally, the string used to sort the name of the contributor is the value of the
 
 The following mapping should be used to determine to key of the contributor’s object: 
 
-| element        | role                            | key         |
-|----------------|---------------------------------|-------------|
-| dc:creator     | aut or \<empty\> or \<unknown\> | author      |
-| dc:publisher   | pbl or \<empty\> or \<unknown\> | publisher   |
-| dc:contributor | trl                             | translator  |
-| dc:contributor | edt                             | editor      |
-| dc:contributor | ill                             | illustrator |
-| dc:contributor | art                             | artist      |
-| dc:contributor | clr                             | colorist    |
-| dc:contributor | nrt                             | narrator    |
-| media:narrator | nrt or \<empty\> or \<unknown\> | narrator    |
-| dc:contributor | \<empty\> or \<unknown\>        | contributor |
-
+| element                      | role                     | key         |
+|------------------------------|--------------------------|-------------|
+| dc:creator                   | \<empty\> or \<unknown\> | author      |
+| dc:creator or dc:contributor | aut                      | author      |
+| dc:contributor               | \<empty\> or \<unknown\> | contributor |
+| dc:publisher                 | \<any\>                  | publisher   |
+| dc:creator or dc:contributor | pbl                      | publisher   |
+| dc:creator or dc:contributor | trl                      | translator  |
+| dc:creator or dc:contributor | edt                      | editor      |
+| dc:creator or dc:contributor | ill                      | illustrator |
+| dc:creator or dc:contributor | art                      | artist      |
+| dc:creator or dc:contributor | clr                      | colorist    |
+| dc:creator or dc:contributor | nrt                      | narrator    |
+| media:narrator               | \<any\>                  | narrator    |
 
 Where `role` is the value of the refine whose `scheme` is a value of `marc:relators`.
 
