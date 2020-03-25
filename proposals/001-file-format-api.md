@@ -5,6 +5,7 @@
 * Status: **In Review**
 * Related Issues:
   * [Model for the Publication's format/type (architecture/112)](https://github.com/readium/architecture/issues/112)
+  * [Media types of Readium publications (architecture/121)](https://github.com/readium/architecture/issues/121)
 
 
 ## Introduction
@@ -142,6 +143,7 @@ Constant | Media Type
 `LcpProtectedPdf` | application/pdf+lcp
 `LcpLicenseDocument` | application/vnd.readium.lcp.license.v1.0+json
 `LcpStatusDocument` | application/vnd.readium.license.status.v1.0+json
+`Lpf` | application/lpf+zip
 `Mp3` | audio/mpeg
 `Mpeg` | video/mpeg
 `Ogg` | audio/ogg
@@ -218,10 +220,12 @@ Constant | Name | Extension | Media Type
 `LcpProtectedAudiobook` | LCP Protected Audiobook | lcpa | application/audiobook+lcp
 `LcpProtectedPdf` | LCP Protected PDF | lcpdf | application/pdf+lcp
 `LcpLicense` | LCP License | lcpl | application/vnd.readium.lcp.license.v1.0+json
+`Lpf` | Lightweight Packaging Format | lpf | application/lpf+zip
 `Pdf` | PDF | pdf | application/pdf
 `WebPub` | Web Publication | webpub | application/webpub+zip
 `WebPubManifest` | Web Publication | json | application/webpub+json
-`Zab` | Zipped Audio Book | zab | application/vnd.zab+zip
+`W3cWPubManifest` Web Publication | json | application/ld+json
+`Zab` | Zipped Audio Book | zab | (non-existent) application/vnd.readium.zab+zip
 
 #### Methods
 
@@ -235,7 +239,7 @@ Constant | Name | Extension | Media Type
     * We can provide several from different sources as fallbacks, e.g. from a local path and a download URL.
   * (optional) `mediaTypes`
     * Media type hints to be used by the sniffers.
-    * We can provide several from different sources as fallbacks, e.g. from a `Link.href`, from a `Content-Type` HTTP header or from a database.
+    * We can provide several from different sources as fallbacks, e.g. from a `Link.type`, from a `Content-Type` HTTP header or from a database.
   * (optional) `sniffers`
     * List of content sniffers used to determine the format.
     * A reading app can support additional formats by giving `Format.defaultSniffers + CustomSniffer()`.
@@ -453,6 +457,7 @@ The sniffers order is paramount, because some formats are subsets of other forma
 7. Audiobook Manifest (Readium)
 8. DiViNa Manifest
 9. Web Publication Manifest (Readium)
+10. Web Publication Manifest (W3C)
 10. LCP Protected Audiobook
 11. LCP Protected PDF
 12. Audiobook (Readium)
@@ -461,6 +466,7 @@ The sniffers order is paramount, because some formats are subsets of other forma
 15. EPUB
 16. CBZ
 17. ZAB (Zipped Audio Book)
+18. LPF
 18. PDF
 
 ### Audiobook (Readium)
@@ -507,8 +513,8 @@ The sniffers order is paramount, because some formats are subsets of other forma
 * Light:
   * extension is `epub`
   * media type is `application/epub+zip`
-* Heavy:
-  * it's a ZIP archive with a `META-INF/container.xml` entry
+* Heavy ([reference](https://www.w3.org/publishing/epub3/epub-ocf.html#sec-zip-container-mime)):
+  * it's a ZIP archive with a `mimetype` entry containing strictly `application/epub+zip`, encoded in US-ASCII
 
 ### HTML
 
@@ -574,13 +580,23 @@ The sniffers order is paramount, because some formats are subsets of other forma
 * Heavy:
   * it's a JSON object containing the following root keys: `id`, `issued`, `provider` and `encryption`
 
+### LPF (Lightweight Packaging Format)
+
+* Light:
+  * extension is `lpf`
+  * media type is `application/lpf+zip`
+* Heavy:
+  * it's a ZIP archive with either:
+    * a `publication.json` entry, containing at least `https://www.w3.org/ns/wp-context` in the `@context` string/array property
+    * an `index.html` entry
+
 ### PDF
 
 * Light:
   * extension is `pdf`
   * media type is `application/pdf`
-* Heavy:
-  * content starts with `%PDF`
+* Heavy ([reference](https://www.loc.gov/preservation/digital/formats/fdd/fdd000123.shtml)):
+  * content starts with `%PDF` (hex `25 50 44 46`)
 
 ### Web Publication (Readium)
 
@@ -596,6 +612,11 @@ The sniffers order is paramount, because some formats are subsets of other forma
   * media type is `application/webpub+json`
 * Heavy:
   * it's a JSON file, parsed as an RWPM containing one `Link` with `self` rel and `application/webpub+json` type
+
+### Web Publication Manifest (W3C)
+
+* Heavy ([reference](https://www.w3.org/TR/wpub/#manifest-context)):
+  * it's a JSON file, containing at least `https://www.w3.org/ns/wp-context` in the `@context` string/array property 
 
 ### ZAB (Zipped Audio Book)
 
