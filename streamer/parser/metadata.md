@@ -115,9 +115,8 @@ The following mapping should be used to determine the key of the contributor’s
 | element                      | opf:role                 | key         |
 |------------------------------|--------------------------|-------------|
 | dc:creator                   | \<empty\> or \<unknown\> | author      |
-| dc:creator or dc:contributor | aut                      | author      |
 | dc:contributor               | \<empty\> or \<unknown\> | contributor |
-| dc:publisher                 | \<any\>                  | publisher   |
+| dc:creator or dc:contributor | aut                      | author      |
 | dc:creator or dc:contributor | pbl                      | publisher   |
 | dc:creator or dc:contributor | trl                      | translator  |
 | dc:creator or dc:contributor | edt                      | editor      |
@@ -125,6 +124,7 @@ The following mapping should be used to determine the key of the contributor’s
 | dc:creator or dc:contributor | art                      | artist      |
 | dc:creator or dc:contributor | clr                      | colorist    |
 | dc:creator or dc:contributor | nrt                      | narrator    |
+| dc:publisher                 | N/A                      | publisher   |
 
 Where `opf:role` is the value of the attribute of the `<dc:element>`.
 
@@ -139,9 +139,8 @@ The following mapping should be used to determine to key of the contributor’s 
 | element                      | role                     | key         |
 |------------------------------|--------------------------|-------------|
 | dc:creator                   | \<empty\> or \<unknown\> | author      |
-| dc:creator or dc:contributor | aut                      | author      |
 | dc:contributor               | \<empty\> or \<unknown\> | contributor |
-| dc:publisher                 | \<any\>                  | publisher   |
+| dc:creator or dc:contributor | aut                      | author      |
 | dc:creator or dc:contributor | pbl                      | publisher   |
 | dc:creator or dc:contributor | trl                      | translator  |
 | dc:creator or dc:contributor | edt                      | editor      |
@@ -149,7 +148,8 @@ The following mapping should be used to determine to key of the contributor’s 
 | dc:creator or dc:contributor | art                      | artist      |
 | dc:creator or dc:contributor | clr                      | colorist    |
 | dc:creator or dc:contributor | nrt                      | narrator    |
-| media:narrator               | \<any\>                  | narrator    |
+| dc:publisher                 | N/A                      | publisher   |
+| media:narrator               | N/A                      | narrator    |
 
 Where `role` is the value of the refine whose `scheme` is a value of `marc:relators`.
 
