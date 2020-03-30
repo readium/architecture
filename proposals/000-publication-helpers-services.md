@@ -31,6 +31,9 @@ By using a set of specified interfaces as contracts, we can have different Readi
 
 The `Publication` shared models support extensibility through two structured ways: *helpers* and *services*.
 
+* **Helpers are *internal* extensions**. They have a single implementation which is statically defined in the shared model types.
+* **Services are *external* extensions**. Other Readium components are providing their implementations, which are swappable and injected dynamically into the `Publication` object
+
 ### Publication Helpers
 
 A *helper* extends the shared models by computing additional metadata when requested, such as:
@@ -380,35 +383,38 @@ If a helper is tagged with *background only*, it means that it is an expensive c
 * `resourceWithHREF(href: String) -> Link?`
   * Finds the first servable `Link` with the given `href`, by searching in `readingOrder` and `resources` properties (in order).
   * The search is done recursively, following `Link.alternate`.
-* `linksWithRole(role: String) -> List<Link>`
-  * Returns the `links` of the first child `PublicationCollection` with the given `role`, or an empty list.
+
+#### Child Collections
+
+* `collectionsWithRole(role: String) -> List<PublicationCollection>`
+  * Returns the child collections with the given `role`.
 
 #### EPUB
 
 * `pageList: List<Link>`
   * Provides navigation to positions in the Publication content that correspond to the locations of page boundaries present in a print source being represented by this EPUB Publication.
-  * Equivalent to `linksWithRole("page-list")`.
+  * Equivalent to `collectionsWithRole("page-list")?.first?.links ?: []`.
 * `landmarks: List<Link>`
   * Identifies fundamental structural components of the publication in order to enable Reading Systems to provide the User efficient access to them.
-  * Equivalent to `linksWithRole("landmarks")`.
+  * Equivalent to `collectionsWithRole("landmarks")?.first?.links ?: []`.
 * `listOfAudioClips: List<Link>`
   * A listing of audio clips included in the publication.
-  * Equivalent to `linksWithRole("loa")`.
+  * Equivalent to `collectionsWithRole("loa")?.first?.links ?: []`.
 * `listOfIllustrations: List<Link>`
   * A listing of illustrations included in the publication.
-  * Equivalent to `linksWithRole("loi")`.
+  * Equivalent to `collectionsWithRole("loi")?.first?.links ?: []`.
 * `listOfTables: List<Link>`
   * A listing of tables included in the publication.
-  * Equivalent to `linksWithRole("lot")`.
+  * Equivalent to `collectionsWithRole("lot")?.first?.links ?: []`.
 * `listOfVideoClips: List<Link>`
   * A listing of video clips included in the publication.
-  * Equivalent to `linksWithRole("lov")`.
+  * Equivalent to `collectionsWithRole("lov")?.first?.links ?: []`.
 
 #### OPDS
 
 * `images: List<Link>`
   * Visual representations for a publication.
-  * Equivalent to `linksWithRole("images")`.
+  * Equivalent to `collectionsWithRole("images")?.first?.links ?: []`.
 
 ### `Metadata` Helpers
 
