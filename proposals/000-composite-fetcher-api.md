@@ -1,8 +1,6 @@
-# Composite Fetcher Layer
+# Composite Fetcher API
 
-* Proposal: [A-002](002-composite-fetcher-layer.md)
 * Authors: [Mickaël Menu](https://github.com/mickael-menu), [Quentin Gliosca](https://github.com/qnga)
-* Status: **In Review**
 * Related Issues:
   * [Revamping the Content Filter architecture (architecture/103)](https://github.com/readium/architecture/issues/103)
   * [Clarify and refine the streamer API on mobile platforms (architecture/116)](https://github.com/readium/architecture/issues/116)
@@ -41,14 +39,13 @@ A fetcher can be adapted on-the-fly and temporarily by a component to fit its ne
 * [Examples of `Fetcher` Trees](#examples-of-fetcher-trees)
 * Leaf Fetchers
   * [`FileFetcher`](#filefetcher-class)
-  * [`HttpFetcher`](#httpfetcher-class)
-  * [`ZipFetcher`](#zipfetcher-class)
+  * [`HTTPFetcher`](#httpfetcher-class)
+  * [`ZIPFetcher`](#zipfetcher-class)
   * [`ProxyFetcher`](#proxyfetcher-class)
 * Composite Fetchers
   * [`RoutingFetcher`](#routingfetcher-class)
   * [`TransformingFetcher`](#transformingfetcher-class)
   * [`CachingFetcher`](#cachingfetcher-class)
-* [Shortcomings of the Fetcher Layer](#shortcomings-of-the-fetcher-layer)
 
 The following `Fetcher` implementations are here only to draft use cases, so they should be implemented only when actually needed.
 
@@ -72,7 +69,7 @@ The core of this proposal is simply changing `Fetcher` from being a class to an 
 
 We introduced `Resource` to handle lazy loading and optimize accesses to several properties (`length`, `bytes`, etc.).
 
-Every failable API should return either the value, or a `ResourceError` enum with the following cases:
+Every failable API should return either the value, or a `Resource.Error` enum with the following cases:
 
 * `NotFound` equivalent to a 404 HTTP error
 * `Forbidden` equivalent to a 403 HTTP error
@@ -84,7 +81,7 @@ Every failable API should return either the value, or a `ResourceError` enum wit
   * The link from which the resource was retrieved
   * It might be modified by the `Resource` to include additional metadata, e.g. the `Content-Type` HTTP header.
   * Link extensibility can be used to add additional metadata, for example:
-    * A `ZipFetcher` might add a `compressedLength` which could then be used by the position list factory [to address this issue](https://github.com/readium/architecture/issues/123).
+    * A `ZIPFetcher` might add a `compressedLength` which could then be used by the position list factory [to address this issue](https://github.com/readium/architecture/issues/123).
     * Something equivalent to the `Cache-Control` HTTP header could be used to customize the behavior of a parent `CachingFetcher` for a given resource.
 * (lazy) `length: Result<Long, ResourceError>`
   * Data length from metadata if available, or calculated from reading the bytes otherwise.
@@ -96,6 +93,11 @@ Every failable API should return either the value, or a `ResourceError` enum wit
   * Reads the bytes at the given `range`.
   * When `range` is `null`, the whole content is returned.
   * Out-of-range indexes are clamped to the available length automatically.
+* `readAsString(encoding: Encoding? = null): Result<String, ResourceError>`
+  * Reads the full content as a `String`.
+  * `encoding: Encoding? = null`
+    * Encoding used to decode the bytes.
+    * If `null`, then it is parsed from the `charset` parameter of `link.type` and falls back on UTF-8.
 * `close()`
   * Closes any opened file handles.
 
@@ -121,31 +123,25 @@ These formats are very simple, we just need to access the ZIP entries.
 
 #### Audiobook Manifest
 
-The resources of a remote audiobook are accessed through HTTP requests, using an `HttpFetcher`. However, we can implement an offline cache by wrapping the fetcher in a `CachingFetcher`.
+The resources of a remote audiobook are accessed through HTTP requests, using an `HTTPFetcher`. However, we can implement an offline cache by wrapping the fetcher in a `CachingFetcher`.
 
 <img src="assets/002-audiobook.svg">
 
 #### LCP Protected Package (Audiobook, LCPDF, etc.)
 
-The resources of a publication protected with LCP need to be decrypted. For that, We're using a `DecryptionTransformer` through a `TransformingFetcher`. Any remote resources declared in the manifest are fetched using an `HttpFetcher`.
+The resources of a publication protected with LCP need to be decrypted. For that, We're using a `DecryptionTransformer` through a `TransformingFetcher`. Any remote resources declared in the manifest are fetched using an `HTTPFetcher`.
 
 <img src="assets/002-lcp.svg">
 
 #### EPUB Format
 
 The EPUB fetcher is one of the most complex:
-* An `HttpFetcher` is used for remote resources access.
+* An `HTTPFetcher` is used for remote resources access.
 * The resources are transformed at two different levels:
   * in the *streamer*, to decrypt the content and deobfuscate fonts,
   * in the *navigator*, to inject the CSS and JavaScript necessary for rendering.
 
 <img src="assets/002-epub.svg">
-
-#### Publication Services and Manifest
-
-So far, we've seen examples of fetchers created by the parsers. But the `Publication` itself could add an extra layer to expose its JSON manifest and services.
-
-<img src="assets/002-publication.svg">
 
 
 ### Leaf Fetchers
@@ -163,21 +159,21 @@ Provides access to resources on the local file system.
 * `FileFetcher(href: String, path: String)`
   * Alias to `FileFetcher(paths: [href: path])`
 
-#### `HttpFetcher` Class
+#### `HTTPFetcher` Class
 
 Provides access to resources served by an HTTP server.
 
-* `HttpFetcher(client: HttpClient = R2HttpClient())`
-  * `client: HttpClient`
+* `HTTPFetcher(client: HTTPClient = R2HTTPClient())`
+  * `client: HTTPClient`
     * HTTP service that will perform the requests.
     * Interface to be determined, it's another subject...
     * Readium should provide a default implementation using the native HTTP APIs.
 
-#### `ZipFetcher` Class
+#### `ZIPFetcher` Class
 
-Provides access to entries of a ZIP archive. `ZipFetcher` is responsible for the archive handle lifecycle, and should close it when `Fetcher.close()` is called.
+Provides access to entries of a ZIP archive. `ZIPFetcher` is responsible for the archive handle lifecycle, and should close it when `Fetcher.close()` is called.
 
-* `ZipFetcher(path: String, password: String? = null)`
+* `ZIPFetcher(path: String, password: String? = null)`
   * `path: String`
     * Local path to the ZIP archive on the file system.
   * `password: String?`
@@ -266,7 +262,12 @@ Caches resources of a child fetcher on the disk, for example for offline access.
 API still to be determined.
 
 
-### Shortcomings of the Fetcher Layer
+## Rationale and Alternatives
+
+What other designs have been considered, and why you chose this approach instead.
+
+
+## Drawbacks and Limitations
 
 The fetcher is an optional component in Readium architecture. Which means that other components such as the navigator could bypass the features introduced by the fetcher layer, e.g. caching, injection, etc.
 
@@ -280,3 +281,9 @@ To alleviate this issue on mobile platforms, a `PublicationServer` component cou
 3. (Optionally) Transform the resources to map the remote links in the content itself.
 
 A particularly tricky situation is to intercept the external links in a web view. Usually, web views will trigger the request internally. If the web view doesn't offer a native interception mechanism, we probably need to transform the resource itself to convert links. Or we can own this shortcoming and document it.
+
+
+## Future Possibilities
+(*if relevant*)
+
+Think about what the natural extension and evolution of your proposal would be. This is also a good place to "dump ideas", if they are out of scope for the proposal but otherwise related.
