@@ -205,11 +205,18 @@ To expose a web version of the service, reachable through `Publication.get()`, a
 
 #### `Publication` Class Additions
 
+##### Constructor
+
+* `Publication(manifest: JSONManifest, fetcher: Fetcher, serviceFactories: Map<String, Publication.Service.Factory>)`
+  * This constructor will:
+    1. create each service from its factory, passing the given `manifest` and `fetcher`,
+    2. compute a new `JSONManifest` by appending the services' `links` to `manifest.links`,
+    3. store `serviceFactories` to be used when calling `Publication.copy()`.
+
 ##### Methods
 
 * `serviceForKey(key: String) -> Publication.Service?`
   * Returns the instance of the service with the given key, if there's one associated with the `Publication`.
-  * If there's no instance, but the `Publication` owns a factory for this service, it will be created on-the-fly and stored for next calls.
 * `copyWith(changes: (&Manifest, &Fetcher, &Map<String, Publication.Service.Factory>) -> Void) -> Publication`
   * Returns a copy of the publication, with the values passed by reference modified.
 * `copyWithServices(factories: Map<String, Publication.Service.Factory>) -> Publication`
