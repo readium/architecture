@@ -59,9 +59,13 @@ While the composition of the fetcher tree is private, you can wrap the tree in a
 * Making a copy of the `Publication` object with a customized `Fetcher`, for on-the-fly temporary cases. For example, to pre-process resources in a background indexing task.
 
 ```swift
+func prepareForIndexing(resource: Resource) -> Resource {
+    // ...
+}
+
 // The `manifest` and `fetcher` parameters are passed by reference, to be able to overwrite them.
 let indexingPublication = publication.copy { inout manifest, inout fetcher in
-    fetcher = TransformingFetcher(fetcher, transformer: IndexingTransformer())
+    fetcher = TransformingFetcher(fetcher, transformer: prepareForIndexing)
 }
 ```
 
@@ -73,6 +77,8 @@ This proposal is a non-breaking change, since it describes a structure that is m
 
 
 ## Reference Guide
+
+*The following `Fetcher` implementations are here only to draft use cases, so they should be implemented only when actually needed.*
 
 * [Examples of `Fetcher` Trees](#examples-of-fetcher-trees)
 * [`Fetcher` Interface](#fetcher-interface)
@@ -196,7 +202,21 @@ Every failable API returns a `Result<T, Resource.Error>` containing either the v
 * `FailureResource(link: Link, error: Resource.Error)`
   * Creates a `Resource` that will always return the given error.
 
-The following `Fetcher` implementations are here only to draft use cases, so they should be implemented only when actually needed.
+#### `Resource.Transformer` Function Type
+
+```kotlin
+typealias Resource.Transformer = (Resource) -> Resource
+```
+
+Implements the transformation of a `Resource`. It can be used, for example, to:
+
+* decrypt,
+* deobfuscate,
+* inject CSS or JavaScript,
+* correct content – e.g. adding a missing `dir="rtl"` in an HTML document,
+* pre-process – e.g. before indexing a publication's content.
+
+If the transformation doesn't apply, simply return `resource` unchanged.
 
 ### Leaf Fetchers
 
@@ -274,46 +294,12 @@ Both the `fetcher` and `accepts` properties are public.
 
 #### `TransformingFetcher` Class
 
-Transforms the resources' content of a child fetcher using a `ResourceTransformer`.
+Transforms the resources' content of a child fetcher using a list of `Resource.Transformer` functions.
 
-* `TransformingFetcher(fetcher: Fetcher, transformer: ResourceTransformer)`
-  * Creates a `TransformingFetcher` from a child `fetcher` and a `transformer`.
-* `TransformingFetcher(fetcher: Fetcher, transformers: Collection<ResourceTransformer>)`
-  * Equivalent to `TransformingFetcher(fetcher, ResourceTransformerChain(transformers))`
-
-##### `ResourceTransformer` Interface
-
-Implements the transformation of a `Resource`. It can be used, for example, to:
-
-* decrypt,
-* deobfuscate,
-* inject CSS or JavaScript,
-* correct content – e.g. adding a missing `dir="rtl"` in an HTML document,
-* pre-process – e.g. before indexing a publication's content.
-
-This interface is not nested under `TransformingFetcher` because it could be used in other contexts.
-
-###### Properties
-
-* `priority: Int`
-  * Priority in a chain of transformers.
-  * The higher the number, the earlier the `ResourceTransformer` will be executed in the chain.
-  * Components offering the reading app to add custom transformers should provide a set of priority constants, e.g. `Navigator.ResourceTransformers.Priority.Injection = 42`.
-
-###### Methods
-
-* `transform(resource: Resource) -> Resource`
-  * Performs the transformation of the given `resource`.
-  * If the transformation doesn't apply, simply return `resource` unchanged.
-
-##### `ResourceTransformerChain` Class (implements `ResourceTransformer`)
-
-Holds a collection of `ResourceTransformer` and applies transformations in the order of their `priority`.
-
-`ResourceTransformerChain` is itself a `ResourceTransformer`, so we can have nested chains.
-
-* `ResourceTransformerChain(transformers: Collection<ResourceTransformers>, priority: Int = 0)`
-  * Creates a `ResourceTransformerChain` from an unordered collection of `ResourceTransformer`.
+* `TransformingFetcher(fetcher: Fetcher, transformers: List<Resource.Transformer>)`
+  * Creates a `TransformingFetcher` from a child `fetcher` and a list of `transformers` to apply in the given order.
+* `TransformingFetcher(fetcher: Fetcher, transformer: Resource.Transformer)`
+  * Equivalent to `TransformingFetcher(fetcher, [transformer])`
 
 #### `CachingFetcher` Class
 
@@ -342,7 +328,7 @@ This issue occurs in particular when parsing a manifest containing remote URLs, 
 1. Serve the `Publication` through a local HTTP server.
 2. Produce a copy of the `Publication` for the navigator, modifying the remote manifest links to use the local URLs instead.
    * By serving remote resources, the `PublicationServer` would then act as a proxy to the remote servers, and allow injection to happen through the `Fetcher` layer.
-3. To go even further, a `ResourceTransformer` could replace remote URLs with local ones in the resources content itself.
+3. To go even further, a `Resource.Transformer` could replace remote URLs with local ones in the resources content itself.
    * A particularly tricky situation is to intercept the external links in a web view, because it will usually trigger the request internally. If the web view doesn't offer a native interception mechanism, then transforming links in the content itself could be a workaround.
 
 
