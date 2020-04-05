@@ -7,36 +7,76 @@
   * [Making the ContentFilter API public (r2-streamer-kotlin/92)](https://github.com/readium/r2-streamer-kotlin/issues/92)
 
 
-## Introduction
+## Summary
 
-The `Fetcher` component provides access to a publication's resource. Therefore, it's a place of choice to offer extensibility for reading apps.
-
-The goal of this proposal is to make the fetcher more flexible using a [composite design pattern](https://en.wikipedia.org/wiki/Composite_pattern).
-
-We will introduce several `Fetcher` implementations to answer different needs, including a `TransformingFetcher` allowing reading apps to transform resources.
+The goal of this proposal is to make the fetcher more flexible using a [composite design pattern](https://en.wikipedia.org/wiki/Composite_pattern). We will introduce several `Fetcher` implementations to answer different needs, such as resource transformation and caching.
 
 
 ## Motivation
 
-With a composite pattern, we can decorate the fetcher to add cross-cutting concerns, such as:
-
-* transforming resources (formerly known as `ContentFilter`),
-* routing requests (`href`) to different sources,
-* caching remote resources for offline access,
-* logging
+The `Fetcher` component provides access to a publication's resource. Therefore, it's a place of choice to offer extensibility for reading apps. With a composite pattern, we can decorate the fetcher to add custom behaviors.
 
 This will also lead to smaller, more focused implementations that are easier to unit test.
 
-A fetcher can be adapted on-the-fly and temporarily by a component to fit its needs, by wrapping the fetcher tree in another `Fetcher`.
 
-* The navigator could wrap a publication's fetcher in a `TransformingFetcher` to inject the CSS and JavaScript resources needed for rendering.
-* A reading app could decorate the fetcher with a `CachingFetcher` to control how the remote resources are cached on the local storage.
+## Developer Guide
+
+Publication resources are accessed using a root `Fetcher` object, which can be composed of sub-fetchers organized in a composite tree structure. Each `Fetcher` node takes on a particular responsibility, with:
+
+* **Leaf fetchers** handling low-level access, e.g. ZIP or file system.
+* **Parent composite fetchers** handling routing and transformation of resources.
+
+### Accessing a Resource
+
+You will never need to use the `Fetcher` API directly, which is a private detail of `Publication`. To read a resource, use `Publication::get()` which will delegate to the internal root `Fetcher`.
+
+`Publication::get()` returns a `Resource` object, which is a proxy interface to the actual resource. The content is fetched lazily in `Resource`, for performance and medium limitation reasons (e.g. HTTP). Therefore, `Publication::get()` *always* returns a `Resource`, even if the resource doesn't actually exist. Errors are handled at the `Resource` level.
+
+```swift
+let resource = publication.get("/manifest.json")
+
+switch resource.readAsString() {
+case .success(let content):
+    let manifest = Manifest(jsonString: content)
+
+case .failure(let error):
+    print("An error occurred: \(error)")
+}
+```
+
+### Customizing The Root Fetcher
+
+Fetcher trees are created by the parsers, such as `r2-streamer` and `r2-opds`, when constructing the `Publication` object. However, you may want to decorate the root fetcher to modify its behavior by:
+
+* Transforming resources (formerly known as `ContentFilter`).
+* Routing some requests to different sources.
+* Caching remote resources for offline access.
+* Logging access.
+
+While the composition of the fetcher tree is private, you can wrap the tree in a custom root fetcher, either by:
+
+* Overriding the default parser configuration, for general cases.
+* Making a copy of the `Publication` object with a customized `Fetcher`, for on-the-fly temporary cases. For example, to pre-process resources in a background indexing task.
+
+```swift
+// The `manifest` and `fetcher` parameters are passed by reference, to be able to overwrite them.
+let indexingPublication = publication.copy { inout manifest, inout fetcher in
+    fetcher = TransformingFetcher(fetcher, transformer: IndexingTransformer())
+}
+```
+
+### Backward Compatibility and Migration
+
+#### Mobile (Swift & Kotlin)
+
+This proposal is a non-breaking change, since it describes a structure that is mostly internal. The public features are new, such as adding resource transformers and decorating resource access.
 
 
-## Proposed Solution
+## Reference Guide
 
-* [`Fetcher` and `Resource` Interfaces](#fetcher-and-resource-interfaces)
 * [Examples of `Fetcher` Trees](#examples-of-fetcher-trees)
+* [`Fetcher` Interface](#fetcher-interface)
+* [`Resource` Interface](#resource-interface)
 * Leaf Fetchers
   * [`FileFetcher`](#filefetcher-class)
   * [`HTTPFetcher`](#httpfetcher-class)
@@ -47,75 +87,11 @@ A fetcher can be adapted on-the-fly and temporarily by a component to fit its ne
   * [`TransformingFetcher`](#transformingfetcher-class)
   * [`CachingFetcher`](#cachingfetcher-class)
 
-The following `Fetcher` implementations are here only to draft use cases, so they should be implemented only when actually needed.
-
-### `Fetcher` and `Resource` Interfaces
-
-The core of this proposal is simply changing `Fetcher` from being a class to an interface.
-
-#### `Fetcher` Interface
-
-##### Methods
-
-* `get(link: Link): Resource`
-  * Returns the `Resource` at the given `Link.href`.
-    * Since we can't know if a `Resource` exists before actually fetching it in some cases (e.g. HTTP), `get()` never fails. Therefore, errors are handled at the `Resource` level.
-  * `link: Link`
-    * We're expecting a `Link` because a `Fetcher` might use its properties, e.g. to transform resources.
-* `close()`
-  * Closes any opened file handles, remove temporary files, etc.
-
-#### `Resource` Interface
-
-We introduced `Resource` to handle lazy loading and optimize accesses to several properties (`length`, `bytes`, etc.).
-
-Every failable API should return either the value, or a `Resource.Error` enum with the following cases:
-
-* `NotFound` equivalent to a 404 HTTP error
-* `Forbidden` equivalent to a 403 HTTP error
-* `Other(Error)` equivalent to a 500 HTTP error
-
-##### Properties
-
-* `link: Link`
-  * The link from which the resource was retrieved
-  * It might be modified by the `Resource` to include additional metadata, e.g. the `Content-Type` HTTP header.
-  * Link extensibility can be used to add additional metadata, for example:
-    * A `ZIPFetcher` might add a `compressedLength` which could then be used by the position list factory [to address this issue](https://github.com/readium/architecture/issues/123).
-    * Something equivalent to the `Cache-Control` HTTP header could be used to customize the behavior of a parent `CachingFetcher` for a given resource.
-* (lazy) `length: Result<Long, ResourceError>`
-  * Data length from metadata if available, or calculated from reading the bytes otherwise.
-  * We must treat this value as a hint, as it might not reflect the actual bytes length.
-
-##### Methods
-
-* `read(range: Range<Long>? = null): Result<ByteArray, ResourceError>`
-  * Reads the bytes at the given `range`.
-  * When `range` is `null`, the whole content is returned.
-  * Out-of-range indexes are clamped to the available length automatically.
-* `readAsString(encoding: Encoding? = null): Result<String, ResourceError>`
-  * Reads the full content as a `String`.
-  * `encoding: Encoding? = null`
-    * Encoding used to decode the bytes.
-    * If `null`, then it is parsed from the `charset` parameter of `link.type` and falls back on UTF-8.
-* `close()`
-  * Closes any opened file handles.
-
-##### Implementations
-
-* `NullResource(link: Link)`
-  * Creates a `Resource` returning a `null` content.
-* `StringResource(link: Link, string: String)`
-  * Creates a `Resource` serving a string.
-* `BytesResource(link: Link, bytes: ByteArray)`
-  * Creates a `Resource` serving an array of bytes.
-
-
 ### Examples of `Fetcher` Trees
 
-The fetcher tree created by the publication parsers can be adapted to fit the needs of different formats.
+The fetcher tree created by the publication parsers can be adapted to fit the characteristics of each format.
 
-#### CBZ and ZAB (Zipped Audio Book) Formats
+#### CBZ and ZAB (Zipped Audio Book)
 
 These formats are very simple, we just need to access the ZIP entries.
 
@@ -123,30 +99,108 @@ These formats are very simple, we just need to access the ZIP entries.
 
 #### Audiobook Manifest
 
-The resources of a remote audiobook are accessed through HTTP requests, using an `HTTPFetcher`. However, we can implement an offline cache by wrapping the fetcher in a `CachingFetcher`.
+The resources of a remote audiobook are fetched with HTTP requests, using an `HTTPFetcher`. However, we can implement an offline cache by wrapping the fetcher in a `CachingFetcher`.
 
 <img src="assets/002-audiobook.svg">
 
 #### LCP Protected Package (Audiobook, LCPDF, etc.)
 
-The resources of a publication protected with LCP need to be decrypted. For that, We're using a `DecryptionTransformer` through a `TransformingFetcher`. Any remote resources declared in the manifest are fetched using an `HTTPFetcher`.
+The resources of a publication protected with LCP need to be decrypted. For that, we're using a `DecryptionTransformer` embedded in a `TransformingFetcher`. Any remote resources declared in the manifest are fetched using an `HTTPFetcher`.
 
 <img src="assets/002-lcp.svg">
 
-#### EPUB Format
+#### EPUB
 
 The EPUB fetcher is one of the most complex:
-* An `HTTPFetcher` is used for remote resources access.
+* An `HTTPFetcher` is used for [remote resources](https://www.w3.org/publishing/epub3/epub-spec.html#sec-resource-locations).
 * The resources are transformed at two different levels:
   * in the *streamer*, to decrypt the content and deobfuscate fonts,
   * in the *navigator*, to inject the CSS and JavaScript necessary for rendering.
 
 <img src="assets/002-epub.svg">
 
+### `Fetcher` Interface
+
+Provides access to a `Resource` from a `Link`.
+
+#### Methods
+
+* `get(link: Link, parameters: Map<String, String> = {}) -> Resource`
+  * Returns the `Resource` at the given `Link.href`.
+    * A `Resource` is *always* returned, since for some cases we can't know if it exists before actually fetching it, such as HTTP. Therefore, errors are handled at the `Resource` level.
+  * `link: Link`
+    * Link targeting the resource.
+    * We're expecting a `Link` because a `Fetcher` might use its properties, e.g. to transform the resource. Therefore, `Publication::get()` makes sure that a complete `Link` is always provided to the `Fetcher`.
+  * `parameters: Map<String, String> = {}`
+    * HREF parameters that the source will understand, such as:
+      * when `Link::href` is templated,
+      * to append additional query parameters to an HTTP request.
+    * The parameters are expected to be percent-decoded.
+* `close()`
+  * Closes any opened file handles, removes temporary files, etc.
+
+### `Resource` Interface
+
+Acts as a proxy to an actual resource by handling read access.
+
+`Resource` caches the content lazily to optimize access to multiple properties, e.g. `length`, `read()`, etc.
+
+Every failable API returns a `Result<T, Resource.Error>` containing either the value, or a `Resource.Error` enum with the following cases:
+
+* `NotFound` equivalent to a 404 HTTP error.
+* `Forbidden` equivalent to a 403 HTTP error.
+  * This can be returned when trying to read a resource protected with a DRM that is not unlocked.
+* `Unavailable` equivalent to a 503 HTTP error.
+  * Used when the source can't be reached, e.g. no Internet connection, or an issue with the file system.
+  * Usually this is a temporary error.
+* `Other(Exception)` for any other error, such as HTTP 500.
+
+#### Properties
+
+* `link: Link`
+  * The link from which the resource was retrieved.
+  * It might be modified by the `Resource` to include additional metadata, e.g. the `Content-Type` HTTP header in `Link::type`.
+  * Link extensibility can be used to add extra metadata, for example:
+    * A `ZIPFetcher` might add a `compressedLength` property which could then be used by the `PositionsService` [to address this issue](https://github.com/readium/architecture/issues/123).
+    * Something equivalent to the `Cache-Control` HTTP header could be used to customize the behavior of a parent `CachingFetcher` for a given resource.
+* (lazy) `length: Result<Long, Resource.Error>`
+  * Data length from metadata if available, or calculated from reading the bytes otherwise.
+  * **Warning:** This API should never be called from the UI thread. An assertion will check this.
+  * This value must be treated as a hint, as it might not reflect the actual bytes length. To get the real length, you need to read the whole resource.
+
+#### Methods
+
+* `read(range: Range<Long>? = null) -> Result<ByteArray, Resource.Error>`
+  * Reads the bytes at the given `range`.
+  * **Warning:** This API should never be called from the UI thread. An assertion will check this.
+  * `range: Range<Long>? = null`
+    * When `range` is `null`, the whole content is returned.
+    * Out-of-range indexes are clamped to the available length automatically.
+  * The result may be cached for subsequent accesses.
+* `readAsString(encoding: Encoding? = null) -> Result<String, Resource.Error>`
+  * Reads the full content as a `String`.
+  * **Warning:** This API should never be called from the UI thread. An assertion will check this.
+  * `encoding: Encoding? = null`
+    * Encoding used to decode the bytes.
+    * If `null`, then it is parsed from the `charset` parameter of `link.type` using `MediaType::parameters`, and falls back on UTF-8.
+* `close()`
+  * Closes any opened file handles.
+  * **Warning:** This API should never be called from the UI thread. An assertion will check this.
+
+#### Implementations
+
+* `StringResource(link: Link, string: String)`
+  * Creates a `Resource` serving a string.
+* `BytesResource(link: Link, bytes: ByteArray)`
+  * Creates a `Resource` serving an array of bytes.
+* `FailureResource(link: Link, error: Resource.Error)`
+  * Creates a `Resource` that will always return the given error.
+
+The following `Fetcher` implementations are here only to draft use cases, so they should be implemented only when actually needed.
 
 ### Leaf Fetchers
 
-A leaf fetcher is an implementation of `Fetcher` handling the actual low-level bytes access. It doesn't delegates to any other `Fetcher`.
+A leaf fetcher is an implementation of `Fetcher` handling the actual low-level bytes access. It doesn't delegate to any other `Fetcher`.
 
 #### `FileFetcher` Class
 
@@ -166,12 +220,14 @@ Provides access to resources served by an HTTP server.
 * `HTTPFetcher(client: HTTPClient = R2HTTPClient())`
   * `client: HTTPClient`
     * HTTP service that will perform the requests.
-    * Interface to be determined, it's another subject...
+    * Interface to be determined in another proposal.
     * Readium should provide a default implementation using the native HTTP APIs.
 
 #### `ZIPFetcher` Class
 
-Provides access to entries of a ZIP archive. `ZIPFetcher` is responsible for the archive handle lifecycle, and should close it when `Fetcher.close()` is called.
+Provides access to entries of a ZIP archive.
+
+`ZIPFetcher` is responsible for the archive lifecycle, and should close it when `Fetcher.close()` is called. If a `Resource` tries to access a ZIP entry after the archive was closed, the `Resource.Error.Unavailable` can be returned.
 
 * `ZIPFetcher(path: String, password: String? = null)`
   * `path: String`
@@ -188,33 +244,37 @@ Delegates the creation of a `Resource` to a closure.
   * Creates a `ProxyFetcher` that will call `closure` when asked for a resource.
 * `ProxyFetcher(closure: (Link) -> String)`
   * Convenient way to create a `Resource` from a string.
+  * Equivalent to `ProxyFetcher({ link -> StringResource(link, closure(link))})`
 
 ### Composite Fetchers
 
-A composite fetcher is delegating requests to internal fetchers.
+A composite fetcher is delegating requests to sub-fetchers.
 
-Warning: Make sure to forward the `Fetcher.close()` calls to child fetchers.
+**Warning:** Make sure to forward the `Fetcher.close()` calls to child fetchers.
 
 #### `RoutingFetcher` Class
 
-Routes requests to child fetchers, depending on a provided predicate. This can be used for example to serve a publication containing both local and remote resources, and more generally to concatenate different content sources.
+Routes requests to child fetchers, depending on a provided predicate.
+
+This can be used for example to serve a publication containing both local and remote resources, and more generally to concatenate different content sources.
 
 * `RoutingFetcher(routes: List<RoutingFetcher.Route>)`
   * Creates a `RoutingFetcher` from a list of routes, which will be tested in the given order.
 * `RoutingFetcher(local: Fetcher, remote: Fetcher)`
-  * Will route requests to `local` if the `Link.href` starts with `/`, otherwise to `remote`.
+  * Will route requests to `local` if the `Link::href` starts with `/`, otherwise to `remote`.
 
 ##### `RoutingFetcher.Route` Class
 
 Holds a child fetcher and the predicate used to determine if it can answer a request.
+
 Both the `fetcher` and `accepts` properties are public.
 
-`RoutingFetcher.Route(fetcher: Fetcher, accepts: (Link) -> Bool)`
-
+* `RoutingFetcher.Route(fetcher: Fetcher, accepts: (Link) -> Bool = { true })`
+  * The default value for `accepts` means that the fetcher will accept any link.
 
 #### `TransformingFetcher` Class
 
-Transforms the resources' content of a child fetcher using a `ResourceTransformer` (formerly `ContentFilter`).
+Transforms the resources' content of a child fetcher using a `ResourceTransformer`.
 
 * `TransformingFetcher(fetcher: Fetcher, transformer: ResourceTransformer)`
   * Creates a `TransformingFetcher` from a child `fetcher` and a `transformer`.
@@ -236,7 +296,7 @@ This interface is not nested under `TransformingFetcher` because it could be use
 ###### Properties
 
 * `priority: Int`
-  * Priority in a collection of transformers.
+  * Priority in a chain of transformers.
   * The higher the number, the earlier the `ResourceTransformer` will be executed in the chain.
   * Components offering the reading app to add custom transformers should provide a set of priority constants, e.g. `Navigator.ResourceTransformers.Priority.Injection = 42`.
 
@@ -257,33 +317,41 @@ Holds a collection of `ResourceTransformer` and applies transformations in the o
 
 #### `CachingFetcher` Class
 
-Caches resources of a child fetcher on the disk, for example for offline access.
+Caches resources of a child fetcher on the file system, to implement offline access.
 
-API still to be determined.
+API to be determined in its own proposal.
 
 
 ## Rationale and Alternatives
 
-What other designs have been considered, and why you chose this approach instead.
+The first design considered was to handle HREF routing and resources caching in other Readium components, such as the *navigator*. But there are several drawbacks:
+
+* It complexifies navigators which are already quite complicated.
+* Routing makes more sense at the file format level, which navigators are not supposed to be aware of.
+* Adding features such as caching at the `Publication` level, via an internal `Fetcher`, means that any component using the `Publication` will benefit from it.
 
 
 ## Drawbacks and Limitations
 
-The fetcher is an optional component in Readium architecture. Which means that other components such as the navigator could bypass the features introduced by the fetcher layer, e.g. caching, injection, etc.
+The fetcher is an optional component in the Readium architecture. Therefore, other components could bypass the features introduced by the fetcher layer, such as caching and injection.
 
-This might be fine in some cases, such as an HTML WebPub, but the navigator implementations provided by Readium should use the fetcher as much as possible.
+While this might be fine in some cases, such as for an HTML WebPub, the *navigators* provided by Readium should use the fetcher as much as possible.
 
-To alleviate this issue on mobile platforms, a `PublicationServer` component could:
+This issue occurs in particular when parsing a manifest containing remote URLs, which could be requested directly by some navigators. To alleviate this problem, a `PublicationServer` component could:
 
-1. Serve the `Publication` through HTTP.
-2. Produce a copy of the `Publication` for the navigator, adapting the absolute manifest links to be served by the `PublicationServer`.
-   * By serving remote resources, the `PublicationServer` would then act as a proxy to the remote servers and allow injection to happen.
-3. (Optionally) Transform the resources to map the remote links in the content itself.
-
-A particularly tricky situation is to intercept the external links in a web view. Usually, web views will trigger the request internally. If the web view doesn't offer a native interception mechanism, we probably need to transform the resource itself to convert links. Or we can own this shortcoming and document it.
+1. Serve the `Publication` through a local HTTP server.
+2. Produce a copy of the `Publication` for the navigator, modifying the remote manifest links to use the local URLs instead.
+   * By serving remote resources, the `PublicationServer` would then act as a proxy to the remote servers, and allow injection to happen through the `Fetcher` layer.
+3. To go even further, a `ResourceTransformer` could replace remote URLs with local ones in the resources content itself.
+   * A particularly tricky situation is to intercept the external links in a web view, because it will usually trigger the request internally. If the web view doesn't offer a native interception mechanism, then transforming links in the content itself could be a workaround.
 
 
 ## Future Possibilities
-(*if relevant*)
 
-Think about what the natural extension and evolution of your proposal would be. This is also a good place to "dump ideas", if they are out of scope for the proposal but otherwise related.
+While `Fetcher` is used internally in `Publication`, it is not tightly coupled to it – it's only dependency is to the `Link` core model. Therefore, it could be used for other purposes.
+
+Some types could be further specified in their own proposal:
+
+* Caching and network policies are complex matters, and a `CachingFetcher` needs to be well thought out.
+  * Pre-loading of resources and cache invalidation needs some communication with the *navigator*. Therefore, a `CachingFetcher` probably needs to be paired with a publication service.
+* Some resource transformers should expose additional APIs, for example the `HTMLInjectionTransformer` might be mutable to switch scripts or to update a CSS theme.
