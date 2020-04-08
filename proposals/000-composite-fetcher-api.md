@@ -18,6 +18,11 @@ The `Fetcher` component provides access to a publication's resource. Therefore, 
 
 This will also lead to smaller, more focused implementations that are easier to unit test.
 
+### Location in the Toolkit
+
+While historically the _fetcher_ was part of the _streamer_ component, this proposal requires to have it in _shared_, to be able to create fetchers from the streamers, navigators and the OPDS libraries.
+
+However, even though the streamer doesn't contain the implementation of `Fetcher` anymore, it is still responsible to assemble the composite fetcher structure for each kind of publication.
 
 ## Developer Guide
 
