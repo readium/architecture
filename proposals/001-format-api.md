@@ -57,13 +57,13 @@ To use this API efficiently, you should:
 
 ### Sniffing the Format of Raw Bytes
 
-You can use directly `Format.guess()` for sniffing raw bytes (e.g. the body of an HTTP response). It will take a closure lazily returning the bytes.
+You can use directly `Format.of()` for sniffing raw bytes (e.g. the body of an HTTP response). It will take a closure lazily returning the bytes.
 
 ```swift
 let feedLink: Link
 let response = httpClient.get(feedLink.href)
 
-let format = Format.guess(
+let format = Format.of(
     bytes: { response.body },
     // You can give several file extension and media type hints, which will be sniffed in order.
     fileExtensions: [feedLink.href.pathExtension],
@@ -71,23 +71,23 @@ let format = Format.guess(
 )
 ```
 
-In the case of an HTTP response, this can be simplified by using the `HTTPResponse.guessFormat()` extension:
+In the case of an HTTP response, this can be simplified by using the `HTTPResponse.format()` extension:
 
 ```swift
 let feedLink: Link
 let response = httpClient.get(feedLink.href)
 
-let format = response.guessFormat(mediaTypes: [feedLink.type])
+let format = response.format(mediaTypes: [feedLink.type])
 ```
 
 ### Sniffing the Format of a File
 
-For local files, you can provide an absolute path to `Format.guess()`. To improve sniffing speed, you should also provide a media type hint if possible – for example if you previously stored it in a database.
+For local files, you can provide an absolute path to `Format.of()`. To improve sniffing speed, you should also provide a media type hint if possible – for example if you previously stored it in a database.
 
 ```swift
 let dbBook = database.get(bookId)
 
-let format = Format.guess(
+let format = Format.of(
     path: dbBook.path,
     mediaTypes: [dbBook.mediaType]
 )
@@ -100,8 +100,8 @@ Reading apps are welcome to extend this API with their own formats. To declare a
 1. Create a `Format` constant instance, optionally in the `Format.` namespace.
 2. Create a sniffer function to recognize your format from a `Format.SnifferContext`.
 3. Then, either:
-    1. add your sniffer to the `Format.defaultSniffers` shared list to be used globally,
-    2. or use your sniffer on a case-by-case basis, by passing it to the `sniffers` argument of `Format.guess()`.
+    1. add your sniffer to the `Format.sniffers` shared list to be used globally,
+    2. or use your sniffer on a case-by-case basis, by passing it to the `sniffers` argument of `Format.of()`.
 
 Here's an example with Adobe's ACSM format.
 
@@ -118,16 +118,11 @@ extension Format {
 }
 
 // 2. Create the sniffer function.
-func sniffACSM(context: Format.SnifferContext, inspectingContent: Bool) -> Format? {
-    // First round of sniffing which should be fast: we check only the reported file
-    // extensions and media types.
-    if context.hasMediaType("application/vnd.adobe.adept+xml") || context.hasFileExtension("acsm") {
-        return Format.ACSM
-    }
-
-    // Second round of sniffing occurs when no format could be determined. In this case,
-    // we'll inspect the content of the file.
-    if inspectingContent && context.contentAsXML?.documentNode.tag == "fulfillmentToken" {
+func sniffACSM(context: Format.SnifferContext) -> Format? {
+    if context.hasMediaType("application/vnd.adobe.adept+xml")
+      || context.hasFileExtension("acsm")
+      || context.contentAsXML?.documentElement?.localName == "fulfillmentToken"
+    { 
         return Format.ACSM
     }
 
@@ -135,22 +130,22 @@ func sniffACSM(context: Format.SnifferContext, inspectingContent: Bool) -> Forma
 }
 
 // 3.1. Declare the sniffer globally.
-Format.defaultSniffers.add(sniffACSM)
-let format = Format.guess(path: acsmPath)
+Format.sniffers.add(sniffACSM)
+let format = Format.of(path: acsmPath)
 
 // 3.2. Or use the sniffer on a case-by-case basis. 
-let format = Format.guess(path: acsmPath, sniffers: Format.defaultSniffers + [sniffACSM])
+let format = Format.of(path: acsmPath, sniffers: Format.sniffers + [sniffACSM])
 ```
 
 ### Backward Compatibility and Migration
 
 #### Swift
 
-`Publication.format` and `Publication.formatVersion` will be deprecated, with a warning recommending to use `Format.guess()` instead. They will still work as before so it's not a breaking change.
+`Publication.format` and `Publication.formatVersion` will be deprecated, with a warning recommending to use `Format.of()` instead. They will still work as before so it's not a breaking change.
 
 #### Kotlin
 
-`Publication.type` and `Publication.version` will be deprecated, with a warning recommending to use `Format.guess()` instead. They will still work as before so it's not a breaking change.
+`Publication.type` and `Publication.version` will be deprecated, with a warning recommending to use `Format.of()` instead. They will still work as before so it's not a breaking change.
 
 
 ## Reference Guide
@@ -307,8 +302,8 @@ Represents a known file format, uniquely identified by a media type.
 
 * `==` (equality)
   * Returns whether two formats have the same `mediaType`.
-* (static) `guess(fileExtensions: List<String> = [], mediaTypes: List<String> = [], sniffers: List<Sniffer> = defaultSniffers) -> Format?`
-  * Guess a format from file extension and media type hints, without checking the actual content.
+* (static) `of(fileExtensions: List<String> = [], mediaTypes: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
+  * Resolves a format from file extension and media type hints, without checking the actual content.
   * **Warning:** This API should never be called from the UI thread. An assertion will check this.
   * (optional) `fileExtensions: List<String> = []`
     * File extension hints to be used by the sniffers.
@@ -316,16 +311,16 @@ Represents a known file format, uniquely identified by a media type.
   * (optional) `mediaTypes: List<String> = []`
     * Media type hints to be used by the sniffers.
     * We can provide several from different sources as fallbacks, e.g. from a `Link.type`, from a `Content-Type` HTTP header or from a database.
-  * (optional) `sniffers: List<Sniffer> = defaultSniffers`
+  * (optional) `sniffers: List<Sniffer> = Format.sniffers`
     * List of content sniffers used to determine the format.
-    * A reading app can support additional formats by giving `Format.defaultSniffers + [customSniffer]`.
-* (static) `guess(path: String, fileExtensions: List<String> = [], mediaTypes: List<String> = [], sniffers: List<Sniffer> = defaultSniffers) -> Format?`
-  * Guess a format from a local file path.
+    * A reading app can support additional formats by giving `Format.sniffers + [customSniffer]`.
+* (static) `of(path: String, fileExtensions: List<String> = [], mediaTypes: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
+  * Resolves a format from a local file path.
   * **Warning:** This API should never be called from the UI thread. An assertion will check this.
   * `path: String`
     * Absolute path to the file.
-* (static) `guess(bytes: () -> ByteArray, fileExtensions: List<String> = [], mediaTypes: List<String> = [], sniffers: List<Sniffer> = defaultSniffers) -> Format?`
-  * Guess a format from bytes, e.g. from an HTTP response.
+* (static) `of(bytes: () -> ByteArray, fileExtensions: List<String> = [], mediaTypes: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
+  * Resolves a format from bytes, e.g. from an HTTP response.
   * **Warning:** This API should never be called from the UI thread. An assertion will check this.
   * `bytes: () -> ByteArray`
     * Closure lazy-loading the bytes.
@@ -333,8 +328,8 @@ Represents a known file format, uniquely identified by a media type.
 
 #### Constants
 
-* (static, writable) `defaultSniffers: List<Sniffer>`
-  * The default sniffers provided by Readium 2 to guess a `Format`.
+* (static, writable) `sniffers: List<Sniffer>`
+  * The default sniffers provided by Readium 2 to resolve a `Format`.
   * This list is writable, to allow reading apps to register additional sniffers globally, or remove sniffers.
 
 Formats used by Readium are represented as static constants (singletons) on `Format`, for convenience.
@@ -344,11 +339,14 @@ Constant | Name | Extension | Media Type
 -------- | ---- | --------- | ----------
 `Audiobook` | Audiobook | audiobook | application/audiobook+zip
 `AudiobookManifest` | Audiobook | json | application/audiobook+json
+`BMP` | BMP | bmp | image/bmp
 `CBZ` | Comic Book Archive | cbz | application/vnd.comicbook+zip
 `DiViNa` | Digital Visual Narratives | divina | application/divina+zip
 `DiViNaManifest` | Digital Visual Narratives | json | application/divina+json
 `EPUB` | EPUB | epub | application/epub+zip
+`GIF` | GIF | gif | image/gif
 `HTML` | HTML | html | text/html
+`JPEG` | JPEG | jpg | image/jpeg
 `OPDS1Feed` | OPDS | atom | application/atom+xml;profile=opds-catalog
 `OPDS1Entry` | OPDS | atom | application/atom+xml;type=entry;profile=opds-catalog
 `OPDS2Feed` | OPDS | json | application/opds+json
@@ -358,7 +356,10 @@ Constant | Name | Extension | Media Type
 `LCPLicense` | LCP License | lcpl | application/vnd.readium.lcp.license.v1.0+json
 `LPF` | Lightweight Packaging Format | lpf | application/lpf+zip
 `PDF` | PDF | pdf | application/pdf
+`PNG` | PNG | png | image/png
+`TIFF` | TIFF | tiff | image/tiff
 `W3CWPUBManifest` | Web Publication | json | (*non-existent*) application/x.readium.w3c.wpub+json
+`WebP` | WebP | webp | image/webp
 `WebPub` | Web Publication | webpub | application/webpub+zip
 `WebPubManifest` | Web Publication | json | application/webpub+json
 `ZAB` | Zipped Audio Book | zab | (*non-existent*) application/x.readium.zab+zip
@@ -367,16 +368,10 @@ Constant | Name | Extension | Media Type
 
 Determines if the provided content matches a known format.
 
-Sniffing a format is done in two rounds, because we want to give an opportunity to all sniffers to return a `Format` quickly before inspecting the content itself:
-
-1. **Light Sniffing** checks only the provided file extension or media type hints.
-2. **Heavy Sniffing** reads the bytes to perform more advanced sniffing.
-
 #### Definition
 
-* `Format.Sniffer = (context: Format.SnifferContext, inspectingContent: Boolean) -> Format?`
+* `Format.Sniffer = (context: Format.SnifferContext) -> Format?`
   * `context` holds the file metadata and cached content, which are shared among the sniffers.
-  * `inspectingContent` triggers a heavy sniffing when true.
 
 ### `Format.SnifferContext` Interface
 
@@ -420,9 +415,9 @@ Examples of concrete implementations:
 
 ### HTTP Response Extension
 
-It's useful to be able to guess a format from an HTTP response. Therefore, implementations should provide when possible an extension to the native HTTP response type.
+It's useful to be able to resolve a format from an HTTP response. Therefore, implementations should provide when possible an extension to the native HTTP response type.
 
-* `HTTPResponse.guessFormat(fileExtensions: List<String> = [], mediaTypes: List<String> = [], sniffers: List<Sniffer> = Format.defaultSniffers): Format?`
+* `HTTPResponse.format(fileExtensions: List<String> = [], mediaTypes: List<String> = [], sniffers: List<Sniffer> = Format.sniffers): Format?`
   * (optional) `fileExtensions`
     * Additional file extension hints to be used by the sniffers.
   * (optional) `mediaTypes`
@@ -446,30 +441,36 @@ This extension will create a `Format.BytesSnifferContext` using these informatio
 
 It's important to have consistent results across platforms, so we need to use the same sniffing strategy per format. While using the media types and file extensions is a common strategy, a given implementation can use additional sniffing mechanisms when natively provided. For example, on iOS we can use the UTI detection mechanism to sniff a media type from a file.
 
-The sniffers order is crucial, because some formats are subsets of other formats:
+#### Sniffing Rounds
+
+Sniffing a format is done in two rounds, because we want to give an opportunity to all sniffers to return a `Format` quickly before inspecting the content itself:
+
+1. **Light Sniffing** checks only the provided file extension or media type hints.
+2. **Heavy Sniffing** reads the bytes to perform more advanced sniffing.
+
+To do that, `Format.of()` will iterate over all the sniffers twice, first with a `Format.SnifferContext` containing only extensions and media types, and the second time with a context containing the content, if available.
+
+#### Default Sniffers
+
+Sniffers can encapsulate the detection of several formats to factorize similar detection logic. For example, the following sniffers were identified. The sniffers order is crucial, because some formats are subsets of other formats.
 
 1. HTML
-2. OPDS 1 Feed
-3. OPDS 1 Entry
-4. OPDS 2 Feed
-5. OPDS 2 Publication
-6. LCP License Document
-7. Audiobook Manifest (Readium)
-8. DiViNa Manifest
-9. Web Publication Manifest (Readium)
-10. Web Publication Manifest (W3C)
-10. LCP Protected Audiobook
-11. LCP Protected PDF
-12. Audiobook (Readium)
-13. DiViNa
-14. Web Publication (Readium)
-15. EPUB
-16. CBZ
-17. ZAB (Zipped Audio Book)
-18. LPF
-18. PDF
+2. OPDS 1
+3. OPDS 2
+4. LCP License Document
+5. Bitmap (BMP, GIF, JPEG, PNG, TIFF and WebP)
+6. Readium Web Publication (WebPub, Audiobook, DiViNa, RWPM, LCPA and LCPDF)
+7. W3C Web Publication
+8. EPUB
+9. LPF
+10. ZIP (CBZ and ZAB)
+11. PDF
 
-#### Audiobook (Readium)
+In the case of bitmap formats, the default Readium sniffers don't perform any heavy sniffing, because we only need to detect these formats using extensions in ZIP entries or media types in a manifest.
+
+#### Formats
+
+##### Audiobook (Readium)
 
 * Light:
   * extension is `audiobook`
@@ -477,23 +478,29 @@ The sniffers order is crucial, because some formats are subsets of other formats
 * Heavy:
   * it's a ZIP archive with a `manifest.json` entry, parsed as an RWPM with `metadata.@type == http://schema.org/Audiobook`
 
-#### Audiobook Manifest (Readium)
+##### Audiobook Manifest (Readium)
 
 * Light:
   * media type is `application/audiobook+json`
 * Heavy:
   * it's a JSON file, parsed as an RWPM with `metadata.@type == http://schema.org/Audiobook`
 
-#### CBZ
+##### BMP
+
+* Light:
+  * extension is `bmp` or `dib`
+  * media type is `image/bmp` or `image/x-bmp`
+
+##### CBZ
 
 * Light:
   * extension is `cbz`
   * media type is `application/vnd.comicbook+zip`, `application/x-cbz` or `application/x-cbr`
 * Heavy ([reference](https://wiki.mobileread.com/wiki/CBR_and_CBZ)):
-  * it's a ZIP archive containing only entries with the given extensions: [`acbf`](https://wiki.mobileread.com/wiki/ACBF), `gif`, `jpeg`, `jpg`,`png`, `tiff`, `tif`, `webp` or `xml`
+  * it's a ZIP archive containing only entries with the given extensions: [`acbf`](https://wiki.mobileread.com/wiki/ACBF), `gif`, `jpeg`, `jpg`, `png`, `tiff`, `tif`, `webp` or `xml`
   * entries starting with a `.` and `Thumbs.db` are ignored
 
-#### DiViNa
+##### DiViNa
 
 * Light:
   * extension is `divina`
@@ -501,14 +508,14 @@ The sniffers order is crucial, because some formats are subsets of other formats
 * Heavy:
   * it's a ZIP archive with a `manifest.json` entry parsed as an RWPM, with a reading order containing only bitmap images – checked using `MediaType.isBitmap` on each `Link.type`
 
-#### DiViNa Manifest
+##### DiViNa Manifest
 
 * Light:
   * media type is `application/divina+json`
 * Heavy:
   * it's a JSON file parsed as an RWPM, with a reading order containing only bitmap images – checked using `MediaType.isBitmap` on each `Link.type`
 
-#### EPUB
+##### EPUB
 
 * Light:
   * extension is `epub`
@@ -516,7 +523,13 @@ The sniffers order is crucial, because some formats are subsets of other formats
 * Heavy ([reference](https://www.w3.org/publishing/epub3/epub-ocf.html#sec-zip-container-mime)):
   * it's a ZIP archive with a `mimetype` entry containing strictly `application/epub+zip`, encoded in US-ASCII
 
-#### HTML
+##### GIF
+
+* Light:
+  * extension is `gif`
+  * media type is `image/gif`
+
+##### HTML
 
 * Light:
   * extension is `htm`, `html`, `xht` or `xhtml`
@@ -524,35 +537,41 @@ The sniffers order is crucial, because some formats are subsets of other formats
 * Heavy:
   * it's an XML document with an `<html>` root node
 
-#### OPDS 1 Feed
+##### JPEG
+
+* Light:
+  * extension is `jpg`, `jpeg`, `jpe`, `jif`, `jfif` or `jfi`
+  * media type is `image/jpeg`
+
+##### OPDS 1 Feed
 
 * Light:
   * media type is `application/atom+xml;profile=opds-catalog`
 * Heavy:
   * it's an XML document with a `<feed>` root node with the XML namespace `http://www.w3.org/2005/Atom`
 
-#### OPDS 1 Entry
+##### OPDS 1 Entry
 
 * Light:
   * media type is `application/atom+xml;type=entry;profile=opds-catalog`
 * Heavy:
   * it's an XML document with an `<entry>` root node with the XML namespace `http://www.w3.org/2005/Atom`
 
-#### OPDS 2 Feed
+##### OPDS 2 Feed
 
 * Light:
   * media type is `application/opds+json`
 * Heavy:
   * it's a JSON file parsed as an RWPM with a `Link` with `self` rel and `application/opds+json` type
 
-#### OPDS 2 Publication
+##### OPDS 2 Publication
 
 * Light:
   * media type is `application/opds-publication+json`
 * Heavy:
   * it's a JSON file parsed as an RWPM with at least one `Link` with a rel *starting with* `http://opds-spec.org/acquisition` 
 
-#### LCP Protected Audiobook
+##### LCP Protected Audiobook
 
 * Light:
   * extension is `lcpa`
@@ -562,7 +581,7 @@ The sniffers order is crucial, because some formats are subsets of other formats
     * a `license.lcpl` entry
     * a `manifest.json` entry, parsed as an RWPM with `metadata.@type == http://schema.org/Audiobook`
 
-#### LCP Protected PDF
+##### LCP Protected PDF
 
 * Light:
   * extension is `lcpdf`
@@ -572,7 +591,7 @@ The sniffers order is crucial, because some formats are subsets of other formats
     * a `license.lcpl` entry
     * a `manifest.json` entry, parsed as an RWPM with a reading order containing only `Link` with `application/pdf` type
 
-#### LCP License Document
+##### LCP License Document
 
 * Light:
   * extension is `lcpl`
@@ -580,25 +599,31 @@ The sniffers order is crucial, because some formats are subsets of other formats
 * Heavy:
   * it's a JSON object containing the following root keys: `id`, `issued`, `provider` and `encryption`
 
-#### LPF (Lightweight Packaging Format)
+##### LPF (Lightweight Packaging Format)
 
 * Light:
   * extension is `lpf`
   * media type is `application/lpf+zip`
-* Heavy:
+* Heavy ([reference 1](https://www.w3.org/TR/lpf/), [reference 2](https://www.w3.org/TR/pub-manifest/#manifest-context)):
   * it's a ZIP archive with either:
-    * a `publication.json` entry, containing at least `https://www.w3.org/ns/wp-context` in the `@context` string/array property
+    * a `publication.json` entry, containing at least `https://www.w3.org/ns/pub-context` in the `@context` string/array property
     * an `index.html` entry
 
-#### PDF
+##### PDF
 
 * Light:
   * extension is `pdf`
   * media type is `application/pdf`
 * Heavy ([reference](https://www.loc.gov/preservation/digital/formats/fdd/fdd000123.shtml)):
-  * content starts with `%PDF` (hex `25 50 44 46`)
+  * content starts with `%PDF-`
 
-#### Web Publication (Readium)
+##### PNG
+
+* Light:
+  * extension is `png`
+  * media type is `image/png`
+
+##### Web Publication (Readium)
 
 * Light:
   * extension is `webpub`
@@ -606,19 +631,31 @@ The sniffers order is crucial, because some formats are subsets of other formats
 * Heavy:
   * it's a ZIP archive with a `manifest.json` entry parsed as an RWPM
 
-#### Web Publication Manifest (Readium)
+##### Web Publication Manifest (Readium)
 
 * Light:
   * media type is `application/webpub+json`
 * Heavy:
   * it's a JSON file, parsed as an RWPM containing one `Link` with `self` rel and `application/webpub+json` type
 
-#### Web Publication Manifest (W3C)
+##### Web Publication Manifest (W3C)
 
 * Heavy ([reference](https://www.w3.org/TR/wpub/#manifest-context)):
   * it's a JSON file, containing at least `https://www.w3.org/ns/wp-context` in the `@context` string/array property 
 
-#### ZAB (Zipped Audio Book)
+##### TIFF
+
+* Light:
+  * extension is `tiff` or `tif`
+  * media type is `image/tiff` or `image/tiff-fx`
+
+##### WebP
+
+* Light:
+  * extension is `webp`
+  * media type is `image/webp`
+
+##### ZAB (Zipped Audio Book)
 
 * Light:
   * extension is `zab`
