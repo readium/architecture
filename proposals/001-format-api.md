@@ -71,13 +71,13 @@ let format = Format.of(
 )
 ```
 
-In the case of an HTTP response, this can be simplified by using the `HTTPResponse.format()` extension:
+In the case of an HTTP response, this can be simplified by using the `HTTPResponse.sniffFormat()` extension:
 
 ```swift
 let feedLink: Link
 let response = httpClient.get(feedLink.href)
 
-let format = response.format(mediaTypes: [feedLink.type])
+let format = response.sniffFormat(mediaTypes: [feedLink.type])
 ```
 
 ### Sniffing the Format of a File
@@ -185,23 +185,33 @@ Comparing media types is more complicated than it looks, [since they can contain
 
 #### Properties
 
-* `string: String` (or `toString()` if more idiomatic).
-  * The string representation of this media type.
 * `type: String`
   * The type component, e.g. `application` in `application/epub+zip`.
 * `subtype: String`
   * The subtype component, e.g. `epub+zip` in `application/epub+zip`.
 * `parameters: Map<String, String>`
   * The parameters in the media type, such as `charset=utf-8`.
+* `string: String` (or `toString()` if more idiomatic).
+  * The canonical string representation of this media type.
+    * Type, subtype and parameter names are lowercased.
+    * Parameter values keep their original case, except for the `charset` parameter, which is uppercased.
+    * Parameters are ordered alphabetically.
+    * No spaces between parameters.
+* `encoding: Encoding?`
+  * Encoding as declared in the `charset` parameter, if there's any.
+  * Uses the standard `Encoding` type provided by the platform, for convenience.
 
 #### Methods
 
-* `contains(mediaType: String) -> Boolean`, `contains(mediaType: MediaType) -> Boolean`
-  * Returns whether the provided media type is included in this media type.
+* `contains(other: MediaType) -> Boolean`, `contains(other: String) -> Boolean`
+  * Returns whether the provided `other` media type is included in this media type.
   * For example, `text/html` contains `text/html;charset=utf-8`.
-  * `mediaType` must match the parameters in the `parameters` property, but extra parameters are ignored. 
+  * `other` must match the parameters in the `parameters` property, but extra parameters are ignored. 
   * Parameters order is ignored. 
   * Wildcards are supported, meaning that `image/*` contains `image/png` and `*/*` contains everything.
+* `isPartOf(other: MediaType) -> Boolean`, `isPartOf(other: String) -> Boolean`
+  * Returns whether this media type is included in the provided `other` media type.
+  * Equivalent to `other.contains(this)`
 * `==` (equality)
   * Returns whether two media types are equal, checking the type, subtype and parameters.
   * Parameters order is ignored.
@@ -219,6 +229,14 @@ Computed properties for convenience. More can be added as needed.
 * `isBitmap: Boolean`
   * Returns whether this media type is a bitmap image, so excluding SVG and other vectorial formats. It must be contained by `BMP`, `GIF`, `JPEG`, `PNG`, `TIFF` or `WebP`.
   * Used to determine if a RWPM is a DiViNa publication.
+* `isRWPM: Boolean`
+  * Returns whether this media type is a Readium Web Publication Manifest, so contained by `AudiobookManifest`, `DiViNaManifest` or `WebPubManifest`.
+
+#### `Link` Helpers
+
+* `mediaType: MediaType?`
+  * Media type of the linked resource.
+  * Equivalent to `MediaType(link.type)`.
 
 #### Constants
 
@@ -289,12 +307,12 @@ Represents a known file format, uniquely identified by a media type.
 
 *Note: all of the constructor parameters are exposed as read-only public properties.*
 
-* `Format(mediaType: MediaType, name: String, fileExtension: String)`
+* `Format(name: String, mediaType: MediaType, fileExtension: String)`
+  * `name: String`
+    * A human readable name identifying the format, which might be presented to the user.
   * `mediaType: MediaType`
     * The canonical media type that identifies the best (most officially) this format.
     * This might be stored in the reading app's database when importing a publication.
-  * `name: String`
-    * A human readable name identifying the format, which might be presented to the user.
   * `fileExtension: String`
     * The default file extension to use for this format.
 
@@ -302,24 +320,23 @@ Represents a known file format, uniquely identified by a media type.
 
 * `==` (equality)
   * Returns whether two formats have the same `mediaType`.
-* (static) `of(fileExtensions: List<String> = [], mediaTypes: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
+* (static) `of(mediaTypes: List<String> = [], fileExtensions: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
   * Resolves a format from file extension and media type hints, without checking the actual content.
-  * **Warning:** This API should never be called from the UI thread. An assertion will check this.
-  * (optional) `fileExtensions: List<String> = []`
-    * File extension hints to be used by the sniffers.
-    * We can provide several from different sources as fallbacks, e.g. from a local path and a download URL.
   * (optional) `mediaTypes: List<String> = []`
     * Media type hints to be used by the sniffers.
     * We can provide several from different sources as fallbacks, e.g. from a `Link.type`, from a `Content-Type` HTTP header or from a database.
+  * (optional) `fileExtensions: List<String> = []`
+    * File extension hints to be used by the sniffers.
+    * We can provide several from different sources as fallbacks, e.g. from a local path and a download URL.
   * (optional) `sniffers: List<Sniffer> = Format.sniffers`
     * List of content sniffers used to determine the format.
     * A reading app can support additional formats by giving `Format.sniffers + [customSniffer]`.
-* (static) `of(path: String, fileExtensions: List<String> = [], mediaTypes: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
+* (static) `of(file: String, mediaTypes: List<String> = [], fileExtensions: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
   * Resolves a format from a local file path.
   * **Warning:** This API should never be called from the UI thread. An assertion will check this.
-  * `path: String`
+  * `file: String`
     * Absolute path to the file.
-* (static) `of(bytes: () -> ByteArray, fileExtensions: List<String> = [], mediaTypes: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
+* (static) `of(bytes: () -> ByteArray, mediaTypes: List<String> = [], fileExtensions: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
   * Resolves a format from bytes, e.g. from an HTTP response.
   * **Warning:** This API should never be called from the UI thread. An assertion will check this.
   * `bytes: () -> ByteArray`
@@ -389,59 +406,65 @@ Examples of concrete implementations:
   * Media type hints.
 * (private) `fileExtensions: List<String>`
   * File extension hints.
+* `encoding: Encoding?`
+  * Finds the first `Encoding` declared in the media types' `charset` parameter.
+  * Uses the standard `Encoding` type provided by the platform, for convenience.
 * (lazy) `contentAsString: String?`
   * Content as plain text.
   * If needed, extract the `charset` parameter from the media type hints to figure out an encoding. Otherwise, fallback on UTF-8.
-* (lazy) `contentAsJSON: JSONObject?`
-  * Content as a JSON object.
 * (lazy) `contentAsXML: XMLDocument?`
   * Content as an XML document.
 * (lazy) `contentAsZIP:  ZIPArchive?`
   * Content as a ZIP archive.
+* (lazy) `contentAsJSON: JSONObject?`
+  * Content as a JSON object.
+* (lazy) `contentAsRWPM: Publication?`
+  * Publication parsed from the content.
 
 #### Methods
 
+* `hasFileExtension(fileExtensions: String...) -> Boolean`
+  * Returns whether this context has any of the given file extensions, ignoring case.
+  * This will check the `fileExtensions` array.
+* `hasMediaType(mediaTypes: String...) -> Boolean`, `hasMediaType(mediaTypes: MediaType...) -> Boolean`
+  * Returns whether this context has any of the given media type, ignoring case and extra parameters.
+  * This will check the `mediaTypes` array, using `MediaType` to handle the comparison.
 * `stream() -> Stream?`
   * Raw bytes stream of the content.
   * A byte stream can be useful when sniffers only need to read a few bytes at the beginning of the file.
+* `readFileSignature(length: Int, encoding: Encoding = UTF-8) -> String?`
+  * Reads the file signature, aka magic number, at the beginning of the content, up to `length` bytes.
+  * See https://en.wikipedia.org/wiki/List_of_file_signatures
 * `close()`
   * Closes any opened file handles.
-* `hasFileExtension(fileExtension: String) -> Boolean`
-  * Returns whether this context has the given file extension, ignoring case.
-  * This will check the `fileExtensions` array.
-* `hasMediaType(mediaType: String) -> Boolean`, `hasMediaType(mediaType: MediaType) -> Boolean`
-  * Returns whether this context has the given media type, ignoring case and extra parameters.
-  * This will check the `mediaTypes` array, using `MediaType` to handle the comparison.
 
 ### HTTP Response Extension
 
 It's useful to be able to resolve a format from an HTTP response. Therefore, implementations should provide when possible an extension to the native HTTP response type.
 
-* `HTTPResponse.format(fileExtensions: List<String> = [], mediaTypes: List<String> = [], sniffers: List<Sniffer> = Format.sniffers): Format?`
-  * (optional) `fileExtensions`
-    * Additional file extension hints to be used by the sniffers.
+* `HTTPResponse.sniffFormat(mediaTypes: List<String> = [], fileExtensions: List<String> = [], sniffers: List<Sniffer> = Format.sniffers): Format?`
   * (optional) `mediaTypes`
     * Additional media type hints to be used by the sniffers.
+  * (optional) `fileExtensions`
+    * Additional file extension hints to be used by the sniffers.
   * (optional) `sniffers`
     * List of content sniffers used to determine the format.
 
 This extension will create a `Format.BytesSnifferContext` using these informations:
 
+* `mediaTypes`, in order:
+  * the value of the `Content-Type` HTTP header,
+  * additional provided `mediaTypes`, for example to use the value of `Link.type`.
 * `fileExtensions`, in order:
   * the suggested filename extension, part of the HTTP header `Content-Disposition`,
   * the URL extension,
   * additional provided file extensions.
-* `mediaTypes`, in order:
-  * the value of the `Content-Type` HTTP header,
-  * additional provided `mediaTypes`, for example to use the value of `Link.type`.
 * `bytes`: the response's body
 
 
 ### Sniffing Strategy
 
-It's important to have consistent results across platforms, so we need to use the same sniffing strategy per format. While using the media types and file extensions is a common strategy, a given implementation can use additional sniffing mechanisms when natively provided. For example, on iOS we can use the UTI detection mechanism to sniff a media type from a file.
-
-#### Sniffing Rounds
+It's important to have consistent results across platforms, so we need to use the same sniffing strategy.
 
 Sniffing a format is done in two rounds, because we want to give an opportunity to all sniffers to return a `Format` quickly before inspecting the content itself:
 
@@ -452,7 +475,7 @@ To do that, `Format.of()` will iterate over all the sniffers twice, first with a
 
 #### Default Sniffers
 
-Sniffers can encapsulate the detection of several formats to factorize similar detection logic. For example, the following sniffers were identified. The sniffers order is crucial, because some formats are subsets of other formats.
+Sniffers can encapsulate the detection of several formats to factorize similar detection logic. For example, the following sniffers were identified. The sniffers order is important, because some formats are subsets of others.
 
 1. HTML
 2. OPDS 1
@@ -463,10 +486,10 @@ Sniffers can encapsulate the detection of several formats to factorize similar d
 7. W3C Web Publication
 8. EPUB
 9. LPF
-10. ZIP (CBZ and ZAB)
+10. Free-form ZIP (CBZ and ZAB)
 11. PDF
 
-In the case of bitmap formats, the default Readium sniffers don't perform any heavy sniffing, because we only need to detect these formats using extensions in ZIP entries or media types in a manifest.
+In the case of bitmap formats, the default Readium sniffers don't perform any heavy sniffing, because we only need to detect these formats using file extensions in ZIP entries or media types in a manifest. If needed, a reading app could add additional sniffers doing heavy sniffing of bitmap files.
 
 #### Formats
 
