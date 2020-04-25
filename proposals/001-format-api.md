@@ -197,6 +197,10 @@ Comparing media types is more complicated than it looks, [since they can contain
     * Parameter values keep their original case, except for the `charset` parameter, which is uppercased.
     * Parameters are ordered alphabetically.
     * No spaces between parameters.
+* `structuredSyntaxSuffix: String?`
+  * Structured syntax suffix, e.g. `+zip` in `application/epub+zip`
+  * Gives a hint on the underlying structure of this media type.
+  * i.e. https://tools.ietf.org/html/rfc6838#section-4.2.8
 * `encoding: Encoding?`
   * Encoding as declared in the `charset` parameter, if there's any.
   * Uses the standard `Encoding` type provided by the platform, for convenience.
@@ -220,6 +224,10 @@ Comparing media types is more complicated than it looks, [since they can contain
 
 Computed properties for convenience. More can be added as needed.
 
+* `isZIP: Boolean`
+  * Returns whether this media type is structured as a ZIP archive.
+* `isJSON: Boolean`
+  * Returns whether this media type is structured as a JSON file.
 * `isOPDS: Boolean`
   * Returns whether this media type is contained by `OPDS1`, `OPDS1Entry`, `OPDS2` or `OPDS2Publication`.
   * Used to determine the type of remote catalogs.
