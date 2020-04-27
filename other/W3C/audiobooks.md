@@ -57,7 +57,7 @@ W3C Web Publications can be identified by:
 
 Readium Web Publications require an "identifier" property, which is equivalent to the JSON-LD "id" property and must be "a valid URI" (i.e. a literal). 
 
-**Mapping: **
+**Mapping:**
 
 *   the "id" property is mapped to the "identifier" property as-is.
 *   if "id" is missing and "url" is present, the latter is mapped to the "identifier" property as-is.
@@ -72,7 +72,7 @@ Readium metadata are included in a "metadata" wrapper, W3C metadata are not.
 
 **Mapping:**
 
-*   Every metadata property found in the W3C manifest is copied as-is into the Readium manifest, with the following exceptions: \
+*   Every metadata property found in the W3C manifest is copied as-is into the Readium manifest, with the following exceptions:
 
 
 <table>
@@ -134,7 +134,7 @@ W3C
 
 A W3C manifest may contain properties not defined in its schema, especially Dublin Core properties. Such properties have great chances to be represented using a ‘dcterms’ prefix. 
 
-We‘ll therefore map the following properties:  \
+We‘ll therefore map the following properties:
 
 
 <table>
@@ -222,16 +222,12 @@ While the addition of a direction metadata is discussed in a [webpub-manifest is
 
 **Mapping:**
 
-
-
 *   for each localized property, use the value of "language" as name of a Readium property and use the value of "value" as value of this property. 
 
 
 ## Named entities / Contributors
 
 W3C named entities (e.g. contributors) are defined [here](https://www.w3.org/TR/pub-manifest/#value-entity). Each has: 
-
-
 
 *   type (array of literals e.g. "Person")
 *   name (array of localizable strings, i.e. W3C localized property)
@@ -240,8 +236,6 @@ W3C named entities (e.g. contributors) are defined [here](https://www.w3.org/TR/
 *   identifier (array of literals e.g. "orcid:12345") 
 
 Readium contributors are defined [here](https://github.com/readium/webpub-manifest/tree/master/contexts/default#contributors), with [this json schema](https://readium.org/webpub-manifest/schema/contributor-object.schema.json). Each has:
-
-
 
 *   name (localized property, required)
 *   identifier (URL identifier)
@@ -252,7 +246,7 @@ Readium contributors are defined [here](https://github.com/readium/webpub-manife
 
 Properties which handle contributors can be a plain literal, a single object or an array of objects mixed with literals. 
 
-**Mapping: **
+**Mapping:**
 
 
 <table>
@@ -297,7 +291,6 @@ W3C Linked resources are defined [here](https://www.w3.org/TR/pub-manifest/#valu
 Readium Link Objects are defined [here](https://github.com/readium/webpub-manifest#24-the-link-object). A Readium link has:
 
 
-
 *   href (URI)
 *   templated (Boolean)
 *   type (media type)
@@ -312,7 +305,7 @@ Readium Link Objects are defined [here](https://github.com/readium/webpub-manife
 *   alternate (Array of Link Objects)
 *   children (Array of Link Objects)
 
-**Mapping: **
+**Mapping:**
 
 
 <table>
@@ -385,8 +378,6 @@ Other W3C properties are lost in translation.
 
 	If no file extension is found in the source url, define an empty string for type. 
 
-
-
 2. "name" is a localized property, but "title" is a string. In case "name" as multiple values (which should be very rare), **let’s keep only the first in sequence (whatever its language is).**  
 3. Same mapping as for the "duration" of the publication.
 4. the W3C alternate property can be a simple string, while the Readium alternate property is an array of link objects. 
@@ -396,14 +387,12 @@ Other W3C properties are lost in translation.
 
 It is an important HTML resource in the W3C Audiobooks format: 
 
-
-
 *   the address of the Web Publication ("url" property, optional) is the URL of this entry page.
 *   it SHOULD contains the HTML ToC of the publication. 
 
 Acknowledging that audiobooks a usually created by audio recording studios "outside of the Web", it has been decided that the Primary Entry Page (PEP) is optional in W3C Web Publications. If present, it should be listed in the publication resources (and not in the reading order).  Therefore the mapping of resources described here solves this case. 
 
-**Note about the Cover: **
+**Note about the Cover:**
 
 This processing also solves the case of an audiobook cover, implemented as a linked resource with the same rel value in both W3C and Readium flavors. 
 
@@ -438,11 +427,9 @@ Such ToC is referenced from the manifest using a specifc rel attribute with valu
 
 For the W3C WG, using HTML is a guarantee of extended internationalization.  
 
-In the case of** Readium Web publications**, it is a [JSON structure](https://github.com/readium/webpub-manifest/tree/presentation-hints#5-table-of-contents) embedded in the manifest. 
+In the case of **Readium Web publications**, it is a [JSON structure](https://github.com/readium/webpub-manifest/tree/presentation-hints#5-table-of-contents) embedded in the manifest. 
 
-Readium example:  \
-
-
+Readium example:
 
 ```json
 "toc": [
@@ -468,7 +455,7 @@ Readium example:  \
 ```
 
 
-**Mapping: **
+**Mapping:**
 
 *   In the initial version, a Readium Web Publication Manifest will simply identify an HTML or XHTML resource in _readingOrder_ or _resources_ as a table of contents using the _contents_ link relation -> this is treated in a preceding section). 
 *   In a second version, a simple mapping (still tbd) with be developed. If this mapping fails, no ToC will be present in the Readium manifest and the reading system will use the reading order as a fallback. 
@@ -510,7 +497,7 @@ Code references:
 
 [https://github.com/readium/r2-shared-js/blob/9a9abe127b03097191ea7221a091a3dc48227ea8/src/models/metadata.ts#L646-L667](https://github.com/readium/r2-shared-js/blob/9a9abe127b03097191ea7221a091a3dc48227ea8/src/models/metadata.ts#L646-L667)
 
-**Mapping: **
+**Mapping:**
 
 *   **accessMode**, **accessibilityFeature** and **accessibilityHazard** are mapped directly as string arrays. 
 *   **accessibilitySummary** is processed like other localized properties.
