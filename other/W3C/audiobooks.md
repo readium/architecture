@@ -28,7 +28,7 @@ W3C Publications require
    "https://schema.org",
    "https://www.w3.org/ns/pub-context"
  ],
- "conformsTo": "https://www.w3/org/TR/audiobooks/",
+ "conformsTo": "https://www.w3.org/TR/audiobooks/",
 ````
 
 While Readium Web Publications require
