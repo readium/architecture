@@ -40,7 +40,7 @@ While Readium Web Publications require
    },
   ````
 
-**Mapping: **
+**Mapping:**
 
 *   the W3C @context property is ignored, the Readium @context property is static
 *   the W3C "conformsTo" property value is tested: if its value corresponds to an audiobook, the Readium "metadata/@type" property value is set to "https://schema.org/Audiobook", else it is set to "https://schema.org/CreativeWork" (this is a generic fallback).  
@@ -401,7 +401,7 @@ This processing also solves the case of an audiobook cover, implemented as a lin
 
 In the case of **W3C Web Publications**, it is an HTML page with a [restricted structure](https://www.w3.org/TR/audiobooks/#audio-toc) typically starting with a &lt;nav role="doc-toc"> or &lt;section role="doc-toc"> element ([samples](https://www.w3.org/TR/audiobooks/#audio-toc-examples)).
 
-W3C example:  \
+W3C example:
 
 
 ```
@@ -465,37 +465,37 @@ Readium example:
 
 The W3C specification of accessibility metadata is [here](https://www.w3.org/TR/pub-manifest/#accessibility). 
 
-
-
 *   accessMode is an Array of Literals (strings)
 *   accessibilityFeature is an Array of Literals
 *   accessibilityHazard is an Array of Literals
 *   accessibilitySummary is an Array of Localizable Strings
 *   accessModesufficient is an Array of Objects (see mapping)
 
-[http://kb.daisy.org/publishing/docs/metadata/schema-org.html](http://kb.daisy.org/publishing/docs/metadata/schema-org.html)
+Some useful links:
 
-[https://www.w3.org/wiki/WebSchemas/Accessibility](https://www.w3.org/wiki/WebSchemas/Accessibility)
+[Daisy, schema.org accessibility metadata](http://kb.daisy.org/publishing/docs/metadata/schema.org/)
+
+[W3C Wiki WebSchemas Accessibility](https://www.w3.org/wiki/WebSchemas/Accessibility)
 
 Additional properties (supported in R2, not explicitly in W3C spec.):
 
-[http://kb.daisy.org/publishing/docs/metadata/evaluation.html](http://kb.daisy.org/publishing/docs/metadata/evaluation.html)
+[Daisy evaluation metadata](http://kb.daisy.org/publishing/docs/metadata/evaluation.html)
 
 Related discussions:
 
-[https://github.com/readium/architecture/issues/94#issuecomment-613965656](https://github.com/readium/architecture/issues/94#issuecomment-613965656)
+[Readium architeture #94](https://github.com/readium/architecture/issues/94#issuecomment-613965656)
 
 Draft Readium parsing rules:
 
-[https://github.com/JayPanoz/architecture/blob/a11y-metadata-parsing/streamer/parser/a11y-metadata-parsing.md](https://github.com/JayPanoz/architecture/blob/a11y-metadata-parsing/streamer/parser/a11y-metadata-parsing.md)
+[Jiminy a11y metadata parsing](https://github.com/JayPanoz/architecture/blob/a11y-metadata-parsing/streamer/parser/a11y-metadata-parsing.md)
 
 Code references:
 
-[https://github.com/readium/r2-shared-js/blob/9a9abe127b03097191ea7221a091a3dc48227ea8/src/models/metadata.ts#L66-L220](https://github.com/readium/r2-shared-js/blob/9a9abe127b03097191ea7221a091a3dc48227ea8/src/models/metadata.ts#L66-L220)
+[r2-shared-js/metadata.ts#L66-L220](https://github.com/readium/r2-shared-js/blob/9a9abe127b03097191ea7221a091a3dc48227ea8/src/models/metadata.ts#L66-L220)
 
-[https://github.com/readium/r2-shared-js/blob/9a9abe127b03097191ea7221a091a3dc48227ea8/src/parser/epub.ts#L500-L673](https://github.com/readium/r2-shared-js/blob/9a9abe127b03097191ea7221a091a3dc48227ea8/src/parser/epub.ts#L500-L673)
+[r2-shared-js/epub.ts#L500-L673](https://github.com/readium/r2-shared-js/blob/9a9abe127b03097191ea7221a091a3dc48227ea8/src/parser/epub.ts#L500-L673)
 
-[https://github.com/readium/r2-shared-js/blob/9a9abe127b03097191ea7221a091a3dc48227ea8/src/models/metadata.ts#L646-L667](https://github.com/readium/r2-shared-js/blob/9a9abe127b03097191ea7221a091a3dc48227ea8/src/models/metadata.ts#L646-L667)
+[readium/r2-shared-js/metadata.ts#L646-L667](https://github.com/readium/r2-shared-js/blob/9a9abe127b03097191ea7221a091a3dc48227ea8/src/models/metadata.ts#L646-L667)
 
 **Mapping:**
 
