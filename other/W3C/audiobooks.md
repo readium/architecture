@@ -29,6 +29,7 @@ W3C Publications require
    "https://www.w3.org/ns/pub-context"
  ],
  "conformsTo": "https://www.w3.org/TR/audiobooks/",
+ "type": "Audiobook",
 ````
 
 While Readium Web Publications require
@@ -43,8 +44,8 @@ While Readium Web Publications require
 **Mapping:**
 
 *   the W3C @context property is ignored, the Readium @context property is static
-*   the W3C "conformsTo" property value is tested: if its value corresponds to an audiobook, the Readium "metadata/@type" property value is set to "https://schema.org/Audiobook", else it is set to "https://schema.org/CreativeWork" (this is a generic fallback).  
-
+*   the W3C "conformsTo" property value is tested: if its value corresponds to an audiobook, the Readium "metadata/@type" property value is set to "https://schema.org/Audiobook"; else the W3C "type" property value is tested: if its value corresponds to an audiobook, the Readium "metadata/@type" property value is again set to "https://schema.org/Audiobook"; else it is set to "https://schema.org/CreativeWork" (this is a generic fallback).
+*   the "type" property is not mapped to the Readium manifest. 
 
 ## Identifiers
 
