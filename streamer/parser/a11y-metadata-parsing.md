@@ -16,15 +16,7 @@ References:
 
 `accessMode` is a key whose value is an array of strings.
 
-It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package))
-
-### EPUB 2.x
-
-The array is created from the `meta` elements whose `name` attribute has the value `schema:accessMode`. The value of their `content` attribute is pushed to the array.
-
-### EPUB 3.X
-
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessMode`. Their value is pushed to the array.
+It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
 
 At the time of writing, known values are:
 
@@ -39,6 +31,14 @@ At the time of writing, known values are:
 - `mathOnVisual`
 - `musicOnVisual`
 - `textOnVisual`
+
+### EPUB 2.x
+
+The array is created from the `meta` elements whose `name` attribute has the value `schema:accessMode`. The value of their `content` attribute is pushed to the array.
+
+### EPUB 3.X
+
+The array is created from the `meta` elements whose `property` attribute has the value `schema:accessMode`. Their value is pushed to the array.
 
 ## AccessModeSufficient
 
@@ -62,7 +62,7 @@ When their value is a single `accessMode`, it is pushed to the array. When it is
 
 `accessibilitySummary` is a key whose value is an array of localized strings (JSON-LD language maps).
 
-It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package))
+It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
 
 ### EPUB 2.x
 
@@ -139,7 +139,7 @@ The array is created from the `link` elements whose `property` attribute has the
 
 `accessibilityFeature` is a key whose value is an array of strings.
 
-It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package))
+It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
 
 At the time of writing, known values are:
 
@@ -199,7 +199,7 @@ The array is created from the `meta` elements whose `property` attribute has the
 
 `accessibilityHazard` is a key whose value is an array of strings.
 
-It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package))
+It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
 
 At the time of writing, known values are:
 
