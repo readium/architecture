@@ -224,14 +224,6 @@ The array is created from the `meta` elements whose `property` attribute has the
 
 `accessibilityControl` is a key whose value is an array of strings.
 
-### EPUB 2.x
-
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityControl`. The value of their `content` attribute is pushed to the array.
-
-### EPUB 3.X
-
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityControl`. Their value is pushed to the array.
-
 At the time of writing, known values are:
 
 - `fullAudioControl`
@@ -242,17 +234,17 @@ At the time of writing, known values are:
 - `fullVideoControl`
 - `fullVoiceControl`
 
-## AccessibilityAPI
-
-`accessibilityAPI` is a key whose value is an array of strings.
-
 ### EPUB 2.x
 
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityAPI`. The value of their `content` attribute is pushed to the array.
+The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityControl`. The value of their `content` attribute is pushed to the array.
 
 ### EPUB 3.X
 
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityAPI`. Their value is pushed to the array.
+The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityControl`. Their value is pushed to the array.
+
+## AccessibilityAPI
+
+`accessibilityAPI` is a key whose value is an array of strings.
 
 At the time of writing, known values are:
 
@@ -269,3 +261,11 @@ At the time of writing, known values are:
 - `UIAutomation`
 
 Currently, only the `ARIA` value might be trustworthy in the EPUB context.
+
+### EPUB 2.x
+
+The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityAPI`. The value of their `content` attribute is pushed to the array.
+
+### EPUB 3.X
+
+The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityAPI`. Their value is pushed to the array.
