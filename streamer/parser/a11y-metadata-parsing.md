@@ -8,9 +8,12 @@ Related Repository: [Readium Web Publication Manifest](https://github.com/readiu
 
 References: 
 
+- https://www.w3.org/Submission/epub-a11y/
 - http://kb.daisy.org/publishing/docs/metadata/schema-org.html
 - http://kb.daisy.org/publishing/docs/metadata/evaluation.html
 - https://www.w3.org/wiki/WebSchemas/Accessibility
+- https://www.w3.org/TR/pub-manifest/#accessibility
+- https://w3c.github.io/publ-a11y/UX-Guide-Metadata/techniques/schema-org.html
 
 ## AccessMode
 
@@ -38,11 +41,11 @@ The array is created from the `meta` elements whose `name` attribute has the val
 
 ### EPUB 3.X
 
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessMode`. Their value is pushed to the array.
+The array is created from the `meta` elements whose `property` attribute has the value `schema:accessMode`. Their value (i.e. child textual content) is pushed to the array.
 
 ## AccessModeSufficient
 
-`accessModeSufficient` is a key whose value is an array of arrays and strings.
+`accessModeSufficient` is a key whose value is an array of arrays of strings.
 
 The known values are the same as `accessMode`.
 
@@ -50,13 +53,29 @@ The known values are the same as `accessMode`.
 
 The array is created from the `meta` elements whose `name` attribute has the value `schema:accessModeSufficient`. 
 
-When the value of their `content` attribute is a single `accessMode`, it is pushed to the array. When it is a multiple, another array is created then pushed to the parent array.
+When the value of their `content` attribute is a single `accessMode`, make an array from the token and insert it into the `accessModeSufficient` array.
+
+When it is a multiple:
+
+- split the value based on comma (`,`) separator;
+- trim (left + right) each resulting string token, but leave original whitespaces inside the token – some EPUBs might be using a space separator instead of comma;
+- remove duplicate tokens (if any);
+- make an array from the remaining ordered tokens;
+- insert this array into the `accessModeSufficient` array.
 
 ### EPUB 3.X
 
 The array is created from the `meta` elements whose `property` attribute has the value `schema:accessModeSufficient`. 
 
-When their value is a single `accessMode`, it is pushed to the array. When it is a multiple, another array is created then pushed to the parent array.
+When their value is a single `accessMode`, make an array from the token and insert it into the `accessModeSufficient` array.
+
+When it is a multiple:
+
+- split the value based on comma (`,`) separator;
+- trim (left + right) each resulting string token, but leave original whitespaces inside the token – some EPUBs might be using a space separator instead of comma;
+- remove duplicate tokens (if any);
+- make an array from the remaining ordered tokens;
+- insert this array into the `accessModeSufficient` array.
 
 ## AccessibilitySummary
 
@@ -86,7 +105,7 @@ The array is created from the `meta` elements whose `name` attribute has the val
 
 ### EPUB 3.X
 
-The array is created from the `meta` elements whose `property` attribute has the value `a11y:certifiedBy`. Their value is pushed to the array.
+The array is created from the `meta` elements whose `property` attribute has the value `a11y:certifiedBy`. Their value (i.e. child textual content) is pushed to the array.
 
 ## CertifierCredential
 
@@ -100,8 +119,8 @@ The array is created from the `meta` elements whose `name` attribute has the val
 
 The array is created from: 
 
-- the `meta` elements whose `property` attribute has the value `a11y:certifierCredential`. Their value is pushed to the array;
-- the `link` elements whose `property` attribute has the value `a11y:certifierCredential`. Their value is pushed to the array – the value is expected to be a URL.
+- the `meta` elements whose `property` attribute has the value `a11y:certifierCredential`. Their value (i.e. child textual content) is pushed to the array;
+- the `link` elements whose `property` attribute has the value `a11y:certifierCredential`. The value of their `href` attribute is pushed to the array – the value is expected to be a URL.
 
 ## CertifierReport
 
@@ -113,7 +132,7 @@ The array is created from the `meta` elements whose `name` attribute has the val
 
 ### EPUB 3.X
 
-The array is created from the `link` elements whose `property` attribute has the value `a11y:certifierReport`. Their value is pushed to the array – the value is expected to be a URL.
+The array is created from the `link` elements whose `property` attribute has the value `a11y:certifierReport`. The value of their `href` attribute is pushed to the array – the value is expected to be a URL.
 
 ## ConformsTo
 
@@ -193,7 +212,7 @@ The array is created from the `meta` elements whose `name` attribute has the val
 
 ### EPUB 3.X
 
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityFeature`. Their value is pushed to the array.
+The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityFeature`. Their value (i.e. child textual content) is pushed to the array.
 
 ## AcessibilityHazard
 
@@ -218,7 +237,7 @@ The array is created from the `meta` elements whose `name` attribute has the val
 
 ### EPUB 3.X
 
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityHazard`. Their value is pushed to the array.
+The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityHazard`. Their value (i.e. child textual content) is pushed to the array.
 
 ## AccessibilityControl
 
@@ -240,7 +259,7 @@ The array is created from the `meta` elements whose `property` attribute has the
 
 ### EPUB 3.X
 
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityControl`. Their value is pushed to the array.
+The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityControl`. Their value (i.e. child textual content) is pushed to the array.
 
 ## AccessibilityAPI
 
@@ -260,7 +279,7 @@ At the time of writing, known values are:
 - `MSAA`
 - `UIAutomation`
 
-Currently, only the `ARIA` value might be trustworthy in the EPUB context.
+Currently, only the `ARIA` value is known to be relevant in the EPUB context.
 
 ### EPUB 2.x
 
@@ -268,4 +287,4 @@ The array is created from the `meta` elements whose `property` attribute has the
 
 ### EPUB 3.X
 
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityAPI`. Their value is pushed to the array.
+The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityAPI`. Their value (i.e. child textual content) is pushed to the array.
