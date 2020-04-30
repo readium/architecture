@@ -1,6 +1,6 @@
 # Parsing Accessibility Metadata
 
-The goal of this document is to provide directions that each implementation of Readium can follow when parsing schema.org Accessibility Metadata in EPUB publications.
+The goal of this document is to provide directions that each implementation of Readium can follow when parsing schema.org Accessibility Metadata in EPUB publications. Its focus is the mapping of EPUB 2/3 to the internal Readium Publication model; serialization of the JSON Readium Web Publication Manifest is out of scope in this guidance document.
 
 When parsing a publication in the streamer we always use the most complex form for each metadata to harmonize our output.
 
@@ -79,21 +79,21 @@ When it is a multiple:
 
 ## AccessibilitySummary
 
-`accessibilitySummary` is a key whose value is an array of localized strings (JSON-LD language maps).
+`accessibilitySummary` is a key whose value is a map of localized strings (JSON-LD language maps).
 
 It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
 
 ### EPUB 2.x
 
-The array is created from the `meta` elements whose `name` attribute has the value `schema:accessibilitySummary`. The key of the localized string is the value of the `xml:lang` attribute, and its value the value of the `content` attribute.
+The map is created from the `meta` elements whose `name` attribute has the value `schema:accessibilitySummary`. The key of the localized string is the value of the `xml:lang` attribute, and its value the value of the `content` attribute.
 
-In case there is no `xml:lang` attribute to be found, check whether the carrying element inherits an `xml:lang` attribute. Otherwise fall back to the primary language of the publication.
+In case there is no `xml:lang` attribute to be found, use the `und` (undefined) language value.
 
 ### EPUB 3.X
 
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilitySummary`. The key of the localized string is the value of the `xml:lang` attribute, and its value the value `meta` element.
+The map is created from the `meta` elements whose `property` attribute has the value `schema:accessibilitySummary`. The key of the localized string is the value of the `xml:lang` attribute, and its value the child textual content.
 
-In case there is no `xml:lang` attribute to be found, check whether the carrying element inherits an `xml:lang` attribute. Otherwise fall back to the primary language of the publication.
+In case there is no `xml:lang` attribute to be found, use the `und` (undefined) language value.
 
 ## CertifiedBy
 
