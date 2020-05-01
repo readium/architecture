@@ -17,18 +17,20 @@ To fill such a map from an EPUB metadata element, proceed as follows:
   For each one, add to the map the corresponding language associated with the content of the `meta` element.
 * When no language hint is available, use `null` or `und` depending on the platform.
 
+## Sorting keys
+
+Localized sorting keys are supported in RWPM for publication title, contributor/collection' names and subject' names. While computing the localized string, use the language of the carrying element as defined in [the XML specification](https://www.w3.org/TR/xml/#sec-lang-tag) and fallback to `null` or `und`.
+
 
 ## Title
 
-The `title` of a publication is an object where each key is a BCP 47 language tag and each value of this key is a string.
-
-In addition to `title`, a publication may also contain a `sortAs` string, used to sort the title as well.
+The `title` and `sortAs` keys of a publication are objects where each key is a BCP 47 language tag and each value of this key is a string.
 
 When parsing an EPUB, we need to establish:
 
 * which title is the primary one
-* the string used to sort the title of the publication
 * a language map of the representations of the title
+* a language map of strings used to sort the title of the publication
 * which title is the subtitle
 * a language map of the representations of the subtitle
 
@@ -38,7 +40,7 @@ The first `<dc:title>` element should be considered the primary one.
 
 Parse it as a [localized string](#localized-strings) to compute a language map.
 
-The string for `sortAs` is the value of `content` in a `meta` whose `name` is `calibre:title_sort` and `content` is the value to use.
+The value of sorting key of the publication is given by the `content` attribute in a `meta` whose `name` is `calibre:title_sort`.
 
 The subtitle can’t be expressed.
 
@@ -51,7 +53,7 @@ The primary `title` is defined using the following logic:
 
 Parse it as a [localized string](#localized-strings) to compute a language map.
 
-The string used to sort the `title` of the publication is the value of the main title’s refine whose `property` is `file-as`.
+The sorting key of the publication is carried by the main title’s refine whose `property` is `file-as`.
 
 The subtitle is the value of the `<dc:title>` element whose `title-type` (refine) is `subtitle`. In case there are several, use the one with the lowest `display-seq` (refine).
 Parse it as a [localized string](#localized-strings) to compute a language map.
@@ -99,15 +101,15 @@ The valid URI is the result of this second step e.g. `urn:isbn:123456789X`.
 
 The contributor’s key depend on the role of the creator or contributor. It is an object that contains a `name`, a `sortAs` and an `identifier` key.
 
-The `name` of each `contributor` is an object where each key is a BCP 47 language tag and each value of the key is a string.
+The `name` and `sortAs` keys of each `contributor` are objects where each key is a BCP 47 language tag and each value of the key is a string.
 
-The contributor object may also contain a `sortAs` string, used to sort the contributor as well, and an `identifier` string that must be a valid URI.
+The contributor object may also contain an `identifier` string that must be a valid URI.
 
 When parsing an EPUB, we need to establish:
 
 * the key of the contributor;
 * a language map for the name of this contributor;
-* the string used to sort the name of the contributor.
+* a language map used to sort the name of the contributor.
 
 ### EPUB 2.x
 
@@ -131,11 +133,11 @@ Where `opf:role` is the value of the attribute of the `<dc:element>`.
 
 Parse the carrying element as a [localized string](#localized-strings) to compute a language map for the contributor’s name.
 
-Finally, the string used to sort the name of the contributor is the value of the `opf:file-as` attribute of this element.
+Finally, the string used to sort the name of the contributor is provided by the value of the `opf:file-as` attribute of this element.
 
 ### EPUB 3.x
 
-The following mapping should be used to determine to key of the contributor’s object: 
+The following mapping should be used to determine to key of the contributor’s object:
 
 | element                      | role                     | key         |
 |------------------------------|--------------------------|-------------|
@@ -156,7 +158,7 @@ Where `role` is the value of the refine whose `scheme` is a value of `marc:relat
 
 Parse the `contributor` element as a [localized string](#localized-strings) to compute a language map for the contributor’s name.
 
-Finally, the string used to sort the name of the contributor is the value of a refine with a `file-as` property.
+Finally, the string used to sort the name of the contributor is carried by the contributor's refine whose property is `file-as`.
 
 ## Language
 
