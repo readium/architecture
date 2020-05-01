@@ -53,7 +53,7 @@ The primary `title` is defined using the following logic:
 
 Parse it as a [localized string](#localized-strings) to compute a language map.
 
-The sorting key of the publication is carried by the main title’s refine whose `property` is `file-as`.
+The sorting key of the publication is carried by the main title’s refine whose `property` is `file-as`. If there is none, fallback to the EPUB 2.x case.
 
 The subtitle is the value of the `<dc:title>` element whose `title-type` (refine) is `subtitle`. In case there are several, use the one with the lowest `display-seq` (refine).
 Parse it as a [localized string](#localized-strings) to compute a language map.
@@ -270,6 +270,8 @@ The `sortAs` string used to sort the name is the value of the refine whose `prop
 The `identifier` string is the value of the refine whose `property` has the value of `dcterms:identifier`.
 
 The `position` of the publication is the value of the refine whose `property` has the value of `group-position`.
+
+If there is no `series`, try to parse `calibre:series` as in the EPUB 2.x case.
 
 ## Progression Direction
 
