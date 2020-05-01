@@ -12,9 +12,10 @@ In many cases, the default context supports alternate representations of the sam
 To fill such a map from an EPUB metadata element, proceed as follows:
 
 * Determine the language used in the content of the carrying element as defined in [the XML specification](https://www.w3.org/TR/xml/#sec-lang-tag),
-  i.e. check whether the carrying element has or inherits an `xml:lang` attribute. Otherwise, fallback to the primary language of the publication.
+  i.e. check whether the carrying element has or inherits an `xml:lang` attribute.
 * In the EPUB 3.x case, check if the element is refined by some `meta` elements that have or inherit an `xml:lang` attribute and whose property is `alternate-script`.
   For each one, add to the map the corresponding language associated with the content of the `meta` element.
+* When no language hint is available, use `null` or `und` depending on the platform.
 
 
 ## Title
