@@ -213,9 +213,9 @@ Comparing media types is more complicated than it looks, [since they can contain
   * `other` must match the parameters in the `parameters` property, but extra parameters are ignored. 
   * Parameters order is ignored. 
   * Wildcards are supported, meaning that `image/*` contains `image/png` and `*/*` contains everything.
-* `isPartOf(other: MediaType) -> Boolean`, `isPartOf(other: String) -> Boolean`
-  * Returns whether this media type is included in the provided `other` media type.
-  * Equivalent to `other.contains(this)`
+* `matches(other: MediaType) -> Boolean`, `matches(other: String) -> Boolean`
+  * Returns whether this media type and `other` are the same, ignoring parameters that are not in both media types.
+  * For example, `text/html` matches `text/html;charset=utf-8`, but `text/html;charset=ascii` doesn't. This is basically like `contains`, but working in both directions.
 * `==` (equality)
   * Returns whether two media types are equal, checking the type, subtype and parameters.
   * Parameters order is ignored.
@@ -229,7 +229,7 @@ Computed properties for convenience. More can be added as needed.
 * `isJSON: Boolean`
   * Returns whether this media type is structured as a JSON file.
 * `isOPDS: Boolean`
-  * Returns whether this media type is contained by `OPDS1`, `OPDS1Entry`, `OPDS2` or `OPDS2Publication`.
+  * Returns whether this media type is contained by `OPDS1`, `OPDS1Entry`, `OPDS2`, `OPDS2Publication` or `OPDSAuthentication`.
   * Used to determine the type of remote catalogs.
 * `isHTML: Boolean`
   * Returns whether this media type is contained by `HTML` or `XHTML`.
@@ -237,8 +237,13 @@ Computed properties for convenience. More can be added as needed.
 * `isBitmap: Boolean`
   * Returns whether this media type is a bitmap image, so excluding SVG and other vectorial formats. It must be contained by `BMP`, `GIF`, `JPEG`, `PNG`, `TIFF` or `WebP`.
   * Used to determine if a RWPM is a DiViNa publication.
+* `isAudio: Boolean`
+  * Returns whether this media type is of an audio clip.
+  * Used to determine if a RWPM is an Audiobook publication.
 * `isRWPM: Boolean`
   * Returns whether this media type is a Readium Web Publication Manifest, so contained by `AudiobookManifest`, `DiViNaManifest` or `WebPubManifest`.
+* `isLCPProtected: Boolean`
+  * Returns whether this media type is of a package protected with LCP.
 
 #### `Link` Helpers
 
@@ -270,10 +275,6 @@ Constant | Media Type
 `JavaScript` | text/javascript
 `JPEG` | image/jpeg
 `HTML` | text/html
-`OPDS1` | application/atom+xml;profile=opds-catalog
-`OPDS1Entry` | application/atom+xml;type=entry;profile=opds-catalog
-`OPDS2` | application/opds+json
-`OPDS2Publication` | application/opds-publication+json
 `JSON` | application/json
 `LCPProtectedAudiobook` | application/audiobook+lcp
 `LCPProtectedPDF` | application/pdf+lcp
@@ -285,6 +286,11 @@ Constant | Media Type
 `Ogg` | audio/ogg
 `Ogv` | video/ogg
 `Opus` | audio/opus
+`OPDS1` | application/atom+xml;profile=opds-catalog
+`OPDS1Entry` | application/atom+xml;type=entry;profile=opds-catalog
+`OPDS2` | application/opds+json
+`OPDS2Publication` | application/opds-publication+json
+`OPDSAuthentication` | application/opds-authentication+json
 `OTF` | font/otf
 `PDF` | application/pdf
 `PNG` | image/png
@@ -372,14 +378,15 @@ Constant | Name | Extension | Media Type
 `GIF` | GIF | gif | image/gif
 `HTML` | HTML | html | text/html
 `JPEG` | JPEG | jpg | image/jpeg
-`OPDS1Feed` | OPDS | atom | application/atom+xml;profile=opds-catalog
-`OPDS1Entry` | OPDS | atom | application/atom+xml;type=entry;profile=opds-catalog
-`OPDS2Feed` | OPDS | json | application/opds+json
-`OPDS2Publication` | OPDS | json | application/opds-publication+json
 `LCPProtectedAudiobook` | LCP Protected Audiobook | lcpa | application/audiobook+lcp
 `LCPProtectedPDF` | LCP Protected PDF | lcpdf | application/pdf+lcp
 `LCPLicense` | LCP License | lcpl | application/vnd.readium.lcp.license.v1.0+json
 `LPF` | Lightweight Packaging Format | lpf | application/lpf+zip
+`OPDS1Feed` | OPDS | atom | application/atom+xml;profile=opds-catalog
+`OPDS1Entry` | OPDS | atom | application/atom+xml;type=entry;profile=opds-catalog
+`OPDS2Feed` | OPDS | json | application/opds+json
+`OPDS2Publication` | OPDS | json | application/opds-publication+json
+`OPDSAuthentication` | OPDS Authentication Document | json | application/opds-authentication+json
 `PDF` | PDF | pdf | application/pdf
 `PNG` | PNG | png | image/png
 `TIFF` | TIFF | tiff | image/tiff
@@ -507,14 +514,18 @@ In the case of bitmap formats, the default Readium sniffers don't perform any he
   * extension is `audiobook`
   * media type is `application/audiobook+zip`
 * Heavy:
-  * it's a ZIP archive with a `manifest.json` entry, parsed as an RWPM with `metadata.@type == http://schema.org/Audiobook`
+  * it's a ZIP archive with a `manifest.json` entry, parsed as an RWPM with either:
+    * `metadata.@type == http://schema.org/Audiobook`, or
+    * a reading order containing only `Link` with an audio type, checked with `MediaType::isAudio`
 
 ##### Audiobook Manifest (Readium)
 
 * Light:
   * media type is `application/audiobook+json`
 * Heavy:
-  * it's a JSON file, parsed as an RWPM with `metadata.@type == http://schema.org/Audiobook`
+  * it's a JSON file, parsed as an RWPM with either:
+    * `metadata.@type == http://schema.org/Audiobook`, or
+    * a reading order containing only `Link` with an audio type, checked with `MediaType::isAudio`
 
 ##### BMP
 
@@ -602,6 +613,13 @@ In the case of bitmap formats, the default Readium sniffers don't perform any he
 * Heavy:
   * it's a JSON file parsed as an RWPM with at least one `Link` with a rel *starting with* `http://opds-spec.org/acquisition` 
 
+##### OPDS Authentication Document
+
+* Light:
+  * media type is `application/opds-authentication+json` or `application/vnd.opds.authentication.v1.0+json`
+* Heavy:
+  * it's a JSON file containing the following root keys: `id`, `title` and `authentication`
+
 ##### LCP Protected Audiobook
 
 * Light:
@@ -610,7 +628,9 @@ In the case of bitmap formats, the default Readium sniffers don't perform any he
 * Heavy:
   * it's a ZIP archive with both:
     * a `license.lcpl` entry
-    * a `manifest.json` entry, parsed as an RWPM with `metadata.@type == http://schema.org/Audiobook`
+    * a `manifest.json` entry, parsed as an RWPM with either:
+      * `metadata.@type == http://schema.org/Audiobook`, or
+      * a reading order containing only `Link` with an audio type, checked with `MediaType::isAudio`
 
 ##### LCP Protected PDF
 
