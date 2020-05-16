@@ -40,7 +40,7 @@ You are free to create a `Publication` manually to fit custom needs.
 
 ### Getting Manifest Metadata
 
-`Publication` implements the `PublicationManifest` interface, which provides access to a publication's metadata. You can use them, for example, to import a publication in the user's bookshelf or to browse its table of contents.
+`Publication` implements the `Publication.Manifest` interface, which provides access to a publication's metadata. You can use them, for example, to import a publication in the user's bookshelf or to browse its table of contents.
 
 ```javascript
 database.addPublication({
@@ -87,13 +87,13 @@ This proposal should be a non-breaking change, since it is merely additive.
 
 ## Reference Guide
 
-### `PublicationManifest` Interface
+### `Publication.Manifest` Interface
 
 Holds the metadata of a Readium publication, as described in the [Readium Web Publication Manifest](https://readium.org/webpub-manifest/).
 
 #### Properties
 
-* `metadata: PublicationMetadata`
+* `metadata: Publication.Metadata`
   * Out of scope, [see this JSON schema](https://readium.org/webpub-manifest/schema/metadata.schema.json).
 * `links: List<Link>`
   * Out of scope, [see this JSON schema](https://readium.org/webpub-manifest/schema/link.schema.json).
@@ -115,22 +115,27 @@ var readingOrder: [Link] {
 }
 ```
 
-### `Publication` Class (implements `PublicationManifest`)
+#### Methods
+
+* `toJSON() -> String`
+  * Serializes the manifest to its [RWPM JSON](https://readium.org/webpub-manifest/) string representation.
+
+### `Publication` Class (implements `Publication.Manifest`)
 
 The `Publication` shared model is the entry-point for all the metadata and services related to a Readium publication.
 
 It is constructed from a group of objects with clear responsibilities:
 
-* `PublicationManifest` which holds the metadata parsed from the source publication file/manifest.
+* `Publication.Manifest` which holds the metadata parsed from the source publication file/manifest.
 * [`Fetcher`](https://github.com/readium/architecture/pull/132) which offers a read-only access to resources.
 * [`Publication.Service`](https://github.com/readium/architecture/pull/131) objects which extend the `Publication` with features such as position list, search, thumbnails generation, rights management, etc.
 
 #### Constructors
 
-* `Publication(manifest: PublicationManifest, fetcher: Fetcher? = null, serviceFactories: List<Publication.Service.Factory> = [])`
-  * `manifest: PublicationManifest`
+* `Publication(manifest: Publication.Manifest, fetcher: Fetcher? = null, serviceFactories: List<Publication.Service.Factory> = [])`
+  * `manifest: Publication.Manifest`
     * The manifest holding the publication metadata extracted from the publication file.
-    * It will be used to construct the publication services and to implement the `PublicationManifest` interface by delegation.
+    * It will be used to construct the publication services and to implement the `Publication.Manifest` interface by delegation.
   * `fetcher: Fetcher? = null`
     * The underlying fetcher used to read publication resources.
   * `serviceFactories: List<Publication.Service.Factory> = []`
@@ -150,22 +155,14 @@ It is constructed from a group of objects with clear responsibilities:
   * Returns the resource at the given URL.
   * Equivalent to `get(Link(href: hrefFromURL(url)), queryParametersOf(url))`.
 
-### RWPM Extensions
-
-Types and extensions used to parse or serialize a `PublicationManifest` to its [RWPM JSON](https://readium.org/webpub-manifest/) representation.
-
-#### `PublicationManifest.toRWPM() -> String`
-
-Serializes the manifest to its RWPM JSON string representation.
-
-#### `RWPManifest` Class (implements `PublicationManifest`)
+### `JSONManifest` Class (implements `Publication.Manifest`)
 
 A manifest which can be parsed from a [RWPM JSON](https://readium.org/webpub-manifest/).
 
-##### Constructors
+#### Constructors
 
-* `RWPManifest(json: JSONObject)`
+* `JSONManifest(json: JSONObject)`
   * Parses a manifest from its RWPM JSON representation.
-* `RWPManifest(jsonString: String)`
+* `JSONManifest(jsonString: String)`
   * Parses an object from its RWPM JSON string representation.
-  * Convenience constructor delegating to `RWPManifest(json:)`.
+  * Convenience constructor delegating to `JSONManifest(json:)`.
