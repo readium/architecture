@@ -19,9 +19,15 @@
   <body>
     <div class="container-lg px-3 my-5 markdown-body">
 
-      <a href="https://readium.org">
+      {% if page.url == "/" %}
+      <a href="/" title="Back to the Readium project site.">
         <img src="https://readium.org/assets/logos/readium-logo.png" alt="Readium Logo" width="250">
       </a>
+      {% else %}
+      <a href="/architecture/" title="Back to the index page.">
+        <img src="https://readium.org/assets/logos/readium-logo.png" alt="Readium Logo" width="250">
+      </a>
+      {% endif %}
 
       {{ content }}
 
