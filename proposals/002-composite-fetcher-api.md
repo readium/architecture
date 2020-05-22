@@ -1,6 +1,7 @@
 # Composite Fetcher API
 
 * Authors: [Mickaël Menu](https://github.com/mickael-menu), [Quentin Gliosca](https://github.com/qnga)
+* Review PR: [#132](https://github.com/readium/architecture/pull/132)
 * Related Issues:
   * [Revamping the Content Filter architecture (architecture/103)](https://github.com/readium/architecture/issues/103)
   * [Clarify and refine the streamer API on mobile platforms (architecture/116)](https://github.com/readium/architecture/issues/116)
@@ -51,7 +52,7 @@ case .failure(let error):
 
 ### Customizing The Root Fetcher
 
-Fetcher trees are created by the parsers, such as `r2-streamer` and `r2-opds`, when constructing the `Publication` object. However, you may want to decorate the root fetcher to modify its behavior by:
+Fetcher trees are created by parsers, such as `r2-streamer` and `r2-opds`, when constructing the `Publication` object. However, you may want to decorate the root fetcher to modify its behavior by:
 
 * Transforming resources (formerly known as `ContentFilter`).
 * Routing some requests to different sources.
@@ -90,8 +91,8 @@ This proposal is a non-breaking change, since it describes a structure that is m
 * [`Resource` Interface](#resource-interface)
 * Leaf Fetchers
   * [`FileFetcher`](#filefetcher-class)
+  * [`ArchiveFetcher`](#archivefetcher-class)
   * [`HTTPFetcher`](#httpfetcher-class)
-  * [`ZIPFetcher`](#zipfetcher-class)
   * [`ProxyFetcher`](#proxyfetcher-class)
 * Composite Fetchers
   * [`RoutingFetcher`](#routingfetcher-class)
@@ -100,13 +101,13 @@ This proposal is a non-breaking change, since it describes a structure that is m
 
 ### Examples of `Fetcher` Trees
 
-The fetcher tree created by the publication parsers can be adapted to fit the characteristics of each format.
+The fetcher tree created by publication parsers can be adapted to fit the characteristics of each format.
 
 #### CBZ and ZAB (Zipped Audio Book)
 
 These formats are very simple, we just need to access the ZIP entries.
 
-<img src="assets/002-zip.svg">
+<img src="assets/002-archive.svg">
 
 #### Audiobook Manifest
 
@@ -133,6 +134,15 @@ The EPUB fetcher is one of the most complex:
 ### `Fetcher` Interface
 
 Provides access to a `Resource` from a `Link`.
+
+#### Properties
+
+* `links: List<Link>`
+  * Known resources available in the medium, such as filepaths on the file system or entries in a ZIP archive.
+  * This list is not exhaustive, and additional unknown resources might be reachable.
+  * If the medium has an inherent resource order, it should be followed. Otherwise, HREFs are sorted alphabetically.
+  * **Warning:** This API should never be called from the UI thread.
+  * This is used to build an image or audio-based publication from entries listed in the medium. 
 
 #### Methods
 
@@ -172,31 +182,31 @@ Every failable API returns a `Result<T, Resource.Error>` containing either the v
   * The link from which the resource was retrieved.
   * It might be modified by the `Resource` to include additional metadata, e.g. the `Content-Type` HTTP header in `Link::type`.
   * Link extensibility can be used to add extra metadata, for example:
-    * A `ZIPFetcher` might add a `compressedLength` property which could then be used by the `PositionsService` [to address this issue](https://github.com/readium/architecture/issues/123).
+    * A `ArchiveFetcher` might add a `compressedLength` property which could then be used by the `PositionsService` [to address this issue](https://github.com/readium/architecture/issues/123).
     * Something equivalent to the `Cache-Control` HTTP header could be used to customize the behavior of a parent `CachingFetcher` for a given resource.
 * (lazy) `length: Result<Long, Resource.Error>`
   * Data length from metadata if available, or calculated from reading the bytes otherwise.
-  * **Warning:** This API should never be called from the UI thread. An assertion will check this.
+  * **Warning:** This API should never be called from the UI thread.
   * This value must be treated as a hint, as it might not reflect the actual bytes length. To get the real length, you need to read the whole resource.
 
 #### Methods
 
 * `read(range: Range<Long>? = null) -> Result<ByteArray, Resource.Error>`
   * Reads the bytes at the given `range`.
-  * **Warning:** This API should never be called from the UI thread. An assertion will check this.
+  * **Warning:** This API should never be called from the UI thread.
   * `range: Range<Long>? = null`
     * When `range` is `null`, the whole content is returned.
     * Out-of-range indexes are clamped to the available length automatically.
   * The result may be cached for subsequent accesses.
 * `readAsString(encoding: Encoding? = null) -> Result<String, Resource.Error>`
   * Reads the full content as a `String`.
-  * **Warning:** This API should never be called from the UI thread. An assertion will check this.
+  * **Warning:** This API should never be called from the UI thread.
   * `encoding: Encoding? = null`
     * Encoding used to decode the bytes.
     * If `null`, then it is parsed from the `charset` parameter of `link.type` using `MediaType::parameters`, and falls back on UTF-8.
 * `close()`
   * Closes any opened file handles.
-  * **Warning:** This API should never be called from the UI thread. An assertion will check this.
+  * **Warning:** This API should never be called from the UI thread.
 
 #### Implementations
 
@@ -238,6 +248,22 @@ Provides access to resources on the local file system.
 * `FileFetcher(href: String, path: String)`
   * Alias to `FileFetcher(paths: [href: path])`
 
+`FileFetcher::links` contains the recursive list of files in the reachable local `paths`, sorted alphabetically.
+
+#### `ArchiveFetcher` Class
+
+Provides access to entries of an `Archive`, such as ZIP.
+
+* `ArchiveFetcher(archive: Archive)`
+  * `archive: Archive`
+    * Instance of `Archive` to fetch the resources from.
+
+`ArchiveFetcher::links` returns the archive's entries list, in their archiving order.
+
+`ArchiveFetcher` is responsible for the archive lifecycle, and should close it when `Fetcher.close()` is called. If a `Resource` tries to access an entry after the archive was closed, `Resource.Error.Unavailable` can be returned.
+
+The specification of `Archive` is out of scope for this proposal.
+
 #### `HTTPFetcher` Class
 
 Provides access to resources served by an HTTP server.
@@ -248,18 +274,7 @@ Provides access to resources served by an HTTP server.
     * Interface to be determined in another proposal.
     * Readium should provide a default implementation using the native HTTP APIs.
 
-#### `ZIPFetcher` Class
-
-Provides access to entries of a ZIP archive.
-
-`ZIPFetcher` is responsible for the archive lifecycle, and should close it when `Fetcher.close()` is called. If a `Resource` tries to access a ZIP entry after the archive was closed, the `Resource.Error.Unavailable` can be returned.
-
-* `ZIPFetcher(path: String, password: String? = null)`
-  * `path: String`
-    * Local path to the ZIP archive on the file system.
-  * `password: String?`
-    * Password used to unlock the ZIP archive if it's protected.
-    * An `IncorrectPassword` error should be returned when trying to open a protected ZIP file, if the provided password is wrong.
+`HTTPFetcher::links` returns an empty list, since we can't know which resources are available.
 
 #### `ProxyFetcher` Class
 
@@ -273,7 +288,9 @@ Delegates the creation of a `Resource` to a closure.
 
 ### Composite Fetchers
 
-A composite fetcher is delegating requests to sub-fetchers.
+A composite fetcher is delegating requests to child fetchers.
+
+The `links` property returns the concatenated list of `links` from all child fetchers.
 
 **Warning:** Make sure to forward the `Fetcher.close()` calls to child fetchers.
 
