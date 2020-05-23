@@ -8,7 +8,7 @@
 
 ## Summary
 
-This proposal aims to specify the Streamer public API and how a reading app might support additional formats. It ties together the various proposals made on the `Publication` extensibility.
+This proposal aims to specify the Streamer public API and showcase how a reading app might support additional formats. It ties together several concepts introduced in other proposals such as the [Composite Fetcher API](https://github.com/readium/architecture/blob/master/proposals/002-composite-fetcher-api.md), Publication Encapsulation and the Publication Helpers & Services.
 
 
 ## Motivation
@@ -20,12 +20,12 @@ We're trying to address the following needs and pain points for reading apps.
 A reading app might want to:
 
 * automatically handle all formats supported by Readium, including future ones,
-* or limits itself to a subset of the supported formats;
+* or limit itself to a subset of the supported formats;
 * support additional custom formats.
 
 ### Publication Extensibility
 
-A reading app should be able to customize which Publication Services are added to a `Publication` object, by either removing, replacing or wrapping them, or by adding custom services.
+A reading app should be able to customize which Publication Services are added to a `Publication` object by adding, removing or replacing services.
 
 It should also be able to replace or decorate the root `Fetcher`, for example to add resource transformers or handle resources caching.
 
@@ -34,17 +34,17 @@ It should also be able to replace or decorate the root `Fetcher`, for example to
 On some platforms, Readium needs to import third-party dependencies, for example to parse PDF or XML documents. When possible, these dependencies should not be hard-coded in the toolkit, because:
 
 * it burdens the maintenance, in case we need to upgrade to a new version or use a different library
-* it prevents reading apps from using a more up-to-date version of a dependency, or a different one which might address specific issues
+* it prevents reading apps from using a more up-to-date version of a dependency, or use a different library
 
-Instead, generic interfaces should be declared in `r2-shared`, with a default implementation using the third-party dependencies chosen by Readium. Ideally, such third-party implementations should be isolated in their own sub-packages to avoid increasing the size of the app with unused libraries.
+Instead, generic interfaces should be declared in `r2-shared`, with a default implementation using the third-party dependencies chosen by Readium.
 
-Using interfaces allows to write a single unit test suite shared between all third-party dependencies, which is useful to perform benchmarking comparisons or ensure that migrating to a different library won't break the toolkit. [Here's an example comparing Minizip and ZIPFoundation for Swift](https://github.com/readium/r2-shared-swift/blob/6542b9194429c69aea68dc0d406ea39ccf64d8f9/r2-shared-swiftTests/Toolkit/ZIP/ZIPTests.swift#L166).
+Using interfaces allows to write a single unit test suite shared between all third-party implementations, which is useful to perform benchmarking comparisons or ensure that migrating to a different library won't break the toolkit. [Here's an example comparing Minizip and ZIPFoundation for Swift](https://github.com/readium/r2-shared-swift/blob/6542b9194429c69aea68dc0d406ea39ccf64d8f9/r2-shared-swiftTests/Toolkit/ZIP/ZIPTests.swift#L166).
 
 Typically, interfaces might be useful for PDF, XML, HTTP and archiving (ZIP, RAR, etc.) libraries.
 
 ### Customizing Parsers
 
-While Readium ships with sane default parser settings, some degree of configuration might be offered for reading apps. These settings are format-specific and thus can't live in the Streamer API itself, but the Streamer should allow an entry-point for such custom parser settings.
+While Readium ships with sane default parser settings, some degree of configuration might be offered to reading apps. These settings are format-specific and thus can't live in the Streamer API itself, but the Streamer should allow reading apps to set these settings one way or the other.
 
 
 ## Developer Guide
@@ -52,7 +52,7 @@ While Readium ships with sane default parser settings, some degree of configurat
 The Streamer is one of the main components of the Readium Architecture, whose responsibilities are to:
 
 * parse packaged or exploded publications into a Readium Web Publication
-* compose the `Fetcher` tree providing access to publication resources
+* [compose the `Fetcher` tree](https://github.com/readium/architecture/blob/master/proposals/002-composite-fetcher-api.md#developer-guide) providing access to publication resources
 * unlock content protection technologies
 
 ### Usage
@@ -95,9 +95,45 @@ val streamer = Streamer(
 )
 ```
 
+#### Customizing the Parsed Publication
+
+You can customize the parsed `Publication` object by modifying:
+
+* its `Publication.Manifest` object, to change its metadata or links
+* the root `Fetcher`, to fine-tune access to resources
+* the list of attached Publication Services
+
+The Streamer accepts a number of callback functions which will be called just before creating the `Publication` object.
+
+```kotlin
+val streamer = Streamer(
+    onCreateFetcher = { file, manifest, fetcher ->
+        // Minifies the HTML resources in an EPUB.
+        if (file.format == Format.EPUB) {
+            fetcher = TransformingFetcher(fetcher, minifyHTML)
+        }
+
+        return fetcher
+    },
+
+    onCreateServices = { file, manifest, services ->
+        // Wraps the default PositionsService to cache its result in a
+        // persistent storage, to improve performances.
+        services.replace(PositionsService::class) { oldFactory ->
+            CachedPositionsService.createFactory(oldFactory)
+        }
+
+        // Adds a custom SearchService implementation for EPUB.
+        is (file.format == Format.EPUB) {
+            services.add(EPUBSearchServiceFactory)
+        }
+    }
+)
+```
+
 #### Providing Different Implementations of Third–Party Services
 
-The Streamer and its parsers depend on core features which might not be available natively on the platform, such as ZIP access or XML parsing. In which case, Readium uses third-party libraries. You can provide your own implementation of such features, for example to use a different version of a library than the one provided by Readium, or use a different library altogether. To achieve that, implement the relevant interfaces from `r2-shared`, and pass your implementation to the Streamer.
+The Streamer and its parsers depend on core features which might not be available natively on the platform, such as reading ZIP archives or parsing XML. In which case, Readium uses third-party libraries. To use a different version of a library than the one provided by Readium, or use a different library altogether, you can provide your own implementation to the Streamer.
 
 ```kotlin
 val streamer = Streamer(
@@ -106,55 +142,20 @@ val streamer = Streamer(
 )
 ```
 
-In the case of the HTTP client, you can also use the default implementation from Readium with custom settings. It can be useful to set HTTP headers, handle access control or set up caching and networking policies.
-
-#### Customizing the Fetcher or Publication Services
-
-```kotlin
-val streamer = Streamer(
-    onCreateManifest = { file, manifest ->
-        manifest
-    },
-
-    onCreateServices = { file, manifest, services ->
-        services.replace(PositionsService::class) { oldFactory ->
-            CachedPositionsService.createFactory(oldFactory)
-        }
-
-        services.remove(CoverService::class)
-
-        is (file.format == Format.EPUB) {
-            services.add(EPUBSearchServiceFactory)
-        }
-    },
-
-    onCreateFetcher = { file, manifest, fetcher ->
-        if (file.format == Format.EPUB) {
-            fetcher = TransformingFetcher(fetcher, minifyHTML)
-        }
-
-        return CachingFetcher(fetcher)
-    }
-)
-```
+If you just want to add HTTP headers or set up caching and networking policies for HTTP requests, you can instantiate the default HTTP client yourself. No need to create a custom implementation of `HTTPClient`.
 
 #### Supporting Custom Formats
 
 The Readium Architecture is opened to support additional publication formats.
 
-##### Register Your Format
-
-This step is optional but recommended to give a first-class access to your format.
-
-[Register your new format to the `Format.Sniffer`](https://github.com/readium/architecture/blob/master/proposals/001-format-api.md#supporting-a-custom-format).
+1. [Register your new format and add a sniffer](https://github.com/readium/architecture/blob/master/proposals/001-format-api.md#supporting-a-custom-format). This step is optional but recommended to make your format a first-class citizen in the toolkit.
+2. Implement a `Publication.Parser` to parse the publication format into a `Publication` object. Then, provide an instance to the Streamer.
 
 ```kotlin
-private val CustomFormat = Format(...)
-
 class CustomParser : Publication.Parser {
 
-    fun parse(file: File, fetcher: Fetcher): Future<Publication.Builder?> {
-        if (file.format != CustomFormat) {
+    suspend fun parse(file: File, fetcher: Fetcher): Publication.Builder? {
+        if (file.format != Format.MyCustomFormat) {
             return null
         }
 
@@ -191,14 +192,12 @@ Used to cache the `Format` to avoid computing it at different locations.
 
 #### Constructors
 
-* `File(path: String, mediaType: String? = null, formatSniffers: List<Format.Sniffer> = Format.sniffers)`
+* `File(path: String, mediaType: String? = null)`
   * Creates a `File` from a `path` and its known `mediaType`.
   * `path: String`
     * Absolute path to the file or directory.
   * `mediaType: String? = null`
     * If the file's media type is already known, providing it will improve performances.
-  * `formatSniffers: List<Format.Sniffer> = Format.sniffers`
-    * List of format sniffers used to resolve the file's format.
 * `File(path: String, format: Format)`
   * Creates a `File` from a `path` and an already resolved `format`.
 
@@ -206,19 +205,23 @@ Used to cache the `Format` to avoid computing it at different locations.
 
 * `path: String`
   * Absolute path on the file system.
+* `name: String`
+  * Last path component, or filename.
 * (lazy) `format: Format?`
   * Sniffed format, if the path points to a file.
-* `isDirectory: Boolean`
+  * **Warning:** This should not be called from the UI thread.
+* (lazy) `isDirectory: Boolean`
   * Whether the path points to a directory.
   * This can be used to open exploded publication archives.
+  * **Warning:** This should not be called from the UI thread.
 
 ### `Publication` Additions
 
 #### `Publication.Builder` Class
 
-Builds a `Publication` from its component.
+Builds a `Publication` from its components.
 
-A `Publication`'s construction is distributed over the streamer and its parsers, so we need a builder to pass the parts around.
+A `Publication`'s construction is distributed over the Streamer and its parsers, so a builder is useful to pass the parts around.
 
 ##### Constructors
 
@@ -247,8 +250,8 @@ Provides helpers to manipulate the list of services of a `Publication`.
 * `build(context: Publication.Service.Context) -> List<Publication.Service>`
   * Builds the actual list of publication services to use in a `Publication`.
   * `context: Publication.Service.Context`
-    * Context to give to the service factories.
-* `add(serviceFactory: Publication.Service.Factory)`
+    * Context provided to the service factories.
+* `add(factory: Publication.Service.Factory)`
   * Adds a new publication service factory to the builder.
   * The factory will be inserted at the beginning of the internal list of factories, to make sure it takes precedence over any existing one.
 * `remove(service: Publication.Service::class)`
@@ -258,56 +261,45 @@ Provides helpers to manipulate the list of services of a `Publication`.
   * This can be used to replace an existing service, or to wrap it.
 * `copy() -> Publication.ServicesBuilder`
   * Copy the services builder.
-  * A `Publication` must copy its internal services builder and keep it private to avoid other components modifying it.
+  * A `Publication` must copy its internal services builder and keep it private to prevent other components from modifying it.
 
 #### `Publication.Parser` Interface
 
-Parses a `Publication` from its file representation.
+Parses a `Publication` from a file.
 
 ##### Methods
 
-* `parse(file: File, fetcher: Fetcher? = null, warnings: WarningLogger<Publication.Warning>? = null) -> Future<Publication.Builder?>`
+* `parse(file: File, fetcher: Fetcher, warnings: WarningLogger? = null) -> Future<Publication.Builder?>`
   * Constructs a `Publication.Builder` to build a `Publication` from its file representation.
-  * Returns `null` if the file format is not supported by this parser, or a `Publication.Parser.Error`.
+  * Returns `null` if the file format is not supported by this parser, or throws a localized error if the parsing fails.
   * `file: File`
-    * Path to the publication file on the file system.
-  * `fetcher: Fetcher? = null`
-    * Initial leaf fetcher which should be used to read the publication's resources, when provided.
+    * Path to the publication file.
+  * `fetcher: Fetcher`
+    * Initial leaf fetcher which should be used to read the publication's resources.
     * This can be used to:
       * support content protection technologies
-      * optimize known archive format opening, to avoid having each parser open a new handle to the archive, e.g. ZIP
-      * parse exploded archives or in archiving format unknown to the parser, e.g. RAR
-  * `warnings: WarningLogger<Publication.Warning>? = null`
+      * parse exploded archives or in archiving formats unknown to the parser, e.g. RAR
+    * If the file is not an archive, it will be reachable at the HREF `/publication.<file.format.fileExtension>`, e.g. with a PDF.
+  * `warnings: WarningLogger? = null`
     * Logger used to broadcast non-fatal parsing warnings.
-    * Can be used to report publication authoring mistakes, to warn users of potential rendering issue or help authors debug their publications.
-
-##### `Publication.Parser.Error` Enum
-
-* `Unavailable`
-  * Returned when the file is not reachable, either because it doesn't exist or reading it is forbidden.
-* `Corrupted`
-  * Returned when the file can't be parsed as the claimed format, preventing from building a `Publication`.
+    * Can be used to report publication authoring mistakes, to warn users of potential rendering issues or help authors debug their publications.
 
 
 ## Reference Guide (`r2-streamer`)
-
-The Streamer provides parsers for known publication formats and support content protection technologies.
 
 ### `Streamer` Class
 
 Opens a `Publication` using a list of parsers.
 
-This is the entry-point to the Streamer component.
-
 #### Constructor
 
 * `Streamer(/* see parameters below */)`
   * `parsers: List<Publication.Parser> = []`
-    * Parsers to use to open a publication, in addition of the default parsers.
+    * Parsers used to open a publication, in addition to the default parsers.
     * The provided parsers take precedence over the default parsers.
-    * This can be used to provide custom parsers, or a different configuration of default parsers.
+    * This can be used to provide custom parsers, or a different configuration for default parsers.
   * `ignoresDefaultParsers: Boolean = false`
-    * When `true`, only the parsers provided in `parsers` will be used.
+    * When `true`, only parsers provided in `parsers` will be used.
     * Can be used if you want to support only a subset of Readium's parsers.
   * `httpClient: HTTPClient? = default`
     * HTTP client used to perform any HTTP requests.
@@ -316,28 +308,28 @@ This is the entry-point to the Streamer component.
     * Opens an archive (e.g. ZIP, RAR), optionally protected by credentials.
     * The default implementation uses native APIs when available.
   * `openXML: XMLDocument.Factory? = default`
-    * Parses an XML document into a DOM.
+    * Parses an XML document into a DOM tree.
     * The default implementation uses native APIs when available.
   * `openPDF: PDFDocument.Factory? = default`
     * Parses a PDF document, optionally protected by password.
     * The default implementation uses native APIs when available.
-  * `onCreateManifest: (File, Manifest) -> Manifest = { m -> m }`
-    * Called before creating the `Publication`, to modify the parsed `Manifest` if desired.
-  * `onCreateFetcher: (File, Manifest, Fetcher) -> Fetcher = { f -> f }`
+  * `onCreateManifest: (File, Publication.Manifest) -> Publication.Manifest = { m -> m }`
+    * Called before creating the `Publication`, to modify the parsed `Publication.Manifest` if desired.
+  * `onCreateFetcher: (File, Publication.Manifest, Fetcher) -> Fetcher = { f -> f }`
     * Called before creating the `Publication`, to modify its root fetcher.
-  * `onCreateServices: (File, Manifest, Publication.ServicesBuilder) -> Void = {}`
+  * `onCreateServices: (File, Publication.Manifest, Publication.ServicesBuilder) -> Void = {}`
     * Called before creating the `Publication`, to modify its list of service factories.
 
 The specification of `HTTPClient`, `Archive`, `XMLDocument` and `PDFDocument` is out of scope for this proposal.
 
 #### Methods
 
-* `open(file: File, warnings: WarningLogger<Publication.Warning>? = null) -> Future<Publication?>`
+* `open(file: File, warnings: WarningLogger? = null) -> Future<Publication?>`
   * Parses a `Publication` from the given `file`.
   * Returns `null` if the file was not recognized by any parser, or a `Streamer.Error` in case of failure.
-  * `warnings: WarningLogger<Publication.Warning>? = null`
+  * `warnings: WarningLogger? = null`
     * Logger used to broadcast non-fatal parsing warnings.
-    * Can be used to report publication authoring mistakes, to warn users of potential rendering issue or help authors debug their publications.
+    * Can be used to report publication authoring mistakes, to warn users of potential rendering issues or help authors debug their publications.
 
 #### `Streamer.Error` Enum
 
@@ -346,15 +338,7 @@ The specification of `HTTPClient`, `Archive`, `XMLDocument` and `PDFDocument` is
 
 ### `Publication.Parser` Implementations
 
-#### `EPUBParser` Class
-
-Parses a `Publication` from an EPUB publication.
-
-[The EPUB parser is already extensively documented](https://github.com/readium/architecture/tree/master/streamer/parser).
-
-#### `PDFParser` Class
-
-Parses a `Publication` from a PDF document.
+These default parser implementations are provided by the Streamer out of the box. The following is not meant to be a full parsing specification for each format, only a set of guidelines.
 
 #### `WebPubParser` Class
 
@@ -368,23 +352,65 @@ Parses a `Publication` from a W3C Web Publication or one of its profiles, e.g. A
 
 [The W3C to RWPM mapping is documented here](https://github.com/readium/architecture/tree/master/other/W3C).
 
-#### `ImageArchiveParser` Class
+#### `EPUBParser` Class
 
-Parses an image–based `Publication` from an unstructured archive format containing bitmap files, such as CBZ or a simple ZIP.
+Parses a `Publication` from an EPUB publication.
 
-To be recognized by this parser, the archive must either:
+[The EPUB parser is already extensively documented](https://github.com/readium/architecture/tree/master/streamer/parser).
 
-* have a CBZ media type
-* contain only entries with the given extensions: `acbf`, `gif`, `jpeg`, `jpg`, `png`, `tiff`, `tif`, `txt`, `webp`, and `xml` 
-  * entries starting with a `.` and `Thumbs.db` are ignored
+#### `PDFParser` Class
+
+Parses a `Publication` from a PDF document.
+
+[Reference: PDF 1.7 specification](https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdfs/PDF32000_2008.pdf)
 
 ##### Reading Order
 
-The reading order is built by sorting the entries by their filename, following folders recursively. Only entries recognized as bitmap files are added to the reading order.
+The reading order contains a single link pointing to the PDF document, with the HREF `/publication.pdf`.
 
 ##### Table of Contents
 
-If the archive contains folders, their names are used to build a table of contents. However, folders which don't contain any bitmap descendants are ignored. Each link points to the first bitmap file listed in the folder.
+The Document Outline (i.e. section 12.3.3) can be used to create a table of contents. The HREF of each link should use a `page=` fragment identifier, following this template: `/publication.pdf#page=<pageNumber>`, where `pageNumber` starts from 1.
+
+##### Cover
+
+The cover should be generated by rendering the first page of the PDF document.
+
+##### Metadata
+
+(*See section "14.3 Metadata" of the PDF 1.7 specification*)
+
+Metadata can be stored in a PDF document either with a *metadata stream* (1.4+) or with a *document info dictionary*. The metadata stream is the preferred method and therefore takes precedence, but the parser should be able to fallback on the document info dictionary.
+
+###### Identifier
+
+The `Publication`'s `identifier` should be computed from the PDF's *file identifier* (i.e. section 14.4), located in the *trailer dictionary*.
+
+```
+/ID[<491b7e3d57fa8ca81da62895cbdb22fe><1317e207f71ec2dcff49a219b869606d>]
+```
+
+It's a pair of two identifiers, the first one being permanent while the second one is generated for every change in the PDF document. It could be useful to preserve both identifiers, so the `Publication`'s `identifier` should be computed as `<id-created>;<id-modified>`.
+
+As a fallback, the file's MD5 hash may be used for the `identifier`.
+
+#### `ImageParser` Class
+
+Parses an image–based `Publication` from an unstructured archive format containing bitmap files, such as CBZ or a simple ZIP. It can also work for a standalone bitmap file.
+
+To be recognized by this parser, any of these conditions must be satisfied:
+
+* the file has a CBZ media type
+* the leaf fetcher contains only links with the given extensions: `acbf`, `gif`, `jpeg`, `jpg`, `png`, `tiff`, `tif`, `txt`, `webp`, and `xml` 
+  * links starting with a `.` and `Thumbs.db` are ignored
+
+##### Reading Order
+
+The reading order is built by sorting the fetcher's links by their HREF. Only resources recognized as bitmap files are added to the reading order.
+
+##### Table of Contents
+
+If the links contain intermediate folders, their names are used to build a table of contents. However, folders which don't contain any bitmap descendants are ignored. Each table of content item points to the first bitmap resource listed in the folder.
 
 ##### Metadata
 
@@ -392,42 +418,54 @@ There's no standard way to embed metadata in a CBZ, but two formats seem to be u
 
 [More information at MobileRead](https://wiki.mobileread.com/wiki/CBR_and_CBZ#Metadata).
 
-#### `AudioArchiveParser` Class
+The `Publication`'s `identifier` is generated as a MD5 hash of `file`, if it's not a directory.
 
-Parses an audiobook `Publication` from an unstructured archive format containing audio files, such as ZAB (Zipped Audio Book) or a simple ZIP.
+#### `AudioParser` Class
 
-To be recognized by this parser, the archive must either:
+Parses an audiobook `Publication` from an unstructured archive format containing audio files, such as ZAB (Zipped Audio Book) or a simple ZIP. It can also work for a standalone audio file.
 
-* have a ZAB media type
-* contain only entries with the given extensions:
+To be recognized by this parser, any of these conditions must be satisfied:
+
+* the file has a ZAB media type
+* the leaf fetcher contains only links with the given extensions:
   * (audio) `aac`, `aiff`, `alac`, `flac`, `m4a`, `m4b`, `mp3`, `ogg`, `oga`, `mogg`, `opus`, `wav` or `webm`
   * (playlist) `asx`, `bio`, `m3u`, `m3u8`, `pla`, `pls`, `smil`, `txt`, `vlc`, `wpl`, `xspf` or `zpl`
-  * entries starting with a `.` and `Thumbs.db` are ignored
+  * links starting with a `.` and `Thumbs.db` are ignored
 
 ##### Reading Order
 
-The reading order is built by sorting the entries by their filename, following folders recursively. Only entries recognized as audio files are added to the reading order.
+The reading order is built by sorting the fetcher's links by their HREF. Only resources recognized as audio files are added to the reading order.
 
 ##### Table of Contents
 
-If the archive contains folders, their names are used to build a table of contents. However, folders which don't contain any audio clip descendants are ignored. Each link points to the first audio file listed in the folder.
+If the links contain intermediate folders, their names are used to build a table of contents. However, folders which don't contain any audio clip descendants are ignored. Each table of content item points to the first audio resource listed in the folder.
 
 ##### Metadata
 
 There's no standard way to embed metadata in a ZAB, but there are a number of playlist formats which could be used. [M3U](https://en.wikipedia.org/wiki/M3U) seems to be the most popular. Individual audio format metadata could also be used, in particular for the reading order titles.
 
+The `Publication`'s `identifier` is generated as a MD5 hash of `file`, if it's not a directory.
+
+
 ## Rationale and Alternatives
 
-What other designs have been considered, and why you chose this approach instead.
+By adding the `Streamer` object, we aimed to provide an API that is simple to use while still allowing some flexibility.
+
+An alternative that is currently in use in the mobile toolkits would be to provide a set of parsers and leave the responsibility to select and call the parser matching the publication file to reading apps. However, this strategy has downsides:
+
+* Reading apps need to manually integrate parsers to support new formats.
+* Content protection technologies and handling archiving/struture formats (e.g. ZIP, exploded directories) would burden either reading apps, or each parser implementation.
 
 
 ## Drawbacks and Limitations
 
-Why should we *not* do this? Are there any unresolved questions?
+Some parsers, such as `PDFParser`, might depend on heavy libraries which are directly linked into the toolkit. This situation is problematic for applications which are not interested in these formats, or would like to replace the dependency with another one, because it increases significantly the size of the app. 
+
+We might want to offer sub-libraries for such heavy parsers, to keep the toolkit lightweight.
 
 
 ## Future Possibilities
 
-Content Protection
+Handling content protection technologies is a complex subject, which deserves its own proposal. Because the Streamer is the gateway to parsers and fetchers, it's a place of choice to add support for content protections.
 
-Injection should be a module with two sides: a resource-transformer side, and a webview native injection side
+The Streamer is also a good place to handle injection in publication resources, such as JavaScript/CSS injection in HTML resources. Promoting the concept of "injectable" as a first-class type to plug in the Streamer (and/or the Navigator) would be very useful for reading apps.
