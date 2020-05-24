@@ -269,7 +269,7 @@ Parses a `Publication` from a file.
 
 ##### Methods
 
-* `parse(file: File, fetcher: Fetcher, warnings: WarningLogger? = null) -> Future<Publication.Builder?>`
+* `parse(file: File, fetcher: Fetcher, fallbackTitle: String = file.name, warnings: WarningLogger? = null) -> Future<Publication.Builder?>`
   * Constructs a `Publication.Builder` to build a `Publication` from its file representation.
   * Returns `null` if the file format is not supported by this parser, or throws a localized error if the parsing fails.
   * `file: File`
@@ -280,6 +280,9 @@ Parses a `Publication` from a file.
       * support content protection technologies
       * parse exploded archives or in archiving formats unknown to the parser, e.g. RAR
     * If the file is not an archive, it will be reachable at the HREF `/publication.<file.format.fileExtension>`, e.g. with a PDF.
+  * `fallbackTitle: String = file.name`
+    * The `Publication`'s `title` is mandatory, but some formats might not have a way of declaring a title (e.g. CBZ). In which case, `fallbackTitle` will be used.
+    * The default implementation uses the filename as the fallback title.
   * `warnings: WarningLogger? = null`
     * Logger used to broadcast non-fatal parsing warnings.
     * Can be used to report publication authoring mistakes, to warn users of potential rendering issues or help authors debug their publications.
@@ -324,9 +327,12 @@ The specification of `HTTPClient`, `Archive`, `XMLDocument` and `PDFDocument` is
 
 #### Methods
 
-* `open(file: File, warnings: WarningLogger? = null) -> Future<Publication?>`
+* `open(file: File, fallbackTitle: String = file.name, warnings: WarningLogger? = null) -> Future<Publication?>`
   * Parses a `Publication` from the given `file`.
   * Returns `null` if the file was not recognized by any parser, or a `Streamer.Error` in case of failure.
+  * `fallbackTitle: String = file.name`
+    * The `Publication`'s `title` is mandatory, but some formats might not have a way of declaring a title (e.g. CBZ). In which case, `fallbackTitle` will be used.
+    * The default implementation uses the filename as the fallback title.
   * `warnings: WarningLogger? = null`
     * Logger used to broadcast non-fatal parsing warnings.
     * Can be used to report publication authoring mistakes, to warn users of potential rendering issues or help authors debug their publications.
