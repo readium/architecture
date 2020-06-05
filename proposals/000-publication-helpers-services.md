@@ -39,18 +39,16 @@ The `Publication` shared models support extensibility through two structured way
 A *helper* extends the shared models by computing additional metadata when requested, such as:
 
   * `Presentation::layoutOf(Link)` returns the EPUB layout of a resource based on both publication and resource-level properties.
-  * `PublicationManifest::allReadingOrderIsAudio` returns whether the reading order contains only audio resources, and thus can be treated as an audiobook.
+  * `List<Link>::allAreAudio` returns whether the collection of links contains only audio resources. When applied on `readingOrder`, it can be used to determine if the publication can be treated as an audiobook.
 
 They are simple syntactic constructs, using the capabilities of each language, for example:
 
 ```swift
 // Swift
-extension PublicationManifest {
+extension Array where Element == Link {
 
-    var allReadingOrderIsAudio: Bool {
-        readingOrder.allSatisfy { link in
-            link.mediaType.type == "audio"
-        }
+    var allAreAudio: Bool {
+        allSatisfy { $0.mediaType?.isAudio == true }
     }
 
 }
@@ -58,16 +56,15 @@ extension PublicationManifest {
 
 ```kotlin
 // Kotlin
-val PublicationManifest.allReadingOrderIsAudio: Boolean get() =
-    readingOrder.all {
-        it.mediaType.type == "audio"
-    }
+val List<Link>.allAreAudio: Boolean get() = all {
+    it.mediaType?.isAudio ?: false
+}
 ```
 
 ```javascript
 // JavaScript
-PublicationManifest.prototype.allReadingOrderIsAudio() = function() {
-  return this.readingOrder.every(link => link.mediaType.type == "audio")
+LinkArray.prototype.allAreAudio() = function() {
+  return this.every(link => link.mediaType.isAudio())
 };
 ```
 
@@ -155,7 +152,7 @@ val Publication.positions: List<Locator> get() {
 
 
 // A concrete implementation of the service.
-class EPUBPositionsService(val readingOrder: List<Link>, val fetcher: Fetcher?) : PositionsService {
+class EPUBPositionsService(val readingOrder: List<Link>, val fetcher: Fetcher) : PositionsService {
     
     override val positions: List<Locator> by lazy {
         // Lazily computes the position list...
@@ -225,15 +222,11 @@ Base interface to be inherited by all publication services.
 
 ##### Methods
 
-* (optional) `get(link: Link, parameters: Map<String, String>) -> Resource?`
+* (optional) `get(link: Link) -> Resource?`
   * Called by `Publication::get()` for each request. A service can return a `Resource` to:
     * respond to a request to its web API declared in `links`,
     * serve additional resources on behalf of the publication,
     * replace a publication resource by its own version.
-  * `link: Link`
-    * The requested link.
-  * `parameters: Map<String, String>`
-    * The request parameters, e.g. `text` in `/~readium/search{?text}`.
   * Returns the `Resource` containing the response, or `null` if the service doesn't recognize this request.
 * (optional) `close()`
   * Closes any opened file handles, removes temporary files, etc.
@@ -247,8 +240,8 @@ Since a service might cache values computed from the current manifest and fetche
 typealias Publication.Service.Factory = (Publication.Service.Context) -> Publication.Service?
 
 class Publication.Service.Context {
-    val manifest: PublicationManifest,
-    val fetcher: Fetcher?
+    val manifest: Manifest,
+    val fetcher: Fetcher
 }
 ```
 
@@ -335,15 +328,16 @@ This service is described in more details [in this specification](https://github
 
 #### Properties
 
-* (lazy) `positions: List<Locator>`
-  * List of all the positions in the publication as `Locator` objects.
 * (lazy) `positionsByReadingOrder: List<List<Locator>>`
   * List of all the positions in the publication, grouped by the resource reading order index.
+* (lazy) `positions: List<Locator>`
+  * List of all the positions in the publication.
+  * Automatically derived from `positionsByReadingOrder`, if not implemented.
 
 #### `Publication` Helpers
 
-* `positions: List<Locator> = findService<PositionsService>()?.positions ?: []`
 * `positionsByReadingOrder: List<Locator> = findService<PositionsService>()?.positionsByReadingOrder ?: []`
+* `positions: List<Locator> = findService<PositionsService>()?.positions ?: []`
 
 #### Web Service
 
@@ -368,7 +362,7 @@ interface PositionsService : Publication.Service {
     override val links: List<Link>
         get() = listOf(positionsLink)
 
-    override fun get(link: Link, parameters: Map<String, String>): Resource? {
+    override fun get(link: Link): Resource? {
         if (link.href != positionsLink.href) {
             return null
         }
@@ -377,7 +371,7 @@ interface PositionsService : Publication.Service {
             put("total", positions.size)
             put("positions", positions.map { it.toJSON() })
         }
-        return StringResource(positionsLink, json.toString())
+        return BytesResource(positionsLink, json.toString())
     }
 
 }
@@ -398,15 +392,22 @@ Furthermore, a reading app might want to use a custom strategy to choose the cov
 * generating a bitmap from scratch using the publication's title
 * using a cover selected by the user
 
+#### Properties
+
+* `cover: Bitmap?`
+  * Returns the publication cover as a bitmap at its maximum size.
+  * If the cover is not in a bitmap format (e.g. SVG), the display's size is used.
+
 #### Methods
 
 * `coverFitting(maxSize: Size) -> Bitmap?`
   * Returns the publication cover as a bitmap, scaled down to fit the given `maxSize`.
   * If the cover is not in a bitmap format (e.g. SVG), it is exported as a bitmap filling `maxSize`.
-  * The cover is cached in memory for next calls.
+  * The cover **should not** be cached in memory for next calls.
 
 #### `Publication` Helpers
 
+* `cover: Bitmap? = findService<CoverService>()?.cover`
 * `coverFitting(maxSize: Size) -> Bitmap? = findService<CoverService>()?.coverFitting(maxSize)`
 
 #### Web Service
@@ -417,75 +418,22 @@ If the cover selected by the `CoverService` is not already part of `Publication:
 
 This is an overview of the helpers implemented natively by the Readium toolkit.
 
-### `PublicationManifest` Helpers
+### `Publication` Helpers
 
-#### Reading Order
-
-* `anyReadingOrder(key: String? = null, predicate: (Link) -> Boolean) -> Boolean`
-  * Returns whether *any* of the `Link` in the reading order matches the given predicate.
-  * If a unique `key` is provided, the result is cached to improve performances for next calls.
-* `allReadingOrder(key: String? = null, predicate: (Link) -> Boolean) -> Boolean`
-  * Returns whether *all* the `Link` in the reading order match the given predicate.
-  * If a unique `key` is provided, the result is cached to improve performances for next calls.
-* `allReadingOrderIsBitmap: Boolean`
-  * Returns whether all the resources in the reading order are bitmaps.
-  * Delegates to `allReadingOrder()`, using `Link::mediaType.isBitmap`.
-* `allReadingOrderIsAudio: Boolean`
-  * Returns whether all the resources in the reading order are audio clips.
-  * Delegates to `allReadingOrder()`, using `Link::mediaType.isAudio`.
-* `allReadingOrderIsVideo: Boolean`
-  * Returns whether all the resources in the reading order are video clips.
-  * Delegates to `allReadingOrder()`, using `Link::mediaType.isVideo`.
-* `allReadingOrderIsHTML: Boolean`
-  * Returns whether all the resources in the reading order are HTML documents.
-  * Delegates to `allReadingOrder()`, using `Link::mediaType.isHTML`.
-* `allReadingOrderMatchesMediaType(MediaType)`
-  * Returns whether all the resources in the reading order match the given media type.
-  * Delegates to `allReadingOrder()`, using `Link::mediaType.matches()`.
-* `allReadingOrderMatchesAnyOfMediaTypes(List<MediaType>)`
-  * Returns whether all the resources in the reading order match any of the given media types.
-  * Delegates to `allReadingOrder()`, using `Link::mediaType.matches()`.
-
-#### URLs
-
-* `baseURL: String?`
+* `baseURL: URL?`
   * The URL where this publication is served, computed from the `Link` with `self` relation.
   * Used to resolve relative HREFs.
   * e.g. `https://provider.com/pub1293/manifest.json` gives `https://provider.com/pub1293/`
-* `urlToLink(Link, parameters: Map<String, String> = {}) -> String?`
-  * Computes an absolute URL to the given `Link`.
-  * `parameters: Map<String, String> = {}`
-    * HREF parameters used when the `Link` is templated, or to append additional query parameters.
-  * Returns `link.expand(parameters)` if it is already an absolute URL, otherwise uses `baseURL`.
-  * Used to navigate to a resource served through HTTP.
-* `urlToLocator(Locator) -> String?`
-  * Computes an absolute URL to the given `Locator`.
-  * Returns `locator.href` if it is already an absolute URL, otherwise uses `baseURL`.
-  * Used to navigate to a resource served through HTTP.
-* `hrefFromURL(String) -> String`
-  * Computes the canonical HREF for the given URL.
-  * Any query parameter is removed.
-  * If the URL is relative to the publication's base URL, returns a relative HREF.
-  * Used to match a link in the manifest from an HTTP request.
-
-#### Links
-
-* `linksMatching(predicate: (Link) -> Boolean) -> Link?`
-  * Finds all the links matching the given `predicate` in the publication's `readingOrder`, `resources`, and `links` properties (in order).
-  * Delegates to `List<Link>::linksMatching()`.
-* `linkMatching(predicate: (Link) -> Boolean) -> Link?`
-  * Finds the first link matching the given `predicate` in the publication's `readingOrder`, `resources`, and `links` properties (in order).
-  * Delegates to `List<Link>::linkMatching()`.
-* `linkFromURL(String) -> Link?`
-  * Finds the first link matching the given HREF in the publication's `readingOrder`, `resources`, and `links` properties (in order).
-  * Delegates to `List<Link>::linkWithHREF()`, after getting the HREF with `hrefFromURL()`.
-  * Used to match a link in the manifest from an HTTP request.
-* `linksWithRel(String) -> List<Link>`
-  * Finds all the links with the given relation in the publication's `readingOrder`, `resources`, and `links` properties (in order).
-  * Delegates to `List<Link>::linksWithRel()`.
+* `linkWithHREF(String) -> Link?`
+  * Finds the first link with the given HREF in the publication's links.
+  * Searches through (in order) `readingOrder`, `resources` and `links`, following recursively `alternates` and `children`.
+    * If there's no match, try again after removing any query parameter and anchor from the given `href`.
 * `linkWithRel(String) -> Link?`
-  * Finds the first link with the given relation in the publication's `readingOrder`, `resources`, and `links` properties (in order).
-  * Delegates to `List<Link>::linkWithRel()`.
+  * Finds the first link with the given relation in the publication's links.
+  * Delegates internally to `Manifest::linkWithRel()`.
+* `linksWithRel(String) -> List<Link>`
+  * Finds all the links with the given relation in the publication's links.
+  * Delegates internally to `Manifest::linksWithRel()`.
 
 #### EPUB
 
@@ -514,6 +462,15 @@ This is an overview of the helpers implemented natively by the Readium toolkit.
   * Visual representations for a publication.
   * Equivalent to `subcollections["images"]?.flatten() ?: []`.
 
+### `Manifest` Helpers
+
+* `linkWithRel(String) -> Link?`
+  * Finds the first link with the given relation in the manifest's links.
+  * Searches through (in order) `readingOrder`, `resources` and `links`.
+* `linksWithRel(String) -> List<Link>`
+  * Finds all the links with the given relation in the manifest's links.
+  * Searches through (in order) `readingOrder`, `resources` and `links`.
+
 ### `Metadata` Helpers
 
 #### Presentation
@@ -526,36 +483,43 @@ This is an overview of the helpers implemented natively by the Readium toolkit.
 
 ### `Link` Helpers
 
+* `toURL(baseURL: URL) -> URL?`
+  * Computes an absolute URL to the link, relative to the given `baseURL`.
+  * If the link's `href` is already absolute, the `baseURL` is ignored.
 * `templateParameters: List<String>`
   * List of URI template parameter keys, if the `Link` is templated.
-* `expand(parameters: Map<String, String>) -> URL`
-  * Expands the HREF by replacing URI template variables by the given parameters.
-  * Any extra parameter is appended as query parameters.
+* `expandTemplate(parameters: Map<String, String>) -> Link`
+  * Expands the `Link`'s HREF by replacing URI template variables by the given parameters.
   * See [RFC 6570](https://tools.ietf.org/html/rfc6570) on URI template.
-* `matchesHREF(href: String) -> Boolean`
-  * Returns whether this link's HREF matches the given HREF, after removing any query parameters and URI template variables.
-  * Used to match a link in the manifest from an HTTP request.
 
 ### `List<Link>` Helpers
 
-In the following helpers, links are searched recursively following `Link::alternate`, then `Link::children`. But only after comparing all the links at the current level.
-
-* `linksMatching(predicate: (Link) -> Boolean) -> Link?`
-  * Finds all the links matching the given `predicate` recursively.
-  * Links are searched recursively following `Link::alternate`, then `Link::children`. But only after comparing all the links at the current level.
-* `linkMatching(predicate: (Link) -> Boolean) -> Link?`
-  * Finds the first link matching the given `predicate` recursively.
-  * Links are searched recursively following `Link::alternate`, then `Link::children`. But only after comparing all the links at the current level.
-* `linkWithHREF(String) -> Link?`
-  * Finds the first link matching the given HREF, using `Link::matchesHREF()`.
-* `linksWithRel(String) -> Link?`
-  * Finds all the links with the given relation.
-* `linkWithRel(String) -> Link?`
+* `firstWithRel(String) -> Link?`
   * Finds the first link with the given relation.
-* `linksMatchingMediaType(MediaType) -> List<Link>`
-  * Finds all the links matching the given media type.
-* `linkMatchingMediaType(MediaType) -> Link?`
+* `filterByRel(String) -> List<Link>`
+  * Finds all the links with the given relation.
+* `firstWithHREF(String) -> Link?`
+  * Finds the first link matching the given HREF.
+* `indexOfFirstWithHREF(String) -> Int?`
+  * Finds the index of the first link matching the given HREF.
+* `firstWithMediaType(MediaType) -> Link?`
   * Finds the first link matching the given media type.
+* `filterByMediaType(MediaType) -> List<Link>`
+  * Finds all the links matching the given media type.
+* `filterByMediaTypes(List<MediaType>) -> List<Link>`
+  * Finds all the links matching any of the given media types.
+* `allAreBitmap: Boolean`
+  * Returns whether all the resources in the collection are bitmaps.
+* `allAreAudio: Boolean`
+  * Returns whether all the resources in the collection are audio clips.
+* `allAreVideo: Boolean`
+  * Returns whether all the resources in the collection are video clips.
+* `allAreHTML: Boolean`
+  * Returns whether all the resources in the collection are HTML documents.
+* `allMatchMediaType(MediaType) -> Boolean`
+  * Returns whether all the resources in the collection are matching the given media type.
+* `allMatchMediaTypes(List<MediaType>) -> Boolean`
+  * Returns whether all the resources in the collection are matching any of the given media types.
 
 ### `Properties` Helpers
 
