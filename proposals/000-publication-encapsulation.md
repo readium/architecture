@@ -40,7 +40,7 @@ You are free to create a `Publication` manually to fit custom needs.
 
 ### Getting Manifest Metadata
 
-`Publication` implements the `Publication.Manifest` interface, which provides access to a publication's metadata. You can use them, for example, to import a publication in the user's bookshelf or to browse its table of contents.
+`Publication` provides access to a publication's metadata. You can use them, for example, to import a publication in the user's bookshelf or to browse its table of contents.
 
 ```javascript
 database.addPublication({
@@ -87,13 +87,21 @@ This proposal should be a non-breaking change, since it is merely additive.
 
 ## Reference Guide
 
-### `Publication.Manifest` Interface
+### `Manifest` Class
 
 Holds the metadata of a Readium publication, as described in the [Readium Web Publication Manifest](https://readium.org/webpub-manifest/).
 
+#### Constructors
+
+* `Manifest(json: JSONObject)`
+  * Parses a manifest from its [RWPM JSON](https://readium.org/webpub-manifest/) representation.
+* `Manifest(jsonString: String)`
+  * Parses an object from its [RWPM JSON](https://readium.org/webpub-manifest/) string representation.
+  * Convenience constructor delegating to `Manifest(json:)`.
+
 #### Properties
 
-* `metadata: Publication.Metadata`
+* `metadata: Metadata`
   * Out of scope, [see this JSON schema](https://readium.org/webpub-manifest/schema/metadata.schema.json).
 * `links: List<Link>`
   * Out of scope, [see this JSON schema](https://readium.org/webpub-manifest/schema/link.schema.json).
@@ -120,49 +128,38 @@ var readingOrder: [Link] {
 * `toJSON() -> String`
   * Serializes the manifest to its [RWPM JSON](https://readium.org/webpub-manifest/) string representation.
 
-### `Publication` Class (implements `Publication.Manifest`)
+### `Publication` Class
 
 The `Publication` shared model is the entry-point for all the metadata and services related to a Readium publication.
 
 It is constructed from a group of objects with clear responsibilities:
 
-* `Publication.Manifest` which holds the metadata parsed from the source publication file/manifest.
+* `Manifest` which holds the metadata parsed from the source publication file/manifest.
 * [`Fetcher`](https://github.com/readium/architecture/pull/132) which offers a read-only access to resources.
 * [`Publication.Service`](https://github.com/readium/architecture/pull/131) objects which extend the `Publication` with features such as position list, search, thumbnails generation, rights management, etc.
 
 #### Constructors
 
-* `Publication(manifest: Publication.Manifest, fetcher: Fetcher? = null, serviceFactories: List<Publication.Service.Factory> = [])`
-  * `manifest: Publication.Manifest`
+* `Publication(manifest: Manifest, fetcher: Fetcher = EmptyFetcher(), servicesBuilder: Publication.ServicesBuilder = Publication.ServicesBuilder())`
+  * `manifest: Manifest`
     * The manifest holding the publication metadata extracted from the publication file.
-    * It will be used to construct the publication services and to implement the `Publication.Manifest` interface by delegation.
-  * `fetcher: Fetcher? = null`
+  * `fetcher: Fetcher = EmptyFetcher()`
     * The underlying fetcher used to read publication resources.
-  * `serviceFactories: List<Publication.Service.Factory> = []`
-    * Optional list of service factories used to create the instances of `Publication.Service` attached to this `Publication`.
+    * The default implementation returns `Resource.Error.NotFound` for all HREFs.
+  * `servicesBuilder: Publication.ServicesBuilder = Publication.ServicesBuilder()`
+    * Holds the list of service factories used to create the instances of `Publication.Service` attached to this `Publication`.
+    * This is specified in the [Streamer API proposal](https://github.com/readium/architecture/pull/139).
+
+#### Properties
+
+* `metadata`, `links`, `subcollections`, `readingOrder`, `resources` and `tableOfContents` are delegated to the underlying `Manifest`.
 
 #### Methods
 
-* `get(link: Link, parameters: Map<String, String> = {}) -> Resource`
+* `get(link: Link) -> Resource`
   * Returns the resource targeted by the given link.
-  * `parameters: Map<String, String> = {}`
-    * Parameters used when `link` is templated.
-    * The parameters must not be percent-encoded.
-  * Delegates to `fetcher.get()`.
-    * The `link.href` property is searched for in the `links`, `readingOrder` and `resources` properties to find the matching manifest `Link`. This is to make sure that the `Link` given to the `Fetcher` contains all properties declared in the manifest.
-    * The properties are searched recursively following `Link::alternate`, then `Link::children`. But only after comparing all the links at the current level.
-* `get(url: String) -> Resource`
-  * Returns the resource at the given URL.
-  * Equivalent to `get(Link(href: hrefFromURL(url)), queryParametersOf(url))`.
-
-### `JSONManifest` Class (implements `Publication.Manifest`)
-
-A manifest which can be parsed from a [RWPM JSON](https://readium.org/webpub-manifest/).
-
-#### Constructors
-
-* `JSONManifest(json: JSONObject)`
-  * Parses a manifest from its RWPM JSON representation.
-* `JSONManifest(jsonString: String)`
-  * Parses an object from its RWPM JSON string representation.
-  * Convenience constructor delegating to `JSONManifest(json:)`.
+  * The `link.href` property is searched for using the helper `linkWithHREF()` to find the matching manifest `Link`. This ensures that the `Link` given to the `Fetcher` contains all the properties declared in the manifest.
+  * Attempts to find a `Publication.Service` returning a `Resource` for this `Link`, or falls back on `fetcher.get()`.
+* `get(href: String) -> Resource`
+  * Returns the resource at the given HREF.
+  * Equivalent to `get(Link(href: href)))`.
