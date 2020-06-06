@@ -62,15 +62,15 @@ The Streamer is one of the main components of the Readium Architecture, whose re
 Opening a `Publication` is really simple with an instance of `Streamer`. 
 
 ```kotlin
-val file = File(path)
-val streamer = Streamer()
-val publication = streamer.open(file)
+file = File(path)
+streamer = Streamer()
+publication = streamer.open(file)
 ```
 
 Your app will automatically support parsing new formats added in Readium. However, if you wish to limit the supported formats to a subset of what Readium offers, simply guard the call to `open()` by checking the value of `file.format` first.
 
 ```kotlin
-val supportedFormats = [Format.EPUB, Format.PDF]
+supportedFormats = [Format.EPUB, Format.PDF]
 if (!supportedFormats.contains(file.format)) {
     return
 }
@@ -79,7 +79,7 @@ if (!supportedFormats.contains(file.format)) {
 Alternatively, you can provide the parsers yourself and disable the default ones with `ignoresDefaultParsers`.
 
 ```kotlin
-val streamer = Streamer(
+streamer = Streamer(
     parsers = [EPUBParser(), PDFParser()],
     ignoresDefaultParsers = true
 )
@@ -90,7 +90,7 @@ val streamer = Streamer(
 If a parser offers settings that you wish to override, you can create an instance yourself. It will automatically take precedence over the defaut parser provided by the Streamer.
 
 ```kotlin
-val streamer = Streamer(
+streamer = Streamer(
     parsers = [EPUBParser(...)]
 )
 ```
@@ -99,14 +99,14 @@ val streamer = Streamer(
 
 You can customize the parsed `Publication` object by modifying:
 
-* its `Publication.Manifest` object, to change its metadata or links
+* its `Manifest` object, to change its metadata or links
 * the root `Fetcher`, to fine-tune access to resources
 * the list of attached Publication Services
 
 The Streamer accepts a number of callback functions which will be called just before creating the `Publication` object.
 
 ```kotlin
-val streamer = Streamer(
+streamer = Streamer(
     onCreateFetcher = { file, manifest, fetcher ->
         // Minifies the HTML resources in an EPUB.
         if (file.format == Format.EPUB) {
@@ -119,13 +119,13 @@ val streamer = Streamer(
     onCreateServices = { file, manifest, services ->
         // Wraps the default PositionsService to cache its result in a
         // persistent storage, to improve performances.
-        services.replace(PositionsService::class) { oldFactory ->
+        services.wrap(PositionsService::class) { oldFactory ->
             CachedPositionsService.createFactory(oldFactory)
         }
 
-        // Adds a custom SearchService implementation for EPUB.
+        // Sets a custom SearchService implementation for EPUB.
         is (file.format == Format.EPUB) {
-            services.add(EPUBSearchServiceFactory)
+            services.search = EPUBSearchService.create
         }
     }
 )
@@ -136,7 +136,7 @@ val streamer = Streamer(
 The Streamer and its parsers depend on core features which might not be available natively on the platform, such as reading ZIP archives or parsing XML. In which case, Readium uses third-party libraries. To use a different version of a library than the one provided by Readium, or use a different library altogether, you can provide your own implementation to the Streamer.
 
 ```kotlin
-val streamer = Streamer(
+streamer = Streamer(
     httpClient = CustomHTTPClient(),
     openPDF = { path, password -> CustomPDFDocument(path, password) }
 )
@@ -149,17 +149,17 @@ If you just want to add HTTP headers or set up caching and networking policies f
 The Readium Architecture is opened to support additional publication formats.
 
 1. [Register your new format and add a sniffer](https://github.com/readium/architecture/blob/master/proposals/001-format-api.md#supporting-a-custom-format). This step is optional but recommended to make your format a first-class citizen in the toolkit.
-2. Implement a `Publication.Parser` to parse the publication format into a `Publication` object. Then, provide an instance to the Streamer.
+2. Implement a `PublicationParser` to parse the publication format into a `Publication` object. Then, provide an instance to the Streamer.
 
-```kotlin
-class CustomParser : Publication.Parser {
+```swift
+class CustomParser: PublicationParser {
 
-    suspend fun parse(file: File, fetcher: Fetcher): Publication.Builder? {
+    func parse(file: File, fetcher: Fetcher) -> PublicationBuilder? {
         if (file.format != Format.MyCustomFormat) {
             return null
         }
 
-        return Publication.Builder(
+        return PublicationBuilder(
             manifest = parseManifest(file, delegate),
             fetcher = fetcher
             services = [CustomPositionsServiceFactory]
@@ -168,7 +168,7 @@ class CustomParser : Publication.Parser {
 
 }
 
-val streamer = Streamer(
+streamer = Streamer(
     parsers = [CustomParser()]
 )
 ```
@@ -215,62 +215,107 @@ Used to cache the `Format` to avoid computing it at different locations.
   * This can be used to open exploded publication archives.
   * **Warning:** This should not be called from the UI thread.
 
-### `Publication` Additions
-
-#### `Publication.Builder` Class
-
-Builds a `Publication` from its components.
-
-A `Publication`'s construction is distributed over the Streamer and its parsers, so a builder is useful to pass the parts around.
-
-##### Constructors
-
-* `Publication.Builder(manifest: Publication.Manifest, fetcher: Fetcher, servicesBuilder: Publication.ServicesBuilder)`
-  * Each parameter is exposed as a mutable public property.
-
-##### Methods
-
-* `build() -> Publication`
-  * Builds the `Publication` object from its parts.
-
-
-#### `Publication.ServicesBuilder` Class
+### `Publication.ServicesBuilder` Class
 
 Builds a list of `Publication.Service` using `Publication.Service.Factory` instances.
 
 Provides helpers to manipulate the list of services of a `Publication`.
 
-##### Constructors
+This class holds a map between a key – computed from a service interface – and a factory instance for this service.
 
-* `Publication.ServicesBuilder(serviceFactories: List<Publication.Service.Factory>)`
+#### Constructors
+
+* `Publication.ServicesBuilder(positions: ((Publication.Service.Context) -> PositionsService?)? = null, cover: ((Publication.Service.Context) -> CoverService?)? = null, ...)`
   * Creates a `ServicesBuilder` with a list of service factories.
+  * There's one argument per standard Readium publication service.
 
-##### Methods
+#### Properties
+
+Each publication service should define helpers on `Publication.ServicesBuilder` to set its factory.
+
+* (writable) `coverServiceFactory: ((Publication.Service.Context) -> CoverService?)?`
+* (writable) `positionsServiceFactory: ((Publication.Service.Context) -> PositionsService?)?`
+
+#### Methods
 
 * `build(context: Publication.Service.Context) -> List<Publication.Service>`
   * Builds the actual list of publication services to use in a `Publication`.
   * `context: Publication.Service.Context`
     * Context provided to the service factories.
-* `add(factory: Publication.Service.Factory)`
-  * Adds a new publication service factory to the builder.
-  * The factory will be inserted at the beginning of the internal list of factories, to make sure it takes precedence over any existing one.
-* `remove(service: Publication.Service::class)`
-  * Removes any service factory producing the given kind of `service`.
-* `replace(service: Publication.Service::class, transform: (Publication.Service.Factory?) -> Publication.Service.Factory)`
-  * Replace the first existing service factory producing the given kind of `service` by the result of `transform`.
-  * This can be used to replace an existing service, or to wrap it.
+* `set(serviceType: Publication.Service::class, factory: Publication.Service.Factory)`
+  * Sets the publication service factory for the given service type.
+* `remove(serviceType: Publication.Service::class)`
+  * Removes any service factory associated with the given service type.
+* `wrap(serviceType: Publication.Service::class, transform: (Publication.Service.Factory?) -> Publication.Service.Factory)`
+  * Replaces the service factory associated with the given service type with the result of `transform`.
 * `copy() -> Publication.ServicesBuilder`
   * Copy the services builder.
   * A `Publication` must copy its internal services builder and keep it private to prevent other components from modifying it.
 
-#### `Publication.Parser` Interface
+### `WarningLogger` Interface
+
+Interface to be implemented by third-party apps if they want to observe non-fatal warnings raised, for example, during the parsing of a `Publication`.
+
+#### Methods
+
+* `log(warning: Warning)`
+  * Notifies that a warning occurred.
+
+#### `Warning` Interface
+
+Represents a non-fatal warning message which can be raised by a Readium library.
+
+For example, while parsing a publication we might want to report authoring issues without failing the whole parsing.
+
+##### Properties
+
+* `tag: String`
+  * Tag used to group similar warnings together
+  * For example `json`, `metadata`, etc.
+* `severity: Warning.SeverityLevel`
+  * Indicates the severity level of this warning.
+* `message: String`
+  * Localized user-facing message describing the issue.
+
+##### `Warning.SeverityLevel` Enum
+
+Indicates how the user experience might be affected by a warning.
+
+* `minor` – The user probably won't notice the issue.
+* `moderate` – The user experience might be affected, but it shouldn't prevent the user from enjoying the publication.
+* `major` – The user experience will most likely be disturbed, for example with rendering issues.
+
+
+#### `ListWarningLogger` Class (implements `WarningLogger`)
+
+Implementation of `WarningLogger` which accumulates the warnings in a list, to be used as a convenience by third-party apps.
+
+## Reference Guide (`r2-streamer`)
+
+### `PublicationBuilder` Class
+
+Builds a `Publication` from its components.
+
+A `Publication`'s construction is distributed over the Streamer and its parsers, so a builder is useful to pass the parts around.
+
+#### Constructors
+
+* `PublicationBuilder(manifest: Manifest, fetcher: Fetcher, servicesBuilder: Publication.ServicesBuilder)`
+  * Each parameter is exposed as a mutable public property.
+
+#### Methods
+
+* `build() -> Publication`
+  * Builds the `Publication` object from its parts.
+
+### `PublicationParser` Interface
 
 Parses a `Publication` from a file.
 
-##### Methods
+#### Methods
 
-* `parse(file: File, fetcher: Fetcher, fallbackTitle: String = file.name, warnings: WarningLogger? = null) -> Future<Publication.Builder?>`
-  * Constructs a `Publication.Builder` to build a `Publication` from its file representation.
+* `parse(file: File, fetcher: Fetcher, fallbackTitle: String = file.name, warnings: WarningLogger? = null) -> Future<PublicationBuilder?>`
+  * Constructs a `PublicationBuilder` to build a `Publication` from a publication file.
   * Returns `null` if the file format is not supported by this parser, or throws a localized error if the parsing fails.
   * `file: File`
     * Path to the publication file.
@@ -288,8 +333,6 @@ Parses a `Publication` from a file.
     * Can be used to report publication authoring mistakes, to warn users of potential rendering issues or help authors debug their publications.
 
 
-## Reference Guide (`r2-streamer`)
-
 ### `Streamer` Class
 
 Opens a `Publication` using a list of parsers.
@@ -297,7 +340,7 @@ Opens a `Publication` using a list of parsers.
 #### Constructor
 
 * `Streamer(/* see parameters below */)`
-  * `parsers: List<Publication.Parser> = []`
+  * `parsers: List<PublicationParser> = []`
     * Parsers used to open a publication, in addition to the default parsers.
     * The provided parsers take precedence over the default parsers.
     * This can be used to provide custom parsers, or a different configuration for default parsers.
@@ -316,11 +359,11 @@ Opens a `Publication` using a list of parsers.
   * `openPDF: PDFDocument.Factory? = default`
     * Parses a PDF document, optionally protected by password.
     * The default implementation uses native APIs when available.
-  * `onCreateManifest: (File, Publication.Manifest) -> Publication.Manifest = { m -> m }`
-    * Called before creating the `Publication`, to modify the parsed `Publication.Manifest` if desired.
-  * `onCreateFetcher: (File, Publication.Manifest, Fetcher) -> Fetcher = { f -> f }`
+  * `onCreateManifest: (File, Manifest) -> Manifest = { f, m -> m }`
+    * Called before creating the `Publication`, to modify the parsed `Manifest` if desired.
+  * `onCreateFetcher: (File, Manifest, Fetcher) -> Fetcher = { f, m, fetcher -> fetcher }`
     * Called before creating the `Publication`, to modify its root fetcher.
-  * `onCreateServices: (File, Publication.Manifest, Publication.ServicesBuilder) -> Void = {}`
+  * `onCreateServices: (File, Manifest, Publication.ServicesBuilder) -> Void = { f, m, sb -> }`
     * Called before creating the `Publication`, to modify its list of service factories.
 
 The specification of `HTTPClient`, `Archive`, `XMLDocument` and `PDFDocument` is out of scope for this proposal.
@@ -342,7 +385,7 @@ The specification of `HTTPClient`, `Archive`, `XMLDocument` and `PDFDocument` is
 * `ParsingFailed(Error)`
   * Returned when the parsing failed with the given underlying error.
 
-### `Publication.Parser` Implementations
+### `PublicationParser` Implementations
 
 These default parser implementations are provided by the Streamer out of the box. The following is not meant to be a full parsing specification for each format, only a set of guidelines.
 
