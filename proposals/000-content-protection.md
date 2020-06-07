@@ -36,7 +36,7 @@ A Content Protection can be different things:
 
 ### Unlocking a Publication
 
-Since it's usually possible to read the metadata of a publication without unlocking its protection, the credentials are not always necessary. If the provided credentials are incorrect or missing, the `Publication` can be returned in a locked state: part of its manifest is readable, but not all of its resources.
+Since it's usually possible to read the metadata of a publication without unlocking its protection, the credentials are not always necessary. If the provided credentials are incorrect or missing, the `Publication` can be returned in a *locked* state: parts of its manifest are readable, but not all of its resources.
 
 However, if you need to render the publication to the user, you can set the `askCredentials` parameter to `true`. If the given credentials are incorrect, then the Content Protection will be allowed to ask the user for its credentials.
 
@@ -44,26 +44,17 @@ However, if you need to render the publication to the user, you can set the `ask
 streamer.open(file, askCredentials = true, credentials = "open sesame")
 ```
 
-Some Content Protections – e.g. ZIP encryption – don't allow reading a publication's metadata without the proper credentials, and thus can't return a `Publication` in a locked state. In this case, they will return an `IncorrectCredentials` error. However, you may be able to recover from the error using its associated `recoveryDialog`.
-
-```kotlin
-try {
-    publication = streamer.open(file, askCredentials = false, credentials = "open sesame")
-} catch (error: IncorrectCredentials) {
-    // Prompt the user for its password and try again...
-    showDialog(error.recoveryDialog, callback = ...)
-}
-```
+Some Content Protections – e.g. ZIP encryption – prevent reading a publication's metadata even in a *locked* state without the proper credentials. In this case, an `IncorrectCredentials` error will be returned.
 
 ### Using Third-Party Protections
 
-Format-specific protections are natively handled by the Streamer, since they are tied to the file format. However, for third-party technologies such as a DRM, you need to register them by providing `ContentProtection` instances to the Streamer. Here's an example with LCP:
+Format-specific protections are natively handled by the Streamer, since they are tied to the file format. However, for third-party technologies such as a DRM, you need to register them by providing a `ContentProtection` instance to the Streamer. Here's an example for LCP:
 
 ```swift
 streamer = Streamer(
     contentProtections: [
         // The provided `authentication` argument is private to the LCP library,
-        // and knows how to ask the user for its passphrase.
+        // and is used to ask the user for its passphrase when `askCredentials` is true.
         LCPContentProtection(authentication)
     ]
 )
@@ -71,10 +62,10 @@ streamer = Streamer(
 
 ### Rendering a Publication
 
-To render the publication, reading apps must first check if the protection is unlocked. Navigators will refuse to be created with a locked publication.
+To render the publication, reading apps must first check if it is unlocked. Navigators will refuse to be created with a locked publication.
 
 ```swift
-if !publication.isLocked {
+if (!publication.isLocked) {
     render(publication)
 }
 ```
@@ -84,26 +75,27 @@ if !publication.isLocked {
 Some Content Protection technologies support user rights, such as copy or print. It's possible to consume these rights using the `UserRights` API, for example, to copy a text selection:
 
 ```swift
-// Consumes the given `text` using the copy right. If it exceeds the
-// amount of copyable content left, then the text is truncated.
-text = publication.rights.copy(text)
-pasteboard.add(text)
+if (publication.rights.copy(text)) {
+    pasteboard.add(text)
+}
 ```
 
-Sometimes, you need to know what's the truncated result before actually consuming the *copy* right, for example for a dismissable sharing popup. In which case, you can set the `peek` parameter of `copy()` to `true`.
-
-To know if you should grey out the "Copy" action, use `canCopy`.
+Sometimes, you need to know whether the *copy* action is allowed before actually consuming the right, for example to know if you can display a sharing popup. In which case, you can use `canCopy(text: String)`. The property `canCopy` indicates whether the action is at all possible, and can be used to grey out a "Copy" button.
 
 ### Backward Compatibility and Migration
 
-TODO
+#### Mobile (Swift and Kotlin)
+
+This new API is not backward-compatible with the current support for LCP. However, it should be possible to keep both solutions working at the same time while deprecating the old API, by allowing – only for LCP – to unlock the `Publication` after parsing.
+
+In any case, the `DRM` class will be deprecated, as well as the `Publication::drm` property.
 
 
 ## Reference Guide
 
 The Readium toolkit offers different tools to address the various Content Protection technologies:
 
-* A string credentials passed during the parsing, for password protections or license unlocking.
+* String credentials passed during the parsing, for password protections or license unlocking.
 * Resource transformers, to handle decryption and deobfuscation.
 * Customizing the `Fetcher`, for access restrictions.
 * A `ContentProtectionService` attached to the `Publication`, to manage user rights and hold additional DRM-specific extensions, such as a license object.
@@ -112,36 +104,35 @@ The Readium toolkit offers different tools to address the various Content Protec
 
 Content Protections can be grouped in two categories:
 
-* *Format-Specific Protections*, which are natively supported in the parsers, e.g. PDF permissions and ZIP passwords.
+* *Format-Specific Protections*, which are natively supported in the Streamer, e.g. PDF permissions and ZIP passwords.
 * *Third-Party Protections*, which are managed by reading apps and registered to the Streamer, e.g. DRM and access restrictions.
 
 Readium supports only a single enabled Content Protection per publication, because cumulating rights consumption or decryption from different sources can't be done blindly. Third-party protections provided to the Streamer take precedence (in order) over any format-specific protection.
 
 #### Format-Specific Protections
 
-There's currently only two format-specific protections recognized by Readium: PDF and ZIP. When a password protection is used, the `credentials` parameter provided to the Streamer is used to unlock the protected file.
+There's currently only two format-specific protections recognized by Readium: PDF and ZIP.
+
+When a password protection is used, the `credentials` parameter provided to the Streamer is used to unlock the protected file. In case of incorrect credentials:
+
+* If `askCredentials` is `true`, then the `onAskCredentials()` callback provided to the Streamer is used to request the password.
+* Otherwise, an `IncorrectCredentials` error is returned because format-specific protections don't support reading partial metadata.
 
 ##### ZIP Protection
 
 There are many encryption methods supported in ZIP, some proprietary. Readium can't reasonably handle all of it, and the supported protections will depend on the underlying ZIP library used. Traditional PKWARE encryption, even though not really secure, is widely used to add password protection to a ZIP, and should therefore be supported if possible.
 
-A ZIP parser should use the `credentials` parameter passed to the Streamer. If the password is incorrect, an `IncorrectCredentials` error is returned, instead of an unlocked `Publication`. The rationale is that a locked ZIP can't be used to read the publication metadata to construct a locked `Publication`.
-
-Reading apps are welcome to prompt the user for the password upon receiving `IncorrectCredentials`, and try again.
-
 ##### PDF Protection
 
 PDF supports encryption protected by password and user permissions.
 
-In the Streamer, PDF password works the same way as a ZIP password, using the `credentials` parameter.
+If a PDF contains user permissions, such as "copy", then the Streamer will expose them through a `UserRights` instance attached to the `ContentProtectionService`. Only a subset of PDF permissions are supported: the ones used in Readium. For example, the "changes allowed" permission doesn't make sense since we can't edit a PDF in Readium.
 
-If a PDF contains user permissions, then the Streamer will create a `ContentProtectionService` instance to manage its rights, such as "copy". Only a subset of PDF permissions are supported: the ones used in Readium. For example, the "changes allowed" permission doesn't make sense since we can't edit a PDF in Readium.
-
-Note that Readium supports only publication-level protections. If a ZIP package contains a password-protected PDF file, then the PDF won't be readable in Readium. However, this could be implemented as a reading app extension, by injecting a custom `Fetcher` prompting the user for resource-specific passwords when accessed.
+Note that Readium supports only publication-level protections. If a ZIP package contains a password-protected PDF file, then the PDF won't be readable in Readium.
 
 #### Third-Party Protections
 
-Third-party protections can be widely different, therefore the Readium toolkit avoids making assumptions about the way they work. This means that only the core features used in Readium – publication locking, resources transformation and rights consumption – need to be implemented with protection-agnostic interfaces. Any peripheral features, such as managing loans or presenting license information, are out of scope for Readium. They should be handled by reading apps themselves, using whatever API a Content Protection library is providing.
+Third-party protections can be widely different, therefore the Readium toolkit avoids making assumptions about the way they work. This means that only the core features used in Readium – publication locking, resources transformation and rights consumption – need to be implemented with protection-agnostic interfaces. Any peripheral features, such as managing loans or presenting license information, are out of scope for Readium. They should be handled by reading apps themselves, using the APIs provided by the Content Protection library.
 
 A third-party protection library (or bridge) should implement the `ContentProtection` interface, which will be registered to the Streamer and used when parsing a publication.
 
@@ -149,105 +140,21 @@ A third-party protection library (or bridge) should implement the `ContentProtec
 
 A protected publication can be opened in two states: *locked* or *unlocked*. A locked publication has a restricted access to its manifest and resources, and can't be rendered with a Navigator. It is usually only used to import a publication to the user's bookshelf.
 
-Readium makes no assumption about the way a Third-Party Protection can unlock a publication. It could for example:
+Readium makes no assumption about the way a third-party protection can unlock a publication. It could for example:
 
 * fetch the credentials from a web service or an encrypted storage,
-* compute it from locally available data, for example to deobfuscate,
+* compute it from locally available data, for example to deobfuscate resources,
 * display a dialog to the user,
 * start an OAuth authentication flow through a web view,
-* or even, like a format-specific password protection, use the input `credentials` parameter and return an `IncorrectCredentials` error with an associated `Dialog`.
+* or even, like a format-specific password protection, use the `onAskCredentials()` callback provided to the Streamer.
 
-`ContentProtection` is allowed to prompt the user for its credentials *only* if the `askCredentials` parameter is set to true. The rationale is that a reading app might want to import a collection of publications, in which case the user should not be asked for all the credentials.
+`ContentProtection` is allowed to prompt the user for its credentials *only* if the `askCredentials` parameter is set to true. The rationale is that a reading app might want to import a collection of publications, in which case the user should not be asked for all its credentials. However, background requests are allowed at all time.
 
-Note that if, for a given third-party protection, a locked publication can't be used to create its manifest at all, then the parsing should fail with an `IncorrectCredentials` error, like with a password-protected ZIP.
+Note that if, for a given third-party protection, a locked publication can't be used to create its `Manifest` at all, then the parsing should fail with an `IncorrectCredentials` error, like with a password-protected ZIP.
 
 <img src="assets/000-open-statechart.svg">
 
-### API Reference
-
-*Note: Asynchronicity is represented with `Future` in this reference, but each platform should use the most idiomatic concurrency structure.*
-
-#### `Streamer` Extensions
-
-##### `Methods`
-
-There's three new parameters to `Streamer::open()`: `askCredentials`, `credentials` and `sender`.
-
-* `open(file: File, askCredentials: Boolean, credentials: String? = null, sender: Any? = null) -> Future<Publication>`
-  * `askCredentials: Boolean`
-    * Indicates whether the user can be prompted for its credentials.
-    * This should be used for example when you want to render a publication in a Navigator.
-    * When `false`, Content Protections are allowed to do background requests, but not to present a UI to the user.
-  * `credentials: String? = null`
-    * Credentials that Content Protections can use to attempt to unlock a publication, for example a password.
-    * Supporting string credentials is entirely optional for Content Protections, this is only provided as a convenience.
-    * The format is free-form: it can be a simple password, or a structured format such as JSON or XML.
-    * Reading apps may store these credentials in a secure database, in two cases:
-      * When presenting a `Dialog` taken from an `IncorrectPassword` error. In which case, the reading app may save the dialog's fields for later reuse, if the `Publication` is successfully unlocked.
-      * Using a private third-party API to provide the credentials back to the reading app. For example, as a property in the created `ContentProtectionService`.
-  * `sender: Any? = null`
-    * Free object that can be used by reading apps to give some context to the Content Protections.
-    * For example, it could be the source `Activity`/`ViewController` which would be used to present a credentials dialog.
-    * Content Protections are not supposed to examinate this parameter, it should be forwarded to the reading app if an interaction is needed.
-
-##### `Streamer.Error` Enum
-
-* `Canceled`
-  * Returned when the user canceled the parsing, for example by dismissing a credentials dialog.
-* `IncorrectCredentials(recoveryDialog: Dialog?)`
-  * Returned when the credentials – either from the `credentials` parameter, or from an external source – are incorrect, and we can't create a locked `Publication` object, e.g. for a password-protected ZIP.
-  * If the reading app may present a dialog to the user, to enter the credentials, a description of the dialog is given as an associated value. `Dialog` will be specified in its own proposal.
-* `Forbidden(Error?)`
-  * Returned when we're not allowed to open the `Publication` at all, for example because it expired.
-  * The Content Protection can provide a custom underlying error as an associated value.
-* `Unavailable(Error?)`
-  * Returned when the Content Protection can't open the `Publication` at the moment, for example because of a networking error.
-  * This error is generally temporary, so the operation can be retried or postponed.
-
-#### `ContentProtection` Interface
-
-Bridge between a Content Protection technology and the Readium toolkit.
-
-Its responsibilities are to:
-
-* unlock a publication by returning a customized `Fetcher`,
-* create a `ContentProtectionService` publication service.
-
-##### Methods
-
-* `open(file: File, fetcher: Fetcher?, askCredentials: Boolean, credentials: String?, sender: Any? = null) -> Future<ProtectedFile>?`
-  * Attempts to unlock a potentially protected file.
-  * `fetcher: Fetcher?`
-    * The Streamer will attempt to open a `Fetcher` for the low-level file access (e.g. `ZIPFetcher`), to avoid having each Content Protection open the `file` to check if it's protected by its technology.
-      * The media type's [structured syntax name suffix](https://tools.ietf.org/html/rfc6838#section-4.2.8) can be used by the Streamer for unknown formats, to determine which kind of `Fetcher` to create.
-    * A publication might be protected in such a way that the package format can't be recognized, in which case, the Streamer will pass a `null` fetcher and the Content Protection will have the responsibility of creating the `Fetcher`.
-  * Returns:
-    * (synchronously) `null` if the `file` is not protected by this technology,
-    * a `Streamer.Error` if the file can't be opened,
-    * a `ProtectedFile` in case of success.
-
-##### `ProtectedFile` Data Class
-
-Holds the result of opening a `File` with a `ContentProtection`.
-
-*All the constructor parameters are public.*
-
-* `ProtectedFile(file: File, unprotectedFormat: Format?, fetcher: Fetcher, contentProtectionServiceFactory: ContentProtectionService.Factory?)`
-  * `file: File`
-    * Protected file to parse.
-    * In most cases, this will be set to the `file` given to `ContentProtection::open()`. But if the Content Protection technology needs to point to a different secure file, or a temporary file, this new `file` will be used to parse the `Publication`. For example, this could be used to decrypt on-the-fly a publication to a temporary location.
-  * `unprotectedFormat: Format?`
-    * Equivalent format when the file is unprotected, if there's any.
-    * This will be used to select the appropriate publication parser, for example:
-      * `LCPProtectedAudiobook` becomes `Audiobook`,
-      * but `LCPProtectedPDF` doesn't become `PDF`, because the PDF parser can't understand an LCPDF file.
-  * `fetcher: Fetcher`
-    * Primary fetcher to be used by the parser.
-    * The Content Protection can unlock resources with a custom `Fetcher`, for example by:
-      * Wrapping the leaf `fetcher` provided by the Streamer in a `TransformingFetcher` with a decryption `Resource.Transformer` function.
-      * Discarding the source leaf `fetcher` altogether and creating a new one to handle access restrictions. For example, by creating an `HTTPFetcher` that will inject a Bearer Token in requests.
-  * `contentProtectionServiceFactory: ContentProtectionService.Factory?`
-    * Factory for the publication service that will be added to the created `Publication` by the Streamer.
+### API Reference (`r2-shared`)
 
 #### `UserRights` Interface
 
@@ -256,53 +163,50 @@ Manages consumption of user rights and permissions.
 ##### Copy
 
 * `canCopy: Boolean`
-  * Returns whether the user is currently allowed to copy the content to the pasteboard.
+  * Returns whether the user is currently allowed to copy content to the pasteboard.
   * Returns `false` if the *copy* right is all consumed.
-  * Navigators and reading apps can you use this to know if the "Copy" action should be greyed out or not.
-    * *Important: This should be called every time the "Copy" action will be summoned, because the value might change.*
-* `copy(text: String, peek: Boolean = false) -> String?`
+  * Navigators and reading apps can use this to know if the "Copy" action should be greyed out or not.
+    * *Important: This should be called every time the "Copy" action will be displayed, because the value might change during runtime.*
+* `canCopy(text: String) -> Bool`
+  * Returns whether the user is allowed to copy the given `text` to the pasteboard.
+  * This is more specific than the `canCopy` property, and can return `false` if the given `text` exceeds the allowed amount of characters to copy.
+  * To be used before presenting, for example, a pop-up to share a selected portion of content.
+* `copy(text: String) -> Bool`
   * Consumes the given text with the *copy* right.
-  * Returns:
-    * `null` if the copy is forbidden, for example the *copy* right is entirely consumed.
-    * The input string, optionally truncated to the amount of allowed characters.
-  * `peek: Boolean = false`
-    * When `true`, the *copy* right is not consumed.
-    * This should be used when you need a preview of the copied content before actually validating the copy, for example for a dismissable Sharing action.
+  * Returns whether the right consumption was successful, and the caller can copy the content to the pasteboard.
 
 ##### Print
 
 * `canPrint: Boolean`
   * Returns whether the user is currently allowed to print the content.
   * Returns `false` if the *print* right is all consumed.
-  * Navigators and reading apps can you use this to know if the "Print" action should be greyed out or not.
-    * *Important: This should be called every time the "Print" action will be summoned, because the value might change.*
-* `print(pageCount: Int, peek: Boolean = false) -> Int`
+  * Navigators and reading apps can use this to know if the "Print" action should be greyed out or not.
+    * *Important: This should be called every time the "Print" action will be displayed, because the value might change during runtime.*
+* `canPrint(pageCount: Int) -> Bool`
+  * Returns whether the user is allowed to print the given amount of pages.
+  * This is more specific than the `canPrint` property, and can return `false` if the given `pageCount` exceeds the allowed amount of pages to print.
+  * To be used before attempting to launch a print job, for example.
+* `print(pageCount: Int) -> Bool`
   * Consumes the given amount of pages with the *print* right.
-  * Returns:
-    * `0` if the print is forbidden, for example the *print* right is entirely consumed.
-    * The number of pages actually authorized to be printed.
-  * `peek: Boolean = false`
-    * When `true`, the *print* right is not consumed.
-    * This should be used when you need to know in advance the number of pages that can be printed, or for example to make an attempt at printing that may fail.
+  * Returns whether the right consumption was successful, and the caller can print the pages.
 
 ##### Implementations
 
 * `UnrestrictedUserRights`
   * The default implementation used when there are no rights restrictions. Basically a "passthrough" object.
 
-#### `ContentProtectionService` Interface (implements `PublicationService`)
+#### `ContentProtectionService` Interface (implements `Publication.Service`)
 
-* Publication Service Key: `content-protection`
-
-##### Factory
-
-* `typealias ContentProtectionService.Factory = (Manifest, Fetcher) -> ContentProtectionService?`
-  * Function type used to create a `ContentProtectionService`.
+Provides information about a publication's content protection and manages user rights.
 
 ##### Properties
 
 * `isLocked: Boolean`
-  * Whether the `Publication` has an unrestricted access to its resources, and can be rendered in a Navigator.
+  * Whether the `Publication` has a restricted access to its resources, and can't be rendered in a Navigator.
+* `credentials: String?`
+  * Credentials used to unlock this `Publication`.
+  * This should be provided by the Content Protection only if reading apps are allowed to store the credentials in a secure location, to reuse them in `Streamer::open()`.
+  * It can be used to avoid asking for a password every time the user opens the publication, for example.
 * `rights: UserRights`
   * Manages consumption of user rights and permissions.
 * `name: LocalizedString?`
@@ -313,31 +217,26 @@ Manages consumption of user rights and permissions.
 
 * `isProtected: Boolean`
   * Returns whether this `Publication` is protected by a Content Protection technology.
-  * Shortcut to `(serviceForKey("content-protection") as? ContentProtectionService) != null`.
+  * Checks if there's a `ContentProtectionService` attached to the `Publication`.
 * `isLocked: Boolean`
-  * Shortcut to `(serviceForKey("content-protection") as? ContentProtectionService)?.isLocked`.
   * Fallback on `false`.
 * `rights: UserRights`
-  * Shortcut to `(serviceForKey("content-protection") as? ContentProtectionService)?.rights`.
   * Fallback on `UnrestrictedUserRights()`.
 * `protectionLocalizedName: LocalizedString?`
-  * Shortcut to `(serviceForKey("content-protection") as? ContentProtectionService)?.name`.
+  * Fallback on `null`.
 * `protectionName: String?`
-  * Shortcut to `protectionLocalizedName?.string`
+  * Gets the default translation for the protection's name.
+  * Fallback on `null`.
 
 ##### Web Service
 
 ###### `content-protection` Route
 
-* href: `/.readium/content-protection`
+* href: `/~readium/content-protection`
 * type: `application/vnd.readium.content-protection+json`
-* rel: `content-protection`
-
-Only `isProtected` is required in the response.
 
 ```json
 {
-  "isProtected": true,
   "isLocked": false,
   "name": {
     "en": "Readium LCP"
@@ -351,36 +250,133 @@ Only `isProtected` is required in the response.
 
 ###### `rights/copy` Route
 
-* href: `/.readium/rights/copy?text={text}{&peek}`
+* href: `/~readium/rights/copy{?text,peek}`
   * `text` is the percent-encoded string to copy.
-  * `peek` is `true`, `false` or missing.
-* type: `application/vnd.readium.rights.copy+json`
-* rel: `rights-copy`
+  * `peek` is `true` or `false`. When missing, it defaults to `false`.
+* type: `application/vnd.readium.rights.copy`
 
-An HTTP `403` status code is returned if the copy is forbidden.
+If `peek` is true, then it's equivalent to calling `publication.rights.canCopy(...)`: the right is not consumed.
 
-```json
-{
-  "text": "string to copy, potentially truncated"
-}
-```
+**Response**
+
+Status Code | Description
+----------- | -----------
+`200` | The copy is allowed.
+`403` | The copy is forbidden.
 
 ###### `rights/print` Route
 
-* href: `/.readium/rights/print?pageCount={pageCount}{&peek}`
+* href: `/~readium/rights/print{?pageCount,peek}`
   * `pageCount` is the number of pages to print, as a positive integer.
-  * `peek` is `true`, `false` or missing.
-* type: `application/vnd.readium.rights.print+json`
-* rel: `rights-print`
+  * `peek` is `true` or `false`. When missing, it defaults to `false`.
+* type: `application/vnd.readium.rights.print`
 
-An HTTP `403` status code is returned if the print is forbidden.
+If `peek` is true, then it's equivalent to calling `publication.rights.canPrint(...)`: the right is not consumed.
 
-```json
-{
-  "pageCount": 4
-}
-```
+**Response**
 
+Status Code | Description
+----------- | -----------
+`200` | The print is allowed.
+`403` | The print is forbidden.
+
+### API Reference (`r2-streamer`)
+
+#### `Streamer` Extensions
+
+##### `Constructor`
+
+Two new arguments are added to the constructor: `contentProtections` and `onAskCredentials`.
+
+* `contentProtections: List<ContentProtection> = []`
+  * List of `ContentProtection` used to unlock publications.
+  * Each `ContentProtection` is tested in the given order.
+* `onAskCredentials: OnAskCredentialsCallback? = DefaultOnAskCredentialsCallback`
+  * Called when a content protection wants to prompt the user for its credentials.
+  * This is used by ZIP and PDF password protections.
+  * The default implementation of this callback presents a dialog using native components when possible.
+  * `typealias OnAskCredentialsCallback = (dialog: Dialog<String>, sender: Any?, callback: (String?) -> ()) -> ()`
+    * `dialog: Dialog<String>`
+      * Description of the dialog to display to the user.
+      * The specification of `Dialog<T>` is out of scope for this proposal.
+    * `sender: Any?`
+      * Free object provided by the reading app to `Streamer::open()` as context.
+      * For example, it could be the source `Activity`/`ViewController` which would be used to present the dialog.
+    * `callback: (String?) -> ()`
+      * Closure to call once the user completes the dialog.
+      * If the given credentials are null, it means the dialog was canceled without providing any credentials.
+
+##### `Methods`
+
+There's three new parameters added to `Streamer::open()`: `askCredentials`, `credentials` and `sender`.
+
+* (async) `open(file: File, askCredentials: Boolean, credentials: String? = null, sender: Any? = null) -> Publication`
+  * `askCredentials: Boolean`
+    * Indicates whether the user can be prompted for its credentials.
+    * This should be set to `true` when you want to render a publication in a Navigator.
+    * When `false`, Content Protections are allowed to do background requests, but not to present a UI to the user.
+  * `credentials: String? = null`
+    * Credentials that Content Protections can use to attempt to unlock a publication, for example a password.
+    * Supporting string credentials is entirely optional for Content Protections, this is only provided as a convenience.
+    * The format is free-form: it can be a simple password, or a structured format such as JSON or XML.
+  * `sender: Any? = null`
+    * Free object that can be used by reading apps to give some context to the Content Protections.
+    * For example, it could be the source `Activity`/`ViewController` which would be used to present a credentials dialog.
+    * Content Protections are not supposed to use this parameter directly. Instead, it should be forwarded to the reading app if an interaction is needed.
+
+##### `Streamer.Error` Enum
+
+* `Canceled`
+  * Returned when the user canceled the parsing, for example by dismissing a credentials dialog.
+* `IncorrectCredentials`
+  * Returned when the credentials – either from the `credentials` parameter, or from an external source – are incorrect, and we can't create a locked `Publication` object, e.g. for a password-protected ZIP.
+* `Forbidden(Error?)`
+  * Returned when we're not allowed to open the `Publication` at all, for example because it expired.
+  * The Content Protection can provide a custom underlying error as an associated value.
+* `Unavailable(Error?)`
+  * Returned when the Content Protection can't open the `Publication` at the moment, for example because of a networking error.
+  * This error is generally temporary, so the operation can be retried or postponed.
+
+#### `ContentProtection` Interface
+
+Bridge between a Content Protection technology and the Streamer.
+
+Its responsibilities are to:
+
+* Unlock a publication by returning a customized `Fetcher`.
+* Create a `ContentProtectionService` publication service.
+
+##### Methods
+
+* (async) `open(file: File, fetcher: Fetcher, askCredentials: Boolean, credentials: String?, sender: Any?, onAskCredentials: OnAskCredentialsCallback?) -> ProtectedFile?`
+  * Attempts to unlock a potentially protected file.
+  * `fetcher: Fetcher`
+    * The Streamer will create a leaf `Fetcher` for the low-level file access (e.g. `ArchiveFetcher` for a ZIP archive), to avoid having each Content Protection open the `file` to check if it's protected or not.
+    * A publication might be protected in such a way that the package format can't be recognized, in which case the Content Protection will have the responsibility of creating a new leaf `Fetcher`.
+  * Returns:
+    * a `ProtectedFile` in case of success,
+    * `null` if the `file` is not protected by this technology,
+    * a `Streamer.Error` if the file can't be successfully opened.
+
+##### `ProtectedFile` Class
+
+Holds the result of opening a `File` with a `ContentProtection`.
+
+*All the constructor parameters are public.*
+
+* `ProtectedFile(file: File, fetcher: Fetcher, contentProtectionServiceFactory: ((Publication.Service.Context) -> ContentProtectionService?)?`
+  * `file: File`
+    * Protected file which will be provided to the parsers.
+    * In most cases, this will be the `file` provided to `ContentProtection::open()`, but a Content Protection might modify it in some cases:
+      * If the original file has a media type that can't be recognized by parsers, the Content Protection must return a `file` with the matching unprotected media type.
+      * If the Content Protection technology needs to redirect the Streamer to a different file. For example, this could be used to decrypt a publication to a temporary secure location.
+  * `fetcher: Fetcher`
+    * Primary leaf fetcher to be used by parsers.
+    * The Content Protection can unlock resources by modifying the `Fetcher` provided to `ContentProtection::open()`, for example by:
+      * Wrapping the given `fetcher` in a `TransformingFetcher` with a decryption `Resource.Transformer` function.
+      * Discarding the provided `fetcher` altogether and creating a new one to handle access restrictions. For example, by creating an `HTTPFetcher` which will inject a Bearer Token in requests.
+  * `contentProtectionServiceFactory: ((Publication.Service.Context) -> ContentProtectionService?)?`
+    * Factory for the Content Protection Publication Service that will be added to the created `Publication` by the Streamer.
 
 ### Extensibility for Third-Party Protections
 
@@ -388,7 +384,7 @@ While the presented protection features are only limited to the ones used by Rea
 
 #### Publication-Scoped Extensions
 
-`ContentProtectionService` is a place of choice for extensibility, because it is tied to and stored in the `Publication` object. You can add any extra features and, optionally, expose them as *publication helpers*.
+`ContentProtectionService` is a place of choice for extensibility, because it is attached to the `Publication` object. You can add any extra features and, optionally, expose them as *publication helpers*.
 
 Here's an example of how to expose the license of the LCP DRM inside the `Publication`:
 
@@ -402,7 +398,7 @@ class LCPContentProtectionService: ContentProtectionService {
 extension Publication {
 
     var lcpLicense: LCPLicense? {
-        (serviceForKey(ContentProtectionServiceKey) as? LCPContentProtectionService)?.license
+        findService(ContentProtectionService.self)?.license
     }
 
 }
@@ -413,21 +409,20 @@ publication.lcpLicense?.renew()
 
 #### Globally-Scoped Extensions
 
-You can also add global features in your implementation of the `ContentProtection` interface. This class is instanciated by reading apps, so you have full control on the exposed API.
+You can also add global features in your implementation of the `ContentProtection` interface. This class is instanciated by reading apps, so you have full control over the exposed API.
 
-A common use case would be to require the reading app to implement a custom interface to ask the user for the credentials when requested, here's an LCP example:
+A common use case would be to require the reading app to implement a custom callback interface to ask the user for the credentials when requested. Here's an example with LCP:
 
-```swift
-protocol LCPAuthenticating {
-    func requestPassphrase(for license: LCPAuthenticatedLicense) -> Future<String?>
+```typescript
+interface LCPAuthenticating {
+    requestPassphrase(license: LCPAuthenticatedLicense): String?
 }
 
-class LCPContentProtection: ContentProtection {
+class LCPContentProtection extends ContentProtection {
+    authentication: LCPAuthenticating
 
-    private let authentication: LCPAuthenticating
-
-    init(authentication: LCPAuthenticating) {
-        self.authentication = authentication
+    constructor(authentication: LCPAuthenticating) {
+        this.authentication = authentication
     }
 }
 ```
@@ -437,21 +432,19 @@ class LCPContentProtection: ContentProtection {
 
 ### Unlocking is Only Done During Parsing
 
-Compared to the current implementation, a `Publication` is opened either unlocked, or locked. There's no way to unlock an existing `Publication` without reparsing it. The reason for this choice is to simplify the code in reading apps, and we usually don't need to unlock a `Publication` after it's opened:
+Compared to the current implementation, a `Publication` is opened either unlocked, or locked. There's no way to unlock an existing `Publication` without reparsing it. The reasons for this choice are:
 
-* Importing a publication usually requires *not* to ask the user for credentials, so it can stay unlocked.
-* Rendering a publication requires it to be unlocked during parsing.
+* to simplify the code in reading apps,
+* to make sure the Streamer has access to all the resources it needs during parsing,
+* we usually don't need to unlock a `Publication` after it's opened:
+  * importing a publication usually requires *not* to ask the user for credentials, so it can stay unlocked
+  * rendering a publication requires it to be unlocked during parsing
 
 ### Peripheral Features
 
 Peripheral features were initially considered to be integrated in a DRM-agnostic interface: displaying rights information, renewing loans, etc. However, it was guided by the LCP specification, and it became clear that it wouldn't really be agnostic.
 
 For example, LCP is limiting copy by a character count. But a DRM could restrict word count, or number of copies. Therefore, it's not easy to display localized information about the remaining *copy* right available.
-
-
-## Drawbacks and Limitations
-
-Why should we *not* do this? Are there any unresolved questions?
 
 
 ## Future Possibilities
