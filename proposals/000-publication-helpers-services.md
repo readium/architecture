@@ -424,6 +424,8 @@ This is an overview of the helpers implemented natively by the Readium toolkit.
   * The URL where this publication is served, computed from the `Link` with `self` relation.
   * Used to resolve relative HREFs.
   * e.g. `https://provider.com/pub1293/manifest.json` gives `https://provider.com/pub1293/`
+* `jsonManifest: String`
+  * Returns the RWPM JSON representation for this `Publication`'s manifest, as a string.
 * `linkWithHREF(String) -> Link?`
   * Finds the first link with the given HREF in the publication's links.
   * Searches through (in order) `readingOrder`, `resources` and `links`, following recursively `alternates` and `children`.
