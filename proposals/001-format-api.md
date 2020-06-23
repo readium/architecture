@@ -2,6 +2,9 @@
 
 * Authors: [Mickaël Menu](https://github.com/mickael-menu), [Quentin Gliosca](https://github.com/qnga)
 * Review PR: [#127](https://github.com/readium/architecture/pull/127)
+* Implementation PRs:
+  * Swift: testapp [#325](https://github.com/readium/r2-testapp-swift/pull/325), shared [#88](https://github.com/readium/r2-shared-swift/pull/88), streamer [#159](https://github.com/readium/r2-streamer-swift/pull/159), opds [#67](https://github.com/readium/r2-opds-swift/pull/67), lcp [#83](https://github.com/readium/r2-lcp-swift/pull/83)
+  * Kotlin: testapp [#313](https://github.com/readium/r2-testapp-kotlin/pull/313) [#314](https://github.com/readium/r2-testapp-kotlin/pull/314), shared [#99](https://github.com/readium/r2-shared-kotlin/pull/99) [#100](https://github.com/readium/r2-shared-kotlin/pull/100), streamer [#101](https://github.com/readium/r2-streamer-kotlin/pull/101) streamer [#104](https://github.com/readium/r2-streamer-kotlin/pull/104)
 * Related Issues:
   * [Model for the Publication's format/type (architecture/112)](https://github.com/readium/architecture/issues/112)
   * [Media types of Readium publications (architecture/121)](https://github.com/readium/architecture/issues/121)
@@ -241,7 +244,7 @@ Computed properties for convenience. More can be added as needed.
   * Returns whether this media type is of an audio clip.
   * Used to determine if a RWPM is an Audiobook publication.
 * `isRWPM: Boolean`
-  * Returns whether this media type is a Readium Web Publication Manifest, so contained by `AudiobookManifest`, `DiViNaManifest` or `WebPubManifest`.
+  * Returns whether this media type is a Readium Web Publication Manifest, so contained by `DiViNaManifest`, `ReadiumAudiobookManifest` or `ReadiumWebPubManifest`.
 * `isLCPProtected: Boolean`
   * Returns whether this media type is of a package protected with LCP.
 
@@ -260,8 +263,6 @@ Constant | Media Type
 `AAC` | audio/aac
 `ACSM` | application/vnd.adobe.adept+xml
 `AIFF` | audio/aiff
-`Audiobook` | application/audiobook+zip
-`AudiobookManifest` | application/audiobook+json
 `AVI` | video/x-msvideo
 `Binary` | application/octet-stream
 `BMP` | image/bmp
@@ -294,6 +295,10 @@ Constant | Media Type
 `OTF` | font/otf
 `PDF` | application/pdf
 `PNG` | image/png
+`ReadiumAudiobook` | application/audiobook+zip
+`ReadiumAudiobookManifest` | application/audiobook+json
+`ReadiumWebPub` | application/webpub+zip
+`ReadiumWebPubManifest` | application/webpub+json
 `SVG` | image/svg+xml
 `Text` | text/plain
 `TIFF` | image/tiff
@@ -303,8 +308,6 @@ Constant | Media Type
 `WebMAudio` | audio/webm
 `WebMVideo` | video/webm
 `WebP` | image/webp
-`WebPub` | application/webpub+zip
-`WebPubManifest` | application/webpub+json
 `WOFF` | font/woff
 `WOFF2` | font/woff2
 `XHTML` | application/xhtml+xml
@@ -345,12 +348,12 @@ Represents a known file format, uniquely identified by a media type.
   * (optional) `sniffers: List<Sniffer> = Format.sniffers`
     * List of content sniffers used to determine the format.
     * A reading app can support additional formats by giving `Format.sniffers + [customSniffer]`.
-* (static) `of(file: String, mediaTypes: List<String> = [], fileExtensions: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
+* (static) `ofFile(file: String, mediaTypes: List<String> = [], fileExtensions: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
   * Resolves a format from a local file path.
   * **Warning:** This API should never be called from the UI thread. An assertion will check this.
   * `file: String`
     * Absolute path to the file.
-* (static) `of(bytes: () -> ByteArray, mediaTypes: List<String> = [], fileExtensions: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
+* (static) `ofBytes(bytes: () -> ByteArray, mediaTypes: List<String> = [], fileExtensions: List<String> = [], sniffers: List<Sniffer> = Format.sniffers) -> Format?`
   * Resolves a format from bytes, e.g. from an HTTP response.
   * **Warning:** This API should never be called from the UI thread. An assertion will check this.
   * `bytes: () -> ByteArray`
@@ -368,8 +371,6 @@ Reading apps are welcome to extend the static constants with additional formats.
 
 Constant | Name | Extension | Media Type
 -------- | ---- | --------- | ----------
-`Audiobook` | Audiobook | audiobook | application/audiobook+zip
-`AudiobookManifest` | Audiobook | json | application/audiobook+json
 `BMP` | BMP | bmp | image/bmp
 `CBZ` | Comic Book Archive | cbz | application/vnd.comicbook+zip
 `DiViNa` | Digital Visual Narratives | divina | application/divina+zip
@@ -389,11 +390,13 @@ Constant | Name | Extension | Media Type
 `OPDSAuthentication` | OPDS Authentication Document | json | application/opds-authentication+json
 `PDF` | PDF | pdf | application/pdf
 `PNG` | PNG | png | image/png
+`ReadiumAudiobook` | Readium Audiobook | audiobook | application/audiobook+zip
+`ReadiumAudiobookManifest` | Readium Audiobook | json | application/audiobook+json
+`ReadiumWebPub` | Readium Web Publication | webpub | application/webpub+zip
+`ReadiumWebPubManifest` | Readium Web Publication | json | application/webpub+json
 `TIFF` | TIFF | tiff | image/tiff
-`W3CWPUBManifest` | Web Publication | json | (*non-existent*) application/x.readium.w3c.wpub+json
+`W3CWPUBManifest` | W3C Web Publication | json | (*non-existent*) application/x.readium.w3c.wpub+json
 `WebP` | WebP | webp | image/webp
-`WebPub` | Web Publication | webpub | application/webpub+zip
-`WebPubManifest` | Web Publication | json | application/webpub+json
 `ZAB` | Zipped Audio Book | zab | (*non-existent*) application/x.readium.zab+zip
 
 ### `Format.Sniffer` Function Type
