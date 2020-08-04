@@ -103,20 +103,16 @@ You can customize the parsed `Publication` object by modifying:
 * the root `Fetcher`, to fine-tune access to resources
 * the list of attached Publication Services
 
-The Streamer accepts a number of callback functions which will be called just before creating the `Publication` object.
+The Streamer accepts a `Publication.Builder.Transform` function which will be called just before creating the `Publication` object.
 
 ```kotlin
 streamer = Streamer(
-    onCreateFetcher = { file, manifest, fetcher ->
+    onCreatePublication = { format, manifest, fetcher, services ->
         // Minifies the HTML resources in an EPUB.
-        if (file.format == Format.EPUB) {
+        if (format == Format.EPUB) {
             fetcher = TransformingFetcher(fetcher, minifyHTML)
         }
 
-        return fetcher
-    },
-
-    onCreateServices = { file, manifest, services ->
         // Wraps the default PositionsService to cache its result in a
         // persistent storage, to improve performances.
         services.wrap(PositionsService::class) { oldFactory ->
@@ -124,8 +120,8 @@ streamer = Streamer(
         }
 
         // Sets a custom SearchService implementation for EPUB.
-        is (file.format == Format.EPUB) {
-            services.search = EPUBSearchService.create
+        is (format == Format.EPUB) {
+            services.searchServiceFactory = EPUBSearchService.create
         }
     }
 )
@@ -154,12 +150,12 @@ The Readium Architecture is opened to support additional publication formats.
 ```swift
 class CustomParser: PublicationParser {
 
-    func parse(file: File, fetcher: Fetcher) -> PublicationBuilder? {
+    func parse(file: File, fetcher: Fetcher, fallbackTitle: String, warnings: WarningLogger?) -> Publication.Builder? {
         if (file.format != Format.MyCustomFormat) {
             return null
         }
 
-        return PublicationBuilder(
+        return Publication.Builder(
             manifest = parseManifest(file, delegate),
             fetcher = fetcher
             services = [CustomPositionsServiceFactory]
@@ -192,19 +188,23 @@ Used to cache the `Format` to avoid computing it at different locations.
 
 #### Constructors
 
-* `File(path: String, mediaType: String? = null)`
+* `File(path: String, sourceURL: URL? = null, mediaType: String? = null)`
   * Creates a `File` from a `path` and its known `mediaType`.
   * `path: String`
     * Absolute path to the file or directory.
+  * `sourceURL: URL? = null`
+    * If the file was downloaded from a remote source, set it with `sourceURL` to give more context.
   * `mediaType: String? = null`
     * If the file's media type is already known, providing it will improve performances.
-* `File(path: String, format: Format)`
+* `File(path: String, sourceURL: URL? = null, format: Format)`
   * Creates a `File` from a `path` and an already resolved `format`.
 
 #### Properties
 
 * `path: String`
   * Absolute path on the file system.
+* `sourceURL: URL?`
+  * Remote source URL from which this file was downloaded, if relevant.
 * `name: String`
   * Last path component, or filename.
 * (lazy) `format: Format?`
@@ -214,6 +214,24 @@ Used to cache the `Format` to avoid computing it at different locations.
   * Whether the path points to a directory.
   * This can be used to open exploded publication archives.
   * **Warning:** This should not be called from the UI thread.
+
+### `Publication.OpeningError` Enum
+
+Errors occurring while opening a Publication.
+
+* `UnsupportedFormat`
+  * The file format could not be recognized by any parser.
+* `NotFound`
+  * The publication file was not found on the file system.
+* `ParsingFailed(Error)`
+  * The publication parser failed with the given underlying error.
+* `Forbidden(Error?)`
+  * We're not allowed to open the publication at all, for example because it expired.
+* `Unavailable(Error?)`
+  * The publication can't be opened at the moment, for example because of a networking error.
+  * This error is generally temporary, so the operation may be retried or postponed.
+* `IncorrectCredentials`
+  * The provided credentials are incorrect and we can't open the publication in a `restricted` state (e.g. for a password-protected ZIP).
 
 ### `Publication.ServicesBuilder` Class
 
@@ -248,9 +266,6 @@ Each publication service should define helpers on `Publication.ServicesBuilder` 
   * Removes any service factory associated with the given service type.
 * `wrap(serviceType: Publication.Service::class, transform: (Publication.Service.Factory?) -> Publication.Service.Factory)`
   * Replaces the service factory associated with the given service type with the result of `transform`.
-* `copy() -> Publication.ServicesBuilder`
-  * Copy the services builder.
-  * A `Publication` must copy its internal services builder and keep it private to prevent other components from modifying it.
 
 ### `WarningLogger` Interface
 
@@ -292,21 +307,33 @@ Implementation of `WarningLogger` which accumulates the warnings in a list, to b
 
 ## Reference Guide (`r2-streamer`)
 
-### `PublicationBuilder` Class
+### `Publication.Builder` Class
 
 Builds a `Publication` from its components.
 
-A `Publication`'s construction is distributed over the Streamer and its parsers, so a builder is useful to pass the parts around.
+A `Publication`'s construction is distributed over the Streamer and its parsers, so a builder is useful to pass the parts around before actually building it.
 
 #### Constructors
 
-* `PublicationBuilder(manifest: Manifest, fetcher: Fetcher, servicesBuilder: Publication.ServicesBuilder)`
+* `Publication.Builder(manifest: Manifest, fetcher: Fetcher, servicesBuilder: Publication.ServicesBuilder)`
   * Each parameter is exposed as a mutable public property.
 
 #### Methods
 
 * `build() -> Publication`
   * Builds the `Publication` object from its parts.
+* `apply(transform: Publication.Builder.Transform) -> Void`
+  * Modifies the components using the given `transform`.
+
+#### `Publication.Builder.Transform` Function Type
+
+```kotlin
+typealias Transform = (format: Format, manifest: *Manifest, fetcher: *Fetcher, services: *Publication.ServicesBuilder) -> Void
+```
+
+Transform which can be used to modify a `Publication`'s components before building it. For example, to add Publication Services or wrap the root Fetcher.
+
+The signature depends on the capabilities of the platform: `manifest`, `fetcher` and `services` should be modifiable "in place", hence the pseudo-pointers types.
 
 ### `PublicationParser` Interface
 
@@ -314,8 +341,8 @@ Parses a `Publication` from a file.
 
 #### Methods
 
-* `parse(file: File, fetcher: Fetcher, fallbackTitle: String = file.name, warnings: WarningLogger? = null) -> Future<PublicationBuilder?>`
-  * Constructs a `PublicationBuilder` to build a `Publication` from a publication file.
+* `parse(file: File, fetcher: Fetcher, fallbackTitle: String, warnings: WarningLogger?) -> Publication.Builder?`
+  * Constructs a `Publication.Builder` to build a `Publication` from a publication file.
   * Returns `null` if the file format is not supported by this parser, or throws a localized error if the parsing fails.
   * `file: File`
     * Path to the publication file.
@@ -324,11 +351,11 @@ Parses a `Publication` from a file.
     * This can be used to:
       * support content protection technologies
       * parse exploded archives or in archiving formats unknown to the parser, e.g. RAR
-    * If the file is not an archive, it will be reachable at the HREF `/publication.<file.format.fileExtension>`, e.g. with a PDF.
-  * `fallbackTitle: String = file.name`
+    * If the file is not an archive, it will be reachable at the HREF `/<file.name>`, e.g. with a PDF.
+  * `fallbackTitle: String`
     * The `Publication`'s `title` is mandatory, but some formats might not have a way of declaring a title (e.g. CBZ). In which case, `fallbackTitle` will be used.
     * The default implementation uses the filename as the fallback title.
-  * `warnings: WarningLogger? = null`
+  * `warnings: WarningLogger?`
     * Logger used to broadcast non-fatal parsing warnings.
     * Can be used to report publication authoring mistakes, to warn users of potential rendering issues or help authors debug their publications.
 
@@ -359,20 +386,16 @@ Opens a `Publication` using a list of parsers.
   * `openPDF: PDFDocument.Factory? = default`
     * Parses a PDF document, optionally protected by password.
     * The default implementation uses native APIs when available.
-  * `onCreateManifest: (File, Manifest) -> Manifest = { f, m -> m }`
-    * Called before creating the `Publication`, to modify the parsed `Manifest` if desired.
-  * `onCreateFetcher: (File, Manifest, Fetcher) -> Fetcher = { f, m, fetcher -> fetcher }`
-    * Called before creating the `Publication`, to modify its root fetcher.
-  * `onCreateServices: (File, Manifest, Publication.ServicesBuilder) -> Void = { f, m, sb -> }`
-    * Called before creating the `Publication`, to modify its list of service factories.
+  * `onCreatePublication: Publication.Builder.Transform? = null`
+    * Transformation which will be applied on every parsed `Publication.Builder`. It can be used to modify the `Manifest`, the root `Fetcher` or the list of service factories of a `Publication`.
 
 The specification of `HTTPClient`, `Archive`, `XMLDocument` and `PDFDocument` is out of scope for this proposal.
 
 #### Methods
 
-* `open(file: File, fallbackTitle: String = file.name, warnings: WarningLogger? = null) -> Future<Publication?>`
+* `open(file: File, fallbackTitle: String = file.name, warnings: WarningLogger? = null) -> Future<Publication?, Publication.OpeningError>`
   * Parses a `Publication` from the given `file`.
-  * Returns `null` if the file was not recognized by any parser, or a `Streamer.Error` in case of failure.
+  * Returns `null` if the file was not recognized by any parser, or a `Publication.OpeningError` in case of failure.
   * `fallbackTitle: String = file.name`
     * The `Publication`'s `title` is mandatory, but some formats might not have a way of declaring a title (e.g. CBZ). In which case, `fallbackTitle` will be used.
     * The default implementation uses the filename as the fallback title.
@@ -380,16 +403,11 @@ The specification of `HTTPClient`, `Archive`, `XMLDocument` and `PDFDocument` is
     * Logger used to broadcast non-fatal parsing warnings.
     * Can be used to report publication authoring mistakes, to warn users of potential rendering issues or help authors debug their publications.
 
-#### `Streamer.Error` Enum
-
-* `ParsingFailed(Error)`
-  * Returned when the parsing failed with the given underlying error.
-
 ### `PublicationParser` Implementations
 
 These default parser implementations are provided by the Streamer out of the box. The following is not meant to be a full parsing specification for each format, only a set of guidelines.
 
-#### `WebPubParser` Class
+#### `ReadiumWebPubParser` Class
 
 Parses a `Publication` from a Readium Web Publication or one of its profiles: Audiobook, DiViNa and LCPDF.
 
