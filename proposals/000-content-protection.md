@@ -323,7 +323,7 @@ Two new arguments are added to the constructor: `contentProtections` and `onAskC
 
 There's three new parameters added to `Streamer::open()`: `allowUserInteraction`, `credentials`, and `sender`.
 
-* (async) `open(file: File, allowUserInteraction: Boolean, fallbackTitle: String? = null, credentials: String? = null, sender: Any? = null, warnings: WarningLogger? = null) -> Publication`
+* (async) `open(file: File, allowUserInteraction: Boolean, credentials: String? = null, sender: Any? = null, warnings: WarningLogger? = null) -> Publication`
   * `allowUserInteraction: Boolean`
     * Indicates whether the user can be prompted during opening, for example to ask their credentials.
     * This should be set to `true` when you want to render a publication in a Navigator.
