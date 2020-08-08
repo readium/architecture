@@ -158,8 +158,4 @@ It is constructed from a group of objects with clear responsibilities:
 
 * `get(link: Link) -> Resource`
   * Returns the resource targeted by the given link.
-  * The `link.href` property is searched for using the helper `linkWithHREF()` to find the matching manifest `Link`. This ensures that the `Link` given to the `Fetcher` contains all the properties declared in the manifest.
   * Attempts to find a `Publication.Service` returning a `Resource` for this `Link`, or falls back on `fetcher.get()`.
-* `get(href: String) -> Resource`
-  * Returns the resource at the given HREF.
-  * Equivalent to `get(Link(href: href)))`.
