@@ -22,3 +22,7 @@ This API is not tied to `Publication`, so it can be used as a general purpose to
 ### [002 – Composite Fetcher API](002-composite-fetcher-api.md)
 
 The goal of this proposal is to make the fetcher more flexible using a [composite design pattern](https://en.wikipedia.org/wiki/Composite_pattern). We will introduce several `Fetcher` implementations to answer different needs, such as resource transformation and caching.
+
+### [003 – Publication Encapsulation](003-publication-encapsulation.md)
+
+We can make the Readium toolkit simpler and safer to use by exposing a single encapsulated `Publication`, encompassing resources access and services.
