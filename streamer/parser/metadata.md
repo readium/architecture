@@ -6,38 +6,43 @@ While the default context is very flexible in the way each metadata can be repre
 
 Related Repository: [Readium Web Publication Manifest](https://github.com/readium/webpub-manifest)
 
+## Localized Strings
+
+In many cases, the default context supports alternate representations of the same string in different scripts and languages by means of JSON-LD language maps.
+To fill such a map from an EPUB metadata element, proceed as follows:
+
+* Determine the language used in the content of the carrying element as defined in [the XML specification](https://www.w3.org/TR/xml/#sec-lang-tag),
+  i.e. check whether the carrying element has or inherits an `xml:lang` attribute.
+* In the EPUB 3.x case, check if the element is refined by some `meta` elements that have or inherit an `xml:lang` attribute and whose property is `alternate-script`.
+  For each one, add to the map the corresponding language associated with the content of the `meta` element.
+* When no language hint is available, use `null` or `und` depending on the platform.
+
+## Sorting keys
+
+Localized sorting keys are supported in RWPM for publication title, contributor/collection' names and subject' names. While computing the localized string, use the language of the carrying element as defined in [the XML specification](https://www.w3.org/TR/xml/#sec-lang-tag) and fallback to `null` or `und`.
+
+
 ## Title
 
-The `title` of a publication is an object where each key is a BCP 47 language tag and each value of this key is a string.
-
-In addition to `title`, a publication may also contain a `sortAs` string, used to sort the title as well.
+The `title` and `sortAs` keys of a publication are objects where each key is a BCP 47 language tag and each value of this key is a string.
 
 When parsing an EPUB, we need to establish:
 
 * which title is the primary one
-* the language(s) used to express the primary title along with the associated strings
-* the string used to sort the title of the publication
-* the subtitle of the publication
-* the default language for metadata
+* a language map of the representations of the title
+* a language map of strings used to sort the title of the publication
+* which title is the subtitle
+* a language map of the representations of the subtitle
 
 ### EPUB 2.x
 
 The first `<dc:title>` element should be considered the primary one.
 
-To determine the language of the `title` element, check:
+Parse it as a [localized string](#localized-strings) to compute a language map.
 
-1. if it has an `xml:lang` attribute;
-2. if it shares an `xml:lang` attribute (i.e. it is present on the `package` element);
-3. the primary language of the publication.
-
-The string for `sortAs` is the value of `content` in a `meta` whose `name` is `calibre:title_sort` and `content` is the value to use.
+The value of sorting key of the publication is given by the `content` attribute in a `meta` whose `name` is `calibre:title_sort`.
 
 The subtitle can’t be expressed.
-
-To determine the default language for metadata, check:
-
-1. if the `package` has an `xml:lang` attribute;
-2. the primary language of the publication.
 
 ### EPUB 3.x
 
@@ -46,20 +51,12 @@ The primary `title` is defined using the following logic:
 1. it is the `<dc:title>` element whose `title-type` (refine) is `main`;
 2. if there is no such refine, it is the first `<dc:title>` element. 
 
-To determine the language of the `title` element, check
+Parse it as a [localized string](#localized-strings) to compute a language map.
 
-1. if it has an `xml:lang` attribute;
-2. if it shares an `xml:lang` attribute (i.e. it is present on the `package` element);
-3. the primary language of the publication.
+The sorting key of the publication is carried by the main title’s refine whose `property` is `file-as`. If there is none, fallback to the EPUB 2.x case.
 
-The string used to sort the `title` of the publication is the value of the main title’s refine whose `property` is `file-as`.
-
-The subtitle of the publication is the value of the `<dc:title>` element whose `title-type` (refine) is `subtitle`. In case there are several, check their `display-seq` (refine).
-
-To determine the default language for metadata, check:
-
-1. if the `package` has an `xml:lang` attribute;
-2. the primary language of the publication.
+The subtitle is the value of the `<dc:title>` element whose `title-type` (refine) is `subtitle`. In case there are several, use the one with the lowest `display-seq` (refine).
+Parse it as a [localized string](#localized-strings) to compute a language map.
 
 ## Identifier
 
@@ -104,61 +101,64 @@ The valid URI is the result of this second step e.g. `urn:isbn:123456789X`.
 
 The contributor’s key depend on the role of the creator or contributor. It is an object that contains a `name`, a `sortAs` and an `identifier` key.
 
-The `name` of each `contributor` is an object where each key is a BCP 47 language tag and each value of the key is a string.
+The `name` and `sortAs` keys of each `contributor` are objects where each key is a BCP 47 language tag and each value of the key is a string.
 
-The contributor object may also contain a `sortAs` string, used to sort the contributor as well, and an `identifier` string that must be a valid URI.
+The contributor object may also contain an `identifier` string that must be a valid URI.
 
 When parsing an EPUB, we need to establish:
 
 * the key of the contributor;
-* the name of this contributor;
-* the alternate forms for this name;
-* the string used to sort the name of the contributor.
+* a language map for the name of this contributor;
+* a language map used to sort the name of the contributor.
 
 ### EPUB 2.x
 
 The following mapping should be used to determine the key of the contributor’s object: 
 
-| element        | opf:role               | key         |
-|----------------|------------------------|-------------|
-| dc:creator     | aut                    | author      |
-| dc:contributor | trl                    | translator  |
-| dc:contributor | est                    | editor      |
-| dc:contributor | ill                    | illustrator |
-| dc:contributor | art                    | artist      |
-| dc:contributor | clr                    | colorist    |
-| dc:contributor | nrt                    | narrator    |
-| dc:contributor | \<empty\> or \<other\> | contributor |
+| element                      | opf:role                 | key         |
+|------------------------------|--------------------------|-------------|
+| dc:creator                   | \<empty\> or \<unknown\> | author      |
+| dc:contributor               | \<empty\> or \<unknown\> | contributor |
+| dc:creator or dc:contributor | aut                      | author      |
+| dc:creator or dc:contributor | pbl                      | publisher   |
+| dc:creator or dc:contributor | trl                      | translator  |
+| dc:creator or dc:contributor | edt                      | editor      |
+| dc:creator or dc:contributor | ill                      | illustrator |
+| dc:creator or dc:contributor | art                      | artist      |
+| dc:creator or dc:contributor | clr                      | colorist    |
+| dc:creator or dc:contributor | nrt                      | narrator    |
+| dc:publisher                 | N/A                      | publisher   |
 
 Where `opf:role` is the value of the attribute of the `<dc:element>`.
 
-The `name` of the contributor is the value of the element.
+Parse the carrying element as a [localized string](#localized-strings) to compute a language map for the contributor’s name.
 
-Finally, the string used to sort the name of the contributor is the value of the `opf:file-as` attribute of this element.
+Finally, the string used to sort the name of the contributor is provided by the value of the `opf:file-as` attribute of this element.
 
 ### EPUB 3.x
 
-The following mapping should be used to determine to key of the contributor’s object: 
+The following mapping should be used to determine to key of the contributor’s object:
 
-| element        | role                   | key         |
-|----------------|------------------------|-------------|
-| dc:creator     | aut                    | author      |
-| dc:contributor | trl                    | translator  |
-| dc:contributor | est                    | editor      |
-| dc:contributor | ill                    | illustrator |
-| dc:contributor | art                    | artist      |
-| dc:contributor | clr                    | colorist    |
-| dc:contributor | nrt                    | narrator    |
-| dc:contributor | \<empty\> or \<other\> | contributor |
+| element                      | role                     | key         |
+|------------------------------|--------------------------|-------------|
+| dc:creator                   | \<empty\> or \<unknown\> | author      |
+| dc:contributor               | \<empty\> or \<unknown\> | contributor |
+| dc:creator or dc:contributor | aut                      | author      |
+| dc:creator or dc:contributor | pbl                      | publisher   |
+| dc:creator or dc:contributor | trl                      | translator  |
+| dc:creator or dc:contributor | edt                      | editor      |
+| dc:creator or dc:contributor | ill                      | illustrator |
+| dc:creator or dc:contributor | art                      | artist      |
+| dc:creator or dc:contributor | clr                      | colorist    |
+| dc:creator or dc:contributor | nrt                      | narrator    |
+| dc:publisher                 | N/A                      | publisher   |
+| media:narrator               | N/A                      | narrator    |
 
 Where `role` is the value of the refine whose `scheme` is a value of `marc:relators`.
 
-To handle the `name` of the contributor:
+Parse the `contributor` element as a [localized string](#localized-strings) to compute a language map for the contributor’s name.
 
-1. check if there is a refine whose propery is `alternate-script` and its corresponding `xml:lang` value;
-2. if there is none, use the value of the `<dc:element>`.
-
-Finally, the string used to sort the name of the contributor is the value of a refine with a `file-as` property.
+Finally, the string used to sort the name of the contributor is carried by the contributor's refine whose property is `file-as`.
 
 ## Language
 
@@ -187,12 +187,6 @@ The `description` of a publication is a key whose value is a string in plain tex
 
 The string is the value of the `<dc:description>` element.
 
-## Publisher
-
-The `publisher` of a publication is a key whose value is a string.
-
-The string is the value of the `<dc:publisher>` element.
-
 ## Publication Date
 
 The `published` date of a publication is a key whose value is a string conforming to ISO 8601.
@@ -219,16 +213,24 @@ The string is the value of the `meta` element whose `property` attribute has the
 
 ## Subjects
 
-The `subject` of a publication is a key whose value is string or an array.
+The `subject` of a publication is a key whose value is, in the most complex form, an array of `subject` objects.
 
 Although each subject should have its own `<dc:subject>` element, this is not necessarily the case in practice, authors and authoring tools often separating multiple subjects using commas or semicolons in the same element.
+So, if there is a single `dc:subject` that is not refined by any property, split its content at every comma and semicolon and consider you have several `dc:subject` with shared attributes.
 
-To retrive the value of the `subject` key:
+Parse each `<dc:subject>` element as a [localized string](#localized-strings) to compute a language map for the subject’s `name`.
 
-1. if there is a one single `<dc:subject>` element, make sure keywords are not separated using commas or semicolons;
-    1. if it doesn’t, the string is the value;
-    2. if it does, split the string to build an array;
-2. if there are more than one `<dc:subject>` elements, build an array using their values.
+### EPUB 2.x
+
+`sortAs`, `code` and `scheme` cannot be expressed.
+
+### EPUB 3.x
+
+The `sortAs` string used to sort the subject is the value of the refine whose `property` has the value of `file-as`.
+
+The `code` property has the same value as the refine whose `property` has the value of `term`.
+
+The `scheme` property has the same value as the refine whose `property` has the value of `authority`.
 
 ## Collections and Series
 
@@ -268,6 +270,8 @@ The `sortAs` string used to sort the name is the value of the refine whose `prop
 The `identifier` string is the value of the refine whose `property` has the value of `dcterms:identifier`.
 
 The `position` of the publication is the value of the refine whose `property` has the value of `group-position`.
+
+If there is no `series`, try to parse `calibre:series` as in the EPUB 2.x case.
 
 ## Progression Direction
 
