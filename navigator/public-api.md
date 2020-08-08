@@ -7,7 +7,7 @@ Note that each platform should adapt the API names to follow the target language
 ## References:
 
 - [Initial working document with comments](https://docs.google.com/document/d/1xqx_WJ28OAHAHODrMKZBj0wV1dcqM4420yBXVjZVx8w)
-- [Locator Best Practices](https://github.com/readium/architecture/tree/master/locators/best-practices)
+- [Locator Best Practices](https://github.com/readium/architecture/blob/master/models/locators/best-practices)
 
 
 ## Navigator Concerns
@@ -38,19 +38,19 @@ Each implementation can have additional APIs to cater to specific needs of the p
 
 ### Navigation APIs
 
-Please refer to the [Locator Best Practices](https://github.com/readium/architecture/tree/master/locators/best-practices) document to know how to create the `Locators`.
+Please refer to the [Locator Best Practices](https://github.com/readium/architecture/blob/master/models/locators/best-practices) document to know how to create the `Locators`.
 
 #### Events
 
 - **locationChanged**(location: `Locator`)
   - Called every time the current location changes.
 The host app should save the last read position here (probably in their own `Publication` persistence model, to provide additional feedback in the library, such as percentage of progression and current page)
-The associated `Locator` is of type [progression](https://github.com/readium/architecture/tree/master/locators/best-practices), so with a limited context.
+The associated `Locator` is of type [progression](https://github.com/readium/architecture/blob/master/models/locators/best-practices/format.md), so with a limited context.
 
 #### Properties
 
 - **currentLocation**: `Locator`
-  - Returns the most complete `Locator` for the current position in the document. It can be used to store a [bookmark](https://github.com/readium/architecture/tree/master/locators/best-practices), therefore, the more context we have, the better.
+  - Returns the most complete `Locator` for the current position in the document. It can be used to store a [bookmark](https://github.com/readium/architecture/blob/master/models/locators/best-practices/format.md), therefore, the more context we have, the better.
 
 #### Methods
 
