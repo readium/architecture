@@ -26,3 +26,10 @@ The goal of this proposal is to make the fetcher more flexible using a [composit
 ### [003 – Publication Encapsulation](003-publication-encapsulation.md)
 
 We can make the Readium toolkit simpler and safer to use by exposing a single encapsulated `Publication`, encompassing resources access and services.
+
+### [004 – Publication Helpers and Services](004-publication-helpers-services.md)
+
+Our goal is to improve extensibility and customizability of the `Publication` type for reading apps. To achieve that, this proposal introduces two structured ways to extend a `Publication` with additional features: *helpers* and *services*.
+
+* **Helpers are *internal* extensions**. They have a single implementation which is statically defined in the shared models.
+* **Services are *external* extensions**. Other Readium components provide implementations, which are swappable and injected dynamically into the `Publication` object

@@ -57,32 +57,15 @@ extension Array where Element == Link {
 ```kotlin
 // Kotlin
 val List<Link>.allAreAudio: Boolean get() = all {
-    it.mediaType?.isAudio ?: false
+    it.mediaType?.isAudio == true
 }
 ```
 
 ```javascript
 // JavaScript
-LinkArray.prototype.allAreAudio() = function() {
+LinkArray.prototype.everyAreAudio() = function() {
   return this.every(link => link.mediaType.isAudio())
 };
-```
-
-#### Memoization
-
-A *helper* could perform an expensive computation that might be called repeatedly. In which case, you can improve performances by storing the lazy-loaded result in a cache using `Publication::cache()`. Caching is only available for helpers on the `Publication` type, not for other models.
-
-```swift
-extension Publication {
-
-    // https://github.com/kobolabs/epub-spec#image-based-fxl-reader
-    var isImageBasedFXL: Bool {
-        cache("isImageBasedFXL") {
-            // Perform heavy computation...
-        }
-    }
-
-}
 ```
 
 ### Publication Services
@@ -98,21 +81,20 @@ Publication services are a point of customizability for reading apps, because yo
 
 #### Getting a Service Instance
 
-The `Publication` object holds a list of service instances, ordered by the factories given during construction. To get an instance of a service, you can use `Publication::findService<S>()`, which will return the first service implementing the interface `S`. 
-However, you rarely need to access directly a service instance, since a service interface usually also defines helpers on `Publication` for convenience.
+The `Publication` object holds a list of service instances. To get an instance of a service, you can use `Publication::findService()`, which will return the first service implementing the interface `S`. However, you rarely need to access directly a service instance, since a service interface usually also defines helpers on `Publication` for convenience.
 
 For example, the `PositionsService` declares the helper property `Publication::positions` to directly access the list of positions.
 
 #### Consuming a Service on the Web
 
-Some publication services expose a web version of their API, to be consumed for example by a JavaScript app or a remote client. In which case, you can retrieve the WS routes from `Publication::links`, using the WS custom media types or link relations. Then, the response can be fetched using `Publication::get()`, optionally exposed through an HTTP server.
+Some publication services expose a web version of their API, to be consumed for example by a JavaScript app or a remote client. In which case, you can retrieve the WS routes from `Publication::links`, using the WS custom media types or link relations. Then, the response can be fetched using `Publication::get()`, which can be exposed through HTTP with a Publication Server.
 
-If the web service takes parameters, then its `Link` object will be templated.
+If the web service takes parameters, then its `Link` object will be [templated](https://tools.ietf.org/html/rfc6570).
 
 The media types, formats and parameters depend on the specification of each publication service.
 
 ```javascript
-let searchLink = publication.links.find(link => (link.type == "application/vnd.readium.search+json"))
+let searchLink = publication.links.firstWithMediaType("application/vnd.readium.search+json")
 // searchLink == Link(
 //   href: "/~readium/search{?text}",
 //   type: "application/vnd.readium.search+json",
@@ -120,8 +102,10 @@ let searchLink = publication.links.find(link => (link.type == "application/vnd.r
 // )
 
 if (searchLink) {
+  // href == "/~readium/search?text=banana"
+  let queryLink = searchLink.expandTemplate({"text": "banana"})
   // `results` is a JSON collection of Locator objects.
-  let results = await publication.get(searchLink, {"text": ""}).readAsString()
+  let results = await publication.get(queryLink).readAsJSON()
 }
 ```
 
@@ -146,7 +130,7 @@ interface PositionsService : Publication.Service {
 
 // Defines a convenient `publication.positions` helper with a fallback value.
 val Publication.positions: List<Locator> get() {
-    val service = findService<PositionsService>()
+    val service = findService(PositionsService::class)
     return service?.positions ?: emptyList()
 }
 
@@ -168,8 +152,8 @@ class EPUBPositionsService(val readingOrder: List<Link>, val fetcher: Fetcher) :
     }
 }
 
-val publication = Publication(manifest, fetcher, serviceFactories = listOf(
-    (EPUBPositionsService)::create
+val publication = Publication(manifest, fetcher, servicesBuilder = Publication.ServicesBuilder(
+    positions = (EPUBPositionsService)::create
 ))
 ```
 
@@ -184,25 +168,11 @@ The `Publication` models are not yet immutable in the Swift toolkit, which is re
 
 ## Reference Guide
 
-Helpers and services rely on the fact that a `Publication` is immutable. If that was not the case, then the cached lazy-loaded values could become invalid.
+Helpers and services rely on the fact that a `Publication` is immutable. If that was not the case, then any cached value could become invalid.
 
 ### Publication Helpers
 
 If a helper performs an expensive task, a warning should be logged if it is called from the UI thread. This is typically the case for helpers accessing resources from the `Fetcher`.
-
-#### `Publication` Additions
-
-##### Methods
-
-* `cache<T>(key: String? = null, variant: String? = null, compute: () -> T?) -> T?`
-  * Executes the given computation and caches its result for next calls.
-  * `key: String? = null`
-    * Unique key identifying the cached value.
-    * (Depends on the language) If `null`, the function name of the caller will be used as the key, for convenience.
-  * `variant: String? = null`
-    * A variant used to cache different values for the same caller. For example, it can be the parameters given to the computation.
-  * Returns the cached value or the result of `compute()`.
-  * [A proof-of-concept Swift implementation is described in this issue.](https://github.com/readium/architecture/issues/119#issuecomment-601302065)
 
 ### Publication Services
 
@@ -251,13 +221,13 @@ A `Publication.Service.Context` is used instead of passing directly the argument
 
 ##### Methods
 
-* `findService<T: Publication.Service>(): T?`
+* `findService<T: Publication.Service>(serviceType: T::class): T?`
   * Returns the first publication service implementing the interface `T`.
 
 
 ## Rationale and Alternatives
 
-Two alternatives to extend `Publication` were considered: composition and inheritance.
+Two alternatives to extend `Publication` were considered: decoration and inheritance.
 
 ### Decorating `Publication`
 
@@ -279,7 +249,6 @@ Subclassing `Publication` might look more straightforward, but it could transfor
 
 * This proposal requires the `Publication` shared models to be immutable to work properly. Otherwise, we might end up with invalid lazy-cached values. While this is a limitation, having immutable models is generally considered safer.
 * The publication helpers are added directly on the shared model types, which means that they are always available. This is convenient, but also means that we can have a `Publication` with irrelevant helpers. For example, `Properties.price` is always accessible, but only makes sense for an OPDS publication.
-* The caching feature is exposed publicly in `Publication`, which means that reading apps could store arbitrary values in the `Publication` cache. While this could be abused, this could also be seen as a useful feature to have.
 
 
 ## Future Possibilities
@@ -288,17 +257,7 @@ Specifying new publication services and helpers should become a natural part of 
 
 ### Transforming a Web Service into a Native Publication Service
 
-We could encounter web publications served by a remote HTTP Streamer providing web services, such as a [positions list](https://github.com/readium/architecture/tree/master/models/locators/positions#manifest). In which case, a native toolkit might provide a "reverse" `HTTPPositionsService` implementation which will fetch the positions from the web service and convert them to in-memory `Locator` models.
-
-### Persisting Cache
-
-The caching solution introduced in this proposal to cache expensive computed helpers is only stored in memory. However, it could be useful to have a cache that is persisted across sessions, to avoid recomputing the values every time we open the publication. This persisted cache would also be useful for publication services.
-
-Here are a few examples of values which could be useful to persist across sessions:
-
-* the positions list, when it's expensive to compute (e.g. LCPDF)
-* the duration of audio files in an audiobook, when they are not provided in the manifest
-* thumbnails generated from resources
+We could encounter web publications served by a remote HTTP Streamer providing web services, such as a [positions list](https://github.com/readium/architecture/tree/master/models/locators/positions#manifest). In which case, a native toolkit might fetch the positions from the web service and convert them to in-memory `Locator` models, as a fallback if no instance of `PositionsService` is provided.
 
 ### Future Helpers?
 
@@ -309,9 +268,8 @@ Here are a few examples of values which could be useful to persist across sessio
 ### Future Services?
 
 * `SearchService` to search through a publication's content.
-* `RightsService` to manage the rights consumption and loans.
+* `ContentProtectionService` to manage the DRM rights consumption.
 * `ThumbnailsService` to generate and cache thumbnails for each resource/page in an EPUB FXL or DiViNa.
-* `SynchronizedNarrationService` to convert SMIL resources to the W3C Synchronized Narration document.
 * `ReferenceService` to generate an index or glossary, or something akin to [Amazon X-Ray for Kindle](https://kdp.amazon.com/en_US/help/topic/G202187230).
 * `ReflowService` to generate a reflowable view of fixed resources such as EPUB FXL or PDF.
 * `UpdateService` to update a publication file from a remote server.
@@ -336,14 +294,14 @@ This service is described in more details [in this specification](https://github
 
 #### `Publication` Helpers
 
-* `positionsByReadingOrder: List<Locator> = findService<PositionsService>()?.positionsByReadingOrder ?: []`
-* `positions: List<Locator> = findService<PositionsService>()?.positions ?: []`
+* `positionsByReadingOrder: List<Locator> = findService(PositionsService::class)?.positionsByReadingOrder ?: []`
+* `positions: List<Locator> = findService(PositionsService::class)?.positions ?: []`
 
 #### Web Service
 
 `PositionsService` exposes the positions list as a web service.
 
-It provides a default implementation to avoid rewriting the JSON conversion for all concrete implementations of `PositionsService`.
+It provides a default implementation to avoid rewriting the JSON serialization for all concrete implementations of `PositionsService`.
 
 ```kotlin
 private const val positionsLink = Link(
@@ -388,9 +346,9 @@ While at first glance, getting the cover could be seen as a helper, the implemen
 
 Furthermore, a reading app might want to use a custom strategy to choose the cover image, for example by:
 
-* iterating through the `images` collection for a publication parsed from an OPDS 2 feed
-* generating a bitmap from scratch using the publication's title
-* using a cover selected by the user
+* Iterating through the `images` collection for a publication parsed from an OPDS 2 feed.
+* Generating a bitmap from scratch using the publication's title.
+* Using a cover selected by the user.
 
 #### Properties
 
@@ -407,8 +365,8 @@ Furthermore, a reading app might want to use a custom strategy to choose the cov
 
 #### `Publication` Helpers
 
-* `cover: Bitmap? = findService<CoverService>()?.cover`
-* `coverFitting(maxSize: Size) -> Bitmap? = findService<CoverService>()?.coverFitting(maxSize)`
+* `cover: Bitmap? = findService(CoverService::class)?.cover`
+* `coverFitting(maxSize: Size) -> Bitmap? = findService(CoverService::class)?.coverFitting(maxSize)`
 
 #### Web Service
 
@@ -420,12 +378,6 @@ This is an overview of the helpers implemented natively by the Readium toolkit.
 
 ### `Publication` Helpers
 
-* `baseURL: URL?`
-  * The URL where this publication is served, computed from the `Link` with `self` relation.
-  * Used to resolve relative HREFs.
-  * e.g. `https://provider.com/pub1293/manifest.json` gives `https://provider.com/pub1293/`
-* `jsonManifest: String`
-  * Returns the RWPM JSON representation for this `Publication`'s manifest, as a string.
 * `linkWithHREF(String) -> Link?`
   * Finds the first link with the given HREF in the publication's links.
   * Searches through (in order) `readingOrder`, `resources` and `links`, following recursively `alternates` and `children`.
@@ -485,9 +437,6 @@ This is an overview of the helpers implemented natively by the Readium toolkit.
 
 ### `Link` Helpers
 
-* `toURL(baseURL: URL) -> URL?`
-  * Computes an absolute URL to the link, relative to the given `baseURL`.
-  * If the link's `href` is already absolute, the `baseURL` is ignored.
 * `templateParameters: List<String>`
   * List of URI template parameter keys, if the `Link` is templated.
 * `expandTemplate(parameters: Map<String, String>) -> Link`
