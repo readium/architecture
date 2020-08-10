@@ -78,13 +78,11 @@ The app must then validate the new license structure against the JSON schema. If
 
 Note: if the user passphrase has been modified server side after the initial license has been generated, the updated license is generated with the new passphrase. 
 
-### 5/ Check the dates and license status
+### 5/ Check the license status
 
-If there was no need to update the License Document or its update did not fail, check that "now" is between the start and end date-and-time of the license. If it's the case, jump to step 6.
+If there was a need to update the License Document AND this update failed, check the status in the status document. If it is "revoked", "returned", "cancelled" or "expired" the app MUST then notify the user and stop there.
 
-Otherwise, check the status in the status document. If it is "revoked", "returned", "cancelled" or "expired" the app MUST then notify the user and stop there.
-
-Note: this assures that if the update of the License Document failed, the status takes precedence over the initial license. 
+Note: this assures that if the update of the License Document failed, the status takes precedence over the content of the obsolete license. 
 
 The message to the user must be clear about the status of the license: e.g. don't display "expired" if the status is "revoked". The date and time corresponding to the new status should be displayed (e.g. "The license expired on 01 January 2018").
 
