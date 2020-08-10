@@ -27,7 +27,7 @@ A quick note about the device ID: both Android and iOS "launcher app" default op
 
 ## Import a protected publication
 
-When a .epub file is imported, the mimetype (value application/epub+zip) is checked and mandatory metadata are extracted. There is no additional test when the publication is protected by the LCP DRM. 
+When an .epub file is imported, the mimetype (value application/epub+zip) is checked and mandatory metadata are extracted. There is no additional test when the publication is protected by the LCP DRM. 
 
 ## Import a a DRM license
 An app which imports a DRM license will follow these steps:
@@ -121,6 +121,8 @@ The r2-lcp-client library will verify the license integrity and create a DRM con
 * return a "context" structure, to be used later in decryption calls.
 
 See the Readium LCP spec section 5.5 for additional details. 
+
+If the license is out of date, display the status of the license as detailed in step 5.  
 
 ### 8/ Register the device / license 
 
