@@ -4,11 +4,13 @@ Locators are meant to provide a precise location in a publication in a format th
 
 There are many different use cases for locators:
 
-* getting back to the last position in a publication
+* reporting and saving the current progression
 * bookmarks
 * highlights & annotations
 * search results
-* human-readable (and shareable) reference in a publication
+* human-readable (as-in shareable) references
+* jumping to a location
+* enhancing a table of contents
 
 Each locator <strong class="rfc">must</strong> contain a reference to a resource in a publication (`href` and `type`).
 `href` <strong class="rfc">must not</strong> point to the fragment of a resource.
@@ -136,12 +138,3 @@ In addition to defining the Locator model, the Readium community also strongly r
 # Appendix A - JSON Schema
 
 A reference JSON Schema is available under version control at: [https://github.com/readium/architecture/tree/master/schema/locator.schema.json](https://github.com/readium/architecture/tree/master/schema/locator.schema.json)
-
-<style>
-.rfc {
-    color: #d55;
-    font-variant: small-caps;
-    font-style: normal;
-    font-weight: normal;
-}
-</style>
