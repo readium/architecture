@@ -37,3 +37,12 @@ Our goal is to improve extensibility and customizability of the `Publication` ty
 ### [005 - Streamer API](005-streamer-api.md)
 
 This proposal aims to specify the Streamer public API and showcase how a reading app might support additional formats. It ties together several concepts introduced in other proposals such as the [Composite Fetcher API](002-composite-fetcher-api.md), [Publication Encapsulation](003-publication-encapsulation.md) and the [Publication Helpers & Services](004-publication-helpers-services.md).
+
+### [006 – Content Protection](006-content-protection.md)
+
+Offers a way to support more content protection technologies in Readium 2.
+
+* Simplify use of DRMs in reading apps.
+* Be able to support other DRMs than LCP, without modifying the toolkit itself.
+* Handle decryption/transformation of publication resources.
+* Consume user rights in a DRM-agnostic way, e.g. copy or print.
