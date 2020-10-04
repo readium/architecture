@@ -168,6 +168,8 @@ Acts as a proxy to an actual resource by handling read access.
 
 Every failable API returns a `Result<T, Resource.Error>` containing either the value, or a `Resource.Error` enum with the following cases:
 
+* `BadRequest` equivalent to a 400 HTTP error.
+  * This can be used for templated HREFs, when the provided arguments are invalid.
 * `NotFound` equivalent to a 404 HTTP error.
 * `Forbidden` equivalent to a 403 HTTP error.
   * This can be returned when trying to read a resource protected with a DRM that is not unlocked.
