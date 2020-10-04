@@ -33,3 +33,7 @@ Our goal is to improve extensibility and customizability of the `Publication` ty
 
 * **Helpers are *internal* extensions**. They have a single implementation which is statically defined in the shared models.
 * **Services are *external* extensions**. Other Readium components provide implementations, which are swappable and injected dynamically into the `Publication` object
+
+### [005 - Streamer API](005-streamer-api.md)
+
+This proposal aims to specify the Streamer public API and showcase how a reading app might support additional formats. It ties together several concepts introduced in other proposals such as the [Composite Fetcher API](002-composite-fetcher-api.md), [Publication Encapsulation](003-publication-encapsulation.md) and the [Publication Helpers & Services](004-publication-helpers-services.md).

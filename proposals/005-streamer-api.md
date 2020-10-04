@@ -8,7 +8,7 @@
 
 ## Summary
 
-This proposal aims to specify the Streamer public API and showcase how a reading app might support additional formats. It ties together several concepts introduced in other proposals such as the [Composite Fetcher API](https://github.com/readium/architecture/blob/master/proposals/002-composite-fetcher-api.md), Publication Encapsulation and the Publication Helpers & Services.
+This proposal aims to specify the Streamer public API and showcase how a reading app might support additional formats. It ties together several concepts introduced in other proposals such as the [Composite Fetcher API](002-composite-fetcher-api.md), [Publication Encapsulation](003-publication-encapsulation.md) and the [Publication Helpers & Services](004-publication-helpers-services.md).
 
 
 ## Motivation
@@ -51,7 +51,7 @@ While Readium ships with sane default parser settings, some degree of configurat
 
 The Streamer is one of the main components of the Readium Architecture, whose responsibilities are to:
 
-* parse packaged or exploded publications into a Readium Web Publication
+* parse packaged or exploded publications into a Readium `Publication` model
 * [compose the `Fetcher` tree](https://github.com/readium/architecture/blob/master/proposals/002-composite-fetcher-api.md#developer-guide) providing access to publication resources
 * unlock content protection technologies
 
@@ -99,11 +99,11 @@ streamer = Streamer(
 
 You can customize the parsed `Publication` object by modifying:
 
-* its `Manifest` object, to change its metadata or links
-* the root `Fetcher`, to fine-tune access to resources
-* the list of attached Publication Services
+* its [`Manifest` object](003-publication-encapsulation.md#manifest-class), to change its metadata or links
+* the [root `Fetcher`](002-composite-fetcher-api.md#developer-guide), to fine-tune access to resources
+* the list of attached [Publication Services](004-publication-helpers-services.md#publication-services)
 
-The Streamer accepts a `Publication.Builder.Transform` function which will be called just before creating the `Publication` object.
+The Streamer accepts a `Publication.Builder.Transform` closure which will be called just before creating the `Publication` object.
 
 ```kotlin
 streamer = Streamer(
@@ -113,15 +113,15 @@ streamer = Streamer(
             fetcher = TransformingFetcher(fetcher, minifyHTML)
         }
 
-        // Wraps the default PositionsService to cache its result in a
+        // Decorates the default PositionsService to cache its result in a
         // persistent storage, to improve performances.
-        services.wrap(PositionsService::class) { oldFactory ->
+        services.decorate(PositionsService::class) { oldFactory ->
             CachedPositionsService.createFactory(oldFactory)
         }
 
-        // Sets a custom SearchService implementation for EPUB.
-        is (format == Format.EPUB) {
-            services.searchServiceFactory = EPUBSearchService.create
+        // Sets a custom SearchService implementation for PDF.
+        is (format == Format.PDF) {
+            services.searchServiceFactory = PDFSearchService.create
         }
     }
 )
@@ -134,7 +134,7 @@ The Streamer and its parsers depend on core features which might not be availabl
 ```kotlin
 streamer = Streamer(
     httpClient = CustomHTTPClient(),
-    openPDF = { path, password -> CustomPDFDocument(path, password) }
+    pdfFactory = { path, password -> CustomPDFDocument(path, password) }
 )
 ```
 
@@ -156,10 +156,14 @@ class CustomParser: PublicationParser {
         }
 
         return Publication.Builder(
-            manifest = parseManifest(file, delegate),
+            manifest = parseManifest(from: file),
             fetcher = fetcher
-            services = [CustomPositionsServiceFactory]
+            services = [CustomPositionsServiceFactory()]
         )
+    }
+
+    private func parseManifest(from file: File) -> Manifest {
+        ...
     }
 
 }
@@ -173,12 +177,10 @@ streamer = Streamer(
 
 #### Mobile (Swift & Kotlin)
 
-This new API won't break existing apps, because it's adding a new type `Streamer` wrapping existing parser classes into a cohesive unit. Reading apps will still be able to use indivual parsers directly. However, we should strongly recommend them to migrate to this new way of opening a `Publication`, which will simplify their integration and make sure they automatically benefit from new formats supported by Readium.
+Reading apps will still be able to use indivual parsers directly. However, we should strongly recommend them to migrate to this new way of opening a `Publication`, which will simplify their integration and make sure they automatically benefit from new formats supported by Readium.
 
 
 ## Reference Guide (`r2-shared`)
-
-*Note: Asynchronicity is represented with `Future` in this reference, but each platform should use the most idiomatic concurrency structure.*
 
 ### `File` Class
 
@@ -188,23 +190,19 @@ Used to cache the `Format` to avoid computing it at different locations.
 
 #### Constructors
 
-* `File(path: String, sourceURL: URL? = null, mediaType: String? = null)`
+* `File(path: String, mediaType: String? = null)`
   * Creates a `File` from a `path` and its known `mediaType`.
   * `path: String`
     * Absolute path to the file or directory.
-  * `sourceURL: URL? = null`
-    * If the file was downloaded from a remote source, set it with `sourceURL` to give more context.
   * `mediaType: String? = null`
     * If the file's media type is already known, providing it will improve performances.
-* `File(path: String, sourceURL: URL? = null, format: Format)`
+* `File(path: String, format: Format)`
   * Creates a `File` from a `path` and an already resolved `format`.
 
 #### Properties
 
 * `path: String`
   * Absolute path on the file system.
-* `sourceURL: URL?`
-  * Remote source URL from which this file was downloaded, if relevant.
 * `name: String`
   * Last path component, or filename.
 * (lazy) `format: Format?`
@@ -232,40 +230,6 @@ Errors occurring while opening a Publication.
   * This error is generally temporary, so the operation may be retried or postponed.
 * `IncorrectCredentials`
   * The provided credentials are incorrect and we can't open the publication in a `restricted` state (e.g. for a password-protected ZIP).
-
-### `Publication.ServicesBuilder` Class
-
-Builds a list of `Publication.Service` using `Publication.Service.Factory` instances.
-
-Provides helpers to manipulate the list of services of a `Publication`.
-
-This class holds a map between a key – computed from a service interface – and a factory instance for this service.
-
-#### Constructors
-
-* `Publication.ServicesBuilder(positions: ((Publication.Service.Context) -> PositionsService?)? = null, cover: ((Publication.Service.Context) -> CoverService?)? = null, ...)`
-  * Creates a `ServicesBuilder` with a list of service factories.
-  * There's one argument per standard Readium publication service.
-
-#### Properties
-
-Each publication service should define helpers on `Publication.ServicesBuilder` to set its factory.
-
-* (writable) `coverServiceFactory: ((Publication.Service.Context) -> CoverService?)?`
-* (writable) `positionsServiceFactory: ((Publication.Service.Context) -> PositionsService?)?`
-
-#### Methods
-
-* `build(context: Publication.Service.Context) -> List<Publication.Service>`
-  * Builds the actual list of publication services to use in a `Publication`.
-  * `context: Publication.Service.Context`
-    * Context provided to the service factories.
-* `set(serviceType: Publication.Service::class, factory: Publication.Service.Factory)`
-  * Sets the publication service factory for the given service type.
-* `remove(serviceType: Publication.Service::class)`
-  * Removes any service factory associated with the given service type.
-* `wrap(serviceType: Publication.Service::class, transform: (Publication.Service.Factory?) -> Publication.Service.Factory)`
-  * Replaces the service factory associated with the given service type with the result of `transform`.
 
 ### `WarningLogger` Interface
 
@@ -328,10 +292,15 @@ A `Publication`'s construction is distributed over the Streamer and its parsers,
 #### `Publication.Builder.Transform` Function Type
 
 ```kotlin
-typealias Transform = (format: Format, manifest: *Manifest, fetcher: *Fetcher, services: *Publication.ServicesBuilder) -> Void
+typealias Publication.Builder.Transform = (
+    format: Format,
+    manifest: *Manifest,
+    fetcher: *Fetcher,
+    services: *Publication.ServicesBuilder
+) -> Void
 ```
 
-Transform which can be used to modify a `Publication`'s components before building it. For example, to add Publication Services or wrap the root Fetcher.
+Transform which can be used to modify a `Publication`'s components before building it. For example, to add Publication Services or decorate the root Fetcher.
 
 The signature depends on the capabilities of the platform: `manifest`, `fetcher` and `services` should be modifiable "in place", hence the pseudo-pointers types.
 
@@ -343,7 +312,7 @@ Parses a `Publication` from a file.
 
 * `parse(file: File, fetcher: Fetcher, warnings: WarningLogger?) -> Publication.Builder?`
   * Constructs a `Publication.Builder` to build a `Publication` from a publication file.
-  * Returns `null` if the file format is not supported by this parser, or throws a localized error if the parsing fails.
+  * Returns `null` if the file format is not supported by this parser, or throws an error if the parsing fails.
   * `file: File`
     * Path to the publication file.
   * `fetcher: Fetcher`
@@ -374,13 +343,13 @@ Opens a `Publication` using a list of parsers.
   * `httpClient: HTTPClient? = default`
     * HTTP client used to perform any HTTP requests.
     * The default implementation uses native APIs when available.
-  * `openArchive: Archive.Factory? = default`
+  * `archiveFactory: Archive.Factory? = default`
     * Opens an archive (e.g. ZIP, RAR), optionally protected by credentials.
     * The default implementation uses native APIs when available.
-  * `openXML: XMLDocument.Factory? = default`
+  * `xmlFactory: XMLDocument.Factory? = default`
     * Parses an XML document into a DOM tree.
     * The default implementation uses native APIs when available.
-  * `openPDF: PDFDocument.Factory? = default`
+  * `pdfFactory: PDFDocument.Factory? = default`
     * Parses a PDF document, optionally protected by password.
     * The default implementation uses native APIs when available.
   * `onCreatePublication: Publication.Builder.Transform? = null`
@@ -390,7 +359,7 @@ The specification of `HTTPClient`, `Archive`, `XMLDocument` and `PDFDocument` is
 
 #### Methods
 
-* `open(file: File, warnings: WarningLogger? = null) -> Future<Publication?, Publication.OpeningError>`
+* (async) `open(file: File, warnings: WarningLogger? = null) -> Result<Publication?, Publication.OpeningError>`
   * Parses a `Publication` from the given `file`.
   * Returns `null` if the file was not recognized by any parser, or a `Publication.OpeningError` in case of failure.
   * `warnings: WarningLogger? = null`
@@ -427,11 +396,11 @@ Parses a `Publication` from a PDF document.
 
 ##### Reading Order
 
-The reading order contains a single link pointing to the PDF document, with the HREF `/publication.pdf`.
+The reading order contains a single link pointing to the PDF document, with the HREF `/<file.name>`.
 
 ##### Table of Contents
 
-The Document Outline (i.e. section 12.3.3) can be used to create a table of contents. The HREF of each link should use a `page=` fragment identifier, following this template: `/publication.pdf#page=<pageNumber>`, where `pageNumber` starts from 1.
+The Document Outline (i.e. section 12.3.3) can be used to create a table of contents. The HREF of each link should use a `page=` fragment identifier, following this template: `/<file.name>#page=<pageNumber>`, where `pageNumber` starts from 1.
 
 ##### Cover
 
@@ -452,8 +421,6 @@ The `Publication`'s `identifier` should be computed from the PDF's *file identif
 ```
 
 It's a pair of two identifiers, the first one being permanent while the second one is generated for every change in the PDF document. It could be useful to preserve both identifiers, so the `Publication`'s `identifier` should be computed as `<id-created>;<id-modified>`.
-
-As a fallback, the file's MD5 hash may be used for the `identifier`.
 
 #### `ImageParser` Class
 
@@ -477,9 +444,9 @@ If the links contain intermediate folders, their names are used to build a table
 
 There's no standard way to embed metadata in a CBZ, but two formats seem to be used in the wild: [ComicRack](https://wiki.mobileread.com/wiki/ComicRack) and [ComicBookInfo](https://code.google.com/archive/p/comicbookinfo/). [EmbedComicMetadata](https://github.com/dickloraine/EmbedComicMetadata) is a plugin for Calibre handling different CBZ metadata formats.
 
-[More information at MobileRead](https://wiki.mobileread.com/wiki/CBR_and_CBZ#Metadata).
+Following common practice, if the archive contains a single root folder containing the bitmaps, the publication title is derived from it.
 
-The `Publication`'s `identifier` is generated as a MD5 hash of `file`, if it's not a directory.
+[More information at MobileRead](https://wiki.mobileread.com/wiki/CBR_and_CBZ#Metadata).
 
 #### `AudioParser` Class
 
@@ -505,7 +472,7 @@ If the links contain intermediate folders, their names are used to build a table
 
 There's no standard way to embed metadata in a ZAB, but there are a number of playlist formats which could be used. [M3U](https://en.wikipedia.org/wiki/M3U) seems to be the most popular. Individual audio format metadata could also be used, in particular for the reading order titles.
 
-The `Publication`'s `identifier` is generated as a MD5 hash of `file`, if it's not a directory.
+Following common practice, if the archive contains a single root folder containing the audio files, the publication title is derived from it.
 
 
 ## Rationale and Alternatives

@@ -217,12 +217,48 @@ class Publication.Service.Context {
 
 A `Publication.Service.Context` is used instead of passing directly the arguments, to be able to add more parameters later on without modifying all the existing service factories.
 
+#### `Publication.ServicesBuilder` Class
+
+Builds a list of `Publication.Service` using `Publication.Service.Factory` instances.
+
+Provides helpers to manipulate the list of services of a `Publication`.
+
+This class holds a map between a key – computed from a service interface – and a factory instance for this service.
+
+##### Constructors
+
+* `Publication.ServicesBuilder(positions: ((Publication.Service.Context) -> PositionsService?)? = null, cover: ((Publication.Service.Context) -> CoverService?)? = null, ...)`
+  * Creates a `ServicesBuilder` with a list of service factories.
+  * There's one argument per standard Readium publication service.
+
+##### Properties
+
+Each publication service should define helpers on `Publication.ServicesBuilder` to set its factory.
+
+* (writable) `coverServiceFactory: ((Publication.Service.Context) -> CoverService?)?`
+* (writable) `positionsServiceFactory: ((Publication.Service.Context) -> PositionsService?)?`
+
+##### Methods
+
+* `build(context: Publication.Service.Context) -> List<Publication.Service>`
+  * Builds the actual list of publication services to use in a `Publication`.
+  * `context: Publication.Service.Context`
+    * Context provided to the service factories.
+* `set(serviceType: Publication.Service::class, factory: Publication.Service.Factory)`
+  * Sets the publication service factory for the given service type.
+* `remove(serviceType: Publication.Service::class)`
+  * Removes any service factory associated with the given service type.
+* `decorate(serviceType: Publication.Service::class, transform: (Publication.Service.Factory?) -> Publication.Service.Factory)`
+  * Decorates the service factory associated with the given service type using `transform`.
+
 #### `Publication` Additions
 
 ##### Methods
 
 * `findService<T: Publication.Service>(serviceType: T::class): T?`
   * Returns the first publication service implementing the interface `T`.
+* `findService<T: Publication.Service>(serviceType: T::class): T?`
+  * Finds all the publication services implementing the interface `T`.
 
 
 ## Rationale and Alternatives
