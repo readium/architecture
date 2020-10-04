@@ -53,8 +53,8 @@ Format-specific protections are natively handled by the Streamer, since they are
 ```swift
 streamer = Streamer(
     contentProtections: [
-        // The provided `authentication` argument is private to the LCP library,
-        // and is used to ask the user for its passphrase when `allowUserInteraction` is true.
+        // The provided `authentication` argument is part of the LCP library
+        // and is used to retrieve the user passphrase when needed.
         lcpService.contentProtection(authentication)
     ]
 )
@@ -62,7 +62,7 @@ streamer = Streamer(
 
 ### Rendering a Publication
 
-To render the publication, reading apps must first check if it is restricted. Navigators should refuse to be created with a restricted publication.
+To render the publication, reading apps must first check if it is restricted. Navigators must refuse to be created with a restricted publication.
 
 ```swift
 if (!publication.isRestricted) {
@@ -80,15 +80,13 @@ if (publication.rights.copy(text)) {
 }
 ```
 
-Sometimes, you need to know whether the *copy* action is allowed before actually consuming the right, for example to know if you can display a sharing popup. In which case, you can use `canCopy(text: String)`. The property `canCopy` indicates whether the action is at all possible, and can be used to grey out a "Copy" button.
+Sometimes, you need to know whether the *copy* action is allowed before actually consuming the right, for example to know if you can display a sharing popup. In which case, you can use `canCopy(text: String)`. For a more general purpose, the property `canCopy` indicates whether the action is at all possible and can be used to grey out a "Copy" button.
 
 ### Backward Compatibility and Migration
 
 #### Mobile (Swift and Kotlin)
 
-This new API is not backward-compatible with the current support for LCP. However, it should be possible to keep both solutions working at the same time while deprecating the old API, by allowing – only for LCP – to unlock the `Publication` after parsing.
-
-In any case, the `DRM` class will be deprecated, as well as the `Publication::drm` property.
+This new API is not backward-compatible with the current support for LCP and reading apps will need to update their integration.
 
 
 ## Reference Guide
@@ -111,7 +109,7 @@ Readium supports only a single enabled Content Protection per publication, becau
 
 #### Format-Specific Protections
 
-There's currently only two format-specific protections recognized by Readium: PDF and ZIP.
+There are currently only two format-specific protections recognized by Readium: PDF and ZIP.
 
 When a password protection is used, the `credentials` parameter provided to the Streamer is used to unlock the protected file. In case of incorrect credentials:
 
@@ -138,7 +136,7 @@ A third-party protection library (or bridge) should implement the `ContentProtec
 
 ##### Unlocking a Publication
 
-A protected publication can be opened in two states: *restricted* or *unrestricted*. A restricted publication has a limited access to its manifest and resources, and can't be rendered with a Navigator. It is usually only used to import a publication to the user's bookshelf.
+A protected publication can be opened in two states: *restricted* or *unrestricted*. A restricted publication has a limited access to its manifest and resources and can't be rendered with a Navigator. It is usually only used to import a publication to the user's bookshelf.
 
 Readium makes no assumption about the way a third-party protection can unlock a publication. It could for example:
 
@@ -204,7 +202,7 @@ Provides information about a publication's content protection and manages user r
 ##### Properties
 
 * `isRestricted: Boolean`
-  * Indicates whether the `Publication` has a restricted access to its resources, and can't be rendered in a Navigator.
+  * Indicates whether the `Publication` has a restricted access to its resources and can't be rendered in a Navigator.
 * `error: Error?`
   * The error raised when trying to unlock the `Publication`, if any.
   * This can be used by a Content Protection to return a status error, for example if a publication is expired or revoked.
@@ -266,7 +264,7 @@ Provides information about a publication's content protection and manages user r
 * href: `/~readium/rights/copy{?text,peek}`
   * `text` is the percent-encoded string to copy.
   * `peek` is `true` or `false`. When missing, it defaults to `false`.
-* type: `application/vnd.readium.rights.copy`
+* type: `application/vnd.readium.rights.copy+json`
 
 If `peek` is true, then it's equivalent to calling `publication.rights.canCopy(...)`: the right is not consumed.
 
@@ -282,7 +280,7 @@ Status Code | Description
 * href: `/~readium/rights/print{?pageCount,peek}`
   * `pageCount` is the number of pages to print, as a positive integer.
   * `peek` is `true` or `false`. When missing, it defaults to `false`.
-* type: `application/vnd.readium.rights.print`
+* type: `application/vnd.readium.rights.print+json`
 
 If `peek` is true, then it's equivalent to calling `publication.rights.canPrint(...)`: the right is not consumed.
 
@@ -304,11 +302,11 @@ Two new arguments are added to the constructor: `contentProtections` and `onAskC
 * `contentProtections: List<ContentProtection> = []`
   * List of `ContentProtection` used to unlock publications.
   * Each `ContentProtection` is tested in the given order.
-* `onAskCredentials: OnAskCredentials? = DefaultOnAskCredentials`
+* `onAskCredentials: OnAskCredentialsCallback? = default`
   * Called when a content protection wants to prompt the user for its credentials.
   * This is used by ZIP and PDF password protections.
   * The default implementation of this callback presents a dialog using native components when possible.
-  * `typealias OnAskCredentials = (dialog: Dialog<String>, sender: Any?, callback: (String?) -> ()) -> ()`
+  * `typealias OnAskCredentialsCallback = (dialog: Dialog<String>, sender: Any?, callback: (String?) -> ()) -> ()`
     * `dialog: Dialog<String>`
       * Description of the dialog to display to the user.
       * The specification of `Dialog<T>` is out of scope for this proposal.
@@ -321,9 +319,9 @@ Two new arguments are added to the constructor: `contentProtections` and `onAskC
 
 ##### `Methods`
 
-There's three new parameters added to `Streamer::open()`: `allowUserInteraction`, `credentials`, and `sender`.
+There are three new parameters added to `Streamer::open()`: `allowUserInteraction`, `credentials`, and `sender`.
 
-* (async) `open(file: File, allowUserInteraction: Boolean, credentials: String? = null, sender: Any? = null, warnings: WarningLogger? = null) -> Publication`
+* (async) `open(file: File, allowUserInteraction: Boolean, credentials: String? = null, sender: Any? = null, onCreatePublication: Publication.Builder.Transform? = null, warnings: WarningLogger? = null) -> Publication`
   * `allowUserInteraction: Boolean`
     * Indicates whether the user can be prompted during opening, for example to ask their credentials.
     * This should be set to `true` when you want to render a publication in a Navigator.
@@ -339,7 +337,7 @@ There's three new parameters added to `Streamer::open()`: `allowUserInteraction`
 
 #### `ContentProtection` Interface
 
-Bridge between a Content Protection technology and the Streamer.
+Bridge between a Content Protection technology and the Readium toolkit.
 
 Its responsibilities are to:
 
@@ -348,7 +346,7 @@ Its responsibilities are to:
 
 ##### Methods
 
-* (async) `open(file: File, fetcher: Fetcher, allowUserInteraction: Boolean, credentials: String?, sender: Any?, onAskCredentials: OnAskCredentials?) -> ProtectedFile?`
+* (async) `open(file: File, fetcher: Fetcher, allowUserInteraction: Boolean, credentials: String?, sender: Any?, onAskCredentials: OnAskCredentialsCallback?) -> ProtectedFile?`
   * Attempts to unlock a potentially protected file.
   * `fetcher: Fetcher`
     * The Streamer will create a leaf `Fetcher` for the low-level file access (e.g. `ArchiveFetcher` for a ZIP archive), to avoid having each Content Protection open the `file` to check if it's protected or not.
@@ -446,6 +444,8 @@ Compared to the current implementation, a `Publication` is opened either unrestr
 Peripheral features were initially considered to be integrated in a DRM-agnostic interface: displaying rights information, renewing loans, etc. However, it was guided by the LCP specification, and it became clear that it wouldn't really be agnostic.
 
 For example, LCP is limiting copy by a character count. But a DRM could restrict word count, or number of copies. Therefore, it's not easy to display localized information about the remaining *copy* right available.
+
+Besides, these features don't live in Readium components but in reading apps. You are welcome to create your own DRM-agnostic adapter for such features.
 
 
 ## Future Possibilities

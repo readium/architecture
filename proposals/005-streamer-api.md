@@ -359,9 +359,11 @@ The specification of `HTTPClient`, `Archive`, `XMLDocument` and `PDFDocument` is
 
 #### Methods
 
-* (async) `open(file: File, warnings: WarningLogger? = null) -> Result<Publication?, Publication.OpeningError>`
+* (async) `open(file: File, onCreatePublication: Publication.Builder.Transform? = null, warnings: WarningLogger? = null) -> Result<Publication?, Publication.OpeningError>`
   * Parses a `Publication` from the given `file`.
   * Returns `null` if the file was not recognized by any parser, or a `Publication.OpeningError` in case of failure.
+  * `onCreatePublication: Publication.Builder.Transform? = null`
+    * Transformation which will be applied on the Publication Builder. It can be used to modify the `Manifest`, the root `Fetcher` or the list of service factories of the `Publication`.
   * `warnings: WarningLogger? = null`
     * Logger used to broadcast non-fatal parsing warnings.
     * Can be used to report publication authoring mistakes, to warn users of potential rendering issues or help authors debug their publications.
