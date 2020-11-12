@@ -386,9 +386,9 @@ Examples of concrete implementations:
 * `stream() -> Stream?`
   * Raw bytes stream of the content.
   * A byte stream can be useful when sniffers only need to read a few bytes at the beginning of the file.
-* `readFileSignature(length: Int, encoding: Encoding = UTF-8) -> String?`
-  * Reads the file signature, aka magic number, at the beginning of the content, up to `length` bytes.
-  * See https://en.wikipedia.org/wiki/List_of_file_signatures
+* `read(range: Range<Int>? = null) -> ByteArray?`
+  * Reads all the bytes or the given `range`.
+  * It can be used to check a file signature, aka magic number. See https://en.wikipedia.org/wiki/List_of_file_signatures
 * `close()`
   * Closes any opened file handles.
 
