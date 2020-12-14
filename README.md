@@ -35,7 +35,9 @@ These modules are not necessarily meant to be deployed on the same device or wri
 
 ## Projects
 
-[See all active Readium projects](projects.md) based on the Readium Architecture.
+* [Readium Mobile](https//readium.org/mobile)
+* [Readium Desktop](https//readium.org/desktop)
+* [Readium Web](https//readium.org/web)
 
 ## Ecosystem
 
