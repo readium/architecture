@@ -41,14 +41,14 @@ Since it's usually possible to read the metadata of a publication without unlock
 However, if you need to render the publication to the user, you can set the `allowUserInteraction` parameter to `true`. If the given credentials are incorrect, then the Content Protection will be allowed to ask the user for its credentials.
 
 ```kotlin
-streamer.open(file, allowUserInteraction = true, credentials = "open sesame")
+streamer.open(asset, allowUserInteraction = true, credentials = "open sesame")
 ```
 
 Some Content Protections – e.g. ZIP encryption – prevent reading a publication's metadata even in a *restricted* state without the proper credentials. In this case, a `Publication.OpeningError.IncorrectCredentials` error will be returned.
 
 ### Using Third-Party Protections
 
-Format-specific protections are natively handled by the Streamer, since they are tied to the file format. However, for third-party technologies such as a DRM, you need to register them by providing a `ContentProtection` instance to the Streamer. Here's an example for LCP:
+Format-specific protections are natively handled by the Streamer, since they are tied to the asset format. However, for third-party technologies such as a DRM, you need to register them by providing a `ContentProtection` instance to the Streamer. Here's an example for LCP:
 
 ```swift
 streamer = Streamer(
@@ -111,7 +111,7 @@ Readium supports only a single enabled Content Protection per publication, becau
 
 There are currently only two format-specific protections recognized by Readium: PDF and ZIP.
 
-When a password protection is used, the `credentials` parameter provided to the Streamer is used to unlock the protected file. In case of incorrect credentials:
+When a password protection is used, the `credentials` parameter provided to the Streamer is used to unlock the protected asset. In case of incorrect credentials:
 
 * If `allowUserInteraction` is `true`, then the `onAskCredentials()` callback provided to the Streamer is used to request the password.
 * Otherwise, an `IncorrectCredentials` error is returned because format-specific protections don't support reading partial metadata.
@@ -321,7 +321,7 @@ Two new arguments are added to the constructor: `contentProtections` and `onAskC
 
 There are three new parameters added to `Streamer::open()`: `allowUserInteraction`, `credentials`, and `sender`.
 
-* (async) `open(file: File, allowUserInteraction: Boolean, credentials: String? = null, sender: Any? = null, onCreatePublication: Publication.Builder.Transform? = null, warnings: WarningLogger? = null) -> Publication`
+* (async) `open(asset: PublicationAsset, allowUserInteraction: Boolean, credentials: String? = null, sender: Any? = null, onCreatePublication: Publication.Builder.Transform? = null, warnings: WarningLogger? = null) -> Publication`
   * `allowUserInteraction: Boolean`
     * Indicates whether the user can be prompted during opening, for example to ask their credentials.
     * This should be set to `true` when you want to render a publication in a Navigator.
@@ -346,28 +346,28 @@ Its responsibilities are to:
 
 ##### Methods
 
-* (async) `open(file: File, fetcher: Fetcher, allowUserInteraction: Boolean, credentials: String?, sender: Any?, onAskCredentials: OnAskCredentialsCallback?) -> ProtectedFile?`
-  * Attempts to unlock a potentially protected file.
+* (async) `open(asset: PublicationAsset, fetcher: Fetcher, allowUserInteraction: Boolean, credentials: String?, sender: Any?, onAskCredentials: OnAskCredentialsCallback?) -> ProtectedAsset?`
+  * Attempts to unlock a potentially protected publication asset.
   * `fetcher: Fetcher`
-    * The Streamer will create a leaf `Fetcher` for the low-level file access (e.g. `ArchiveFetcher` for a ZIP archive), to avoid having each Content Protection open the `file` to check if it's protected or not.
+    * The Streamer will create a leaf `Fetcher` for the low-level asset access (e.g. `ArchiveFetcher` for a ZIP archive), to avoid having each Content Protection open the `asset` to check if it's protected or not.
     * A publication might be protected in such a way that the package format can't be recognized, in which case the Content Protection will have the responsibility of creating a new leaf `Fetcher`.
   * Returns:
-    * a `ProtectedFile` in case of success,
-    * `null` if the `file` is not protected by this technology,
-    * a `Publication.OpeningError` if the file can't be successfully opened.
+    * a `ProtectedAsset` in case of success,
+    * `null` if the `asset` is not protected by this technology,
+    * a `Publication.OpeningError` if the asset can't be successfully opened.
 
-##### `ProtectedFile` Class
+##### `ProtectedAsset` Class
 
-Holds the result of opening a `File` with a `ContentProtection`.
+Holds the result of opening a `PublicationAsset` with a `ContentProtection`.
 
 *All the constructor parameters are public.*
 
-* `ProtectedFile(file: File, fetcher: Fetcher, onCreatePublication: Publication.Builder.Transform?)`
-  * `file: File`
-    * Protected file which will be provided to the parsers.
-    * In most cases, this will be the `file` provided to `ContentProtection::open()`, but a Content Protection might modify it in some cases:
-      * If the original file has a media type that can't be recognized by parsers, the Content Protection must return a `file` with the matching unprotected media type.
-      * If the Content Protection technology needs to redirect the Streamer to a different file. For example, this could be used to decrypt a publication to a temporary secure location.
+* `ProtectedAsset(asset: PublicationAsset, fetcher: Fetcher, onCreatePublication: Publication.Builder.Transform?)`
+  * `asset: PublicationAsset`
+    * Protected publication asset which will be provided to the parsers.
+    * In most cases, this will be the `asset` provided to `ContentProtection::open()`, but a Content Protection might modify it in some cases:
+      * If the original asset has a media type that can't be recognized by parsers, the Content Protection must return an `asset` with the matching unprotected media type.
+      * If the Content Protection technology needs to redirect the Streamer to a different asset. For example, this could be used to decrypt a publication to a temporary secure location.
   * `fetcher: Fetcher`
     * Primary leaf fetcher to be used by parsers.
     * The Content Protection can unlock resources by modifying the `Fetcher` provided to `ContentProtection::open()`, for example by:
@@ -450,11 +450,11 @@ Besides, these features don't live in Readium components but in reading apps. Yo
 
 ## Future Possibilities
 
-### Invalidating the Publication File
+### Invalidating the Publication Asset
 
-A Content Protection technology might alter the publication file during the lifetime of the `Publication` object. For example, by injecting an updated license file after renewing a loan. This could potentially be an issue for opened file handlers in the leaf `Fetcher` accessing the publication file.
+A Content Protection technology might alter the publication asset during the lifetime of the `Publication` object. For example, by injecting an updated license file after renewing a loan. This could potentially be an issue for opened file handlers in the leaf `Fetcher` accessing the publication asset.
 
-A solution would be the introduction of an `InvalidatingFetcher`, which would be able to recreate its child `Fetcher` on-demand. The `ContentProtectionService` would keep a reference to this `InvalidatingFetcher`, and call `invalidate()` every time the publication file is updated.
+A solution would be the introduction of an `InvalidatingFetcher`, which would be able to recreate its child `Fetcher` on-demand. The `ContentProtectionService` would keep a reference to this `InvalidatingFetcher`, and call `invalidate()` every time the publication asset is updated.
 
 #### `InvalidatingFetcher` Class
 
