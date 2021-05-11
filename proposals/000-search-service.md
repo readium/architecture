@@ -12,81 +12,77 @@ Introduction of a new [publication service](https://readium.org/architecture/pro
 
 Being able to search through a publication's content is a useful feature, often expected by end users. We can offer a unified API for the wide variety of publication formats supported by Readium to make it easy for reading apps to implement such feature.
 
-To ensure interoperability, this new Search Service will use the [Locator model](https://readium.org/architecture/models/locators/) with standardized fragments. This means that a mobile or desktop Navigator could – with the same code – display a search interface for a remote Web Publication, if the Publication Server is taking advantage of the web services powered by publication services.
+To ensure interoperability, this new Search Service will use the [Locator model](https://readium.org/architecture/models/locators/). This means that a mobile or desktop app could – with the same code – display a search interface for a remote Web Publication, if the Publication Server implements the proper Search Web Service.
 
-Besides, search can be implemented in many different ways, so it would be useful to be able to switch implementations without touching the UX layer. For example, a reading app might want to use a full-text search database to improve search performance and allow to search across publications in the bookshelf.
+Besides, search can be implemented in many different ways, so being able to switch implementations without touching the UX layer would be valuable. For example, a reading app might want to use a [full-text search](https://en.wikipedia.org/wiki/Full-text_search) database to improve search performance and search across multiple publications in the user bookshelf.
 
 
 ## Developer Guide
 
 ### Searching Through the Content
 
-To begin a search interaction, call `Publication::search()` with a text query. It returns a **search iterator** that you can use to crawl through `Locator` occurrences, with `next()`.
+To begin a search interaction, call `Publication::search()` with a text query. It returns a **search iterator** which can be used to crawl through `Locator` occurrences, with `next()`.
 
 ```typescript
 let searchIterator: SearchIterator = await publication.search("orange")
 
-let locators: [Locator] = await searchIterator.next()
-navigator.go(locators[0])
+let page1: LocatorCollection = await searchIterator.next()
+navigator.go(page1.locators[0])
 ```
 
-The search iterator may also provide the total number of occurrences with `resultCount`. This property is optional because depending on the search algorithm, it may not be possible to know the result count until reaching the end of the publication.
+The search iterator may also provide the total number of occurrences with `resultCount`. This property is optional because it might not be available with all search algorithms.
 
 ```typescript
-resultsLabel.text = "Found ${searchIterator.resultCount} occurrences"
+"Found ${searchIterator.resultCount} occurrences"
 ```
 
 ### Crawling Through Paginated Results
 
-A plain search can be an expensive operation. To keep the resource usage under control, the search results are paginated thanks to the search iterator. You can move forward in the pages with the `next()` function, which returns a list of `Locator`.
+A plain search can be an expensive operation. To keep the resource usage under control, the search results are paginated thanks to the **search iterator**. You can move forward in the pages with the `next()` function, which returns a `LocatorCollection` object.
 
-One of the best way to present the results is as a scrollable list of occurrences. You can use `next()` to implement the *infinite scroll* pattern by loading the next page of results when the user reaches the end of the list.
+One of the usual ways to present the results is as a scrollable list of occurrences. You can use `next()` to implement the *infinite scroll* pattern by loading the next page of results when the user reaches the end of the list.
 
-The search iterator will continue returning pages until it reaches the end of the publication, in which case any subsequent call to `next()` will return `null`.
+After reaching the end of the publication, any subsequent call to `next()` will return `null`.
 
+#### Number of Items per Page
 
-#### Result Count Per Page
-
-You don't have any control over the number of items returned in a page. This depends on the implementation of the Search Service used. For example, a full-text search might return a constant number of locators per page, while a plain crawling search might return one full page per reading order resource. 
-
-Therefore, a page might be returned empty, but it doesn't mean you reached the end of the publication. You can continue calling `next()` until it returns `null`.
-
+You don't have any control over the number of items returned in a page. This depends on the implementation of the Search Service used. For example, a full-text search might return a constant number of locators per page, while a plain crawling search might return one full page per publication resource. 
 
 ### Terminating a Search
 
-The Search Service might keep some resources allocated for your search query, such as a cursor. To make sure they are recovered when the user is done with the search, don't forget to call `close()` on the search iterator.
+The Search Service might keep some resources allocated for your search query, such as a cursor. To make sure they are recovered when the user is done with the search, do not forget to call `close()` on the search iterator.
 
-```javascript
+```typescript
 searchIterator.close()
 ```
 
 ### Search Options
 
-By default, the search is case and diacritic insensitive, but looks for an *exact match*. Meaning that searching for "Banana split" will find "I love banana split" but not "split the banana". A given Search Service might offer advanced search options depending on its capabilities.
+Depending on the search algorithm, the Search Service might be able to offer options to customize how results are found. Query `publication.searchOptions` to know which options are available for the publication.
 
-```javascript
+When searching for a query, you can customize some of the supported search options.
+
+```typescript
 let searchIterator = publication.search("kiwi recipe", options: [
-  SearchService.Options.CaseSensitive,
-  SearchService.Options.CloseVariants
+  SearchService.Option.CaseSensitive(true),
+  SearchService.Option.CloseVariants(false),
 ])
 ```
 
-You should adapt the user interface according to the available search options. To find out which options is available with the Search Service, use `supportedSearchOptions`.
+Each option has an associated value – such as a boolean – to determine its action. The options in `publication.searchOptions` will have the default values for the service. If you omit an option from the search query, its default value will be used.
 
-```javascript
+You should adapt the user interface according to the available search options and their default value.
+
+```typescript
 diacriticCheckbox.visible =
-  publication.supportedSearchOptions.contains(SearchService.Options.DiacriticSensitive)
+  publication.searchOptions.has(SearchService.Option.DiacriticSensitive)
 ```
 
 ### Backward Compatibility and Migration
-(*if relevant*)
 
-Explain how this proposal will impact existing reading apps, compared to new Readium users.
+#### Mobile Toolkits
 
-* Which types will be deprecated, and with which warning and alias.
-* Which migration steps must developers follow, and what changes will be needed in their codebase.
-
-If possible, add one section per platform. Other maintainers are welcome to complete this section upon review, by commenting on the review PR.
+This new proposal does not impact any existing API. The Kotlin Toolkit already provides a search feature implemented with [mark.js](https://markjs.io/), but its code is entirely in the test app, so out of scope for R2 modules. Reading apps are free to keep the implementation using mark.js and ignore the Search Service.
 
 
 ## Reference Guide
@@ -95,54 +91,49 @@ If possible, add one section per platform. Other maintainers are welcome to comp
 
 #### Properties
 
-* `supportedOptions: Set<SearchService.Options>`
-  * Advanced search options available with this Search Service.
+* `options: Set<SearchService.Option>`
+  * All search options available for this service.
+  * Also holds the default value for these options, which can be useful to setup the views in the search interface. If an option is missing when calling `search()`, its value is assumed to be the default one.
 
 #### Methods
 
-* (async) `search(query: String, options: Set<SearchService.Options> = []) -> SearchIterator`
+* (async) `search(query: String, options: Set<SearchService.Option> = []) -> SearchIterator`
   * Starts a new search through the publication content, with the given `query`.
-  * Returns a `SearchIterator` used to crawl through the results, or an error if the search couldn't be processed.
+  * Returns a `SearchIterator` used to crawl through the results, or an error if the search could not be handled.
 
 #### `Publication` Helpers
 
-* `supportedSearchOptions: Set<SearchService.Options> = findService(SearchService::class)?.supportedOptions ?: []`
-  * Advanced search options available with this Search Service.
-* `isSearchable: Boolean = findService(SearchService::class) != null || links.firstWithRel("search", mediaType: MediaType.readiumSearch) != null`
+* `searchOptions: Set<SearchService.Option> = findService(SearchService::class)?.options ?: []`
+  * All search options available for this service.
+* `isSearchable: Boolean = findService(SearchService::class) != null`
   * Indicates whether the content of this publication can be searched.
-  * Checks the presence of a Search Service, or a `search` link with the `application/vnd.readium.locators+json` media type.
-* `search(query: String, options: Set<SearchService.Options>) -> SearchIterator = findService(SearchService::class)!.search(query, options)`
+* `search(query: String, options: Set<SearchService.Option> = []) -> SearchIterator = findService(SearchService::class).search(query, options)`
   * Starts a new search through the publication content, with the given `query`.
-  * Delegates to the Search Service, or use the WS from the `search` link if there's any.
-  * Calling `search()` if `isSearchable` returns `false` is an error and an exception will be thrown.
 
-#### `SearchService.Options` Enum
+#### `SearchService.Option` Enum
 
-Advanced search options which can be implemented by a Search Service.
+Search options which can be implemented by a Search Service.
 
-* `CaseSensitive` - `case-sensitive`
-  * Matches the exact case used in the query.
-* `DiacriticSensitive` - `diacritic-sensitive`
-  * Matches the exact accents used in the query.
-* `Fuzzy` - `fuzzy`
-  * Matches results with [typos or similar spelling](https://en.wikipedia.org/wiki/Approximate_string_matching).
-* `CloseVariants` - `close-variants`
+* `CaseSensitive(boolean)` - `case-sensitive`
+  * Whether the search will differentiate between capital and lower-case letters.
+* `DiacriticSensitive(boolean)` - `diacritic-sensitive`
+  * Whether the search will differentiate between letters with accents or not. 
+* `WholeWord(boolean)` - `whole-word`
+  * Whether the query terms will match full words and not parts of a word.
+* `CloseVariants(boolean)` - `close-variants`
   * Matches results similar but not identical to the query, such as reordered or words with a related stem.
   * For example, "banana split" would match "I love banana split" but also "splitting all the bananas".
   * When *close variants* are enabled, surround terms with double quotes for an exact match.
-* `ExclusionOperator` - `exclusion-operator` (requires `CloseVariants`)
-  * Ignores results containing any term prefixed with `-`.
-  * For example, "virus -computer".
-* `PrefixOperator` - `prefix-operator` (requires `CloseVariants`)
-  * Matches results starting with the terms suffixed with `*`.
-  * For example, "eat* pasta".
-* `BooleanOperators` - `boolean-operators` (requires `CloseVariants`)
-  * Refines queries with `OR` and `AND` operators, optionally grouped with parentheses.
-  * For example, "(Marvel OR DC) comic"
+* `Fuzzy(boolean)` - `fuzzy`
+  * Matches results with [typos or similar spelling](https://en.wikipedia.org/wiki/Approximate_string_matching).
+* `Custom(string)` - `<string>`
+    * A custom option implemented by a Search Service which is not officially recognized by Readium.
 
-Additional options can be declared by a Search Service in `supportedSearchOptions`. Such extensions should use an URI as key to avoid conflicts.
+Custom options can be declared by a Search Service in `searchOptions`. Such extensions should use a [reverse domain name notation](https://en.wikipedia.org/wiki/Reverse_domain_name_notation) as key to avoid conflicts, e.g. `com.company.x`.
 
 ### `SearchIterator` Interface
+
+Iterates through search results.
 
 #### Properties
 
@@ -152,12 +143,30 @@ Additional options can be declared by a Search Service in `supportedSearchOption
 
 #### Methods
 
-* (async) `next() -> [Locator]?`
+* (async) `next() -> LocatorCollection?`
   * Retrieves the next page of results.
   * Returns `null` when reaching the end of the publication, or an error in case of failure.
 * `close()`
   * Closes any resources allocated for the search query, such as a cursor.
   * To be called when the user dismisses the search.
+
+### `LocatorCollection` Object
+
+Represents a sequential list of `Locator` objects. For example, a search result or a list of positions.
+
+#### Properties
+
+* `metadata: LocatorCollection.Metadata`
+  * Holds the metadata of a `LocatorCollection`.
+  * Properties:
+      * `title: LocalizedTitle?` – A user-facing title representing this collection of locators.
+      * `numberOfItems: Int?` – Indicates the total number of locators in the collection.
+      * `otherMetadata: [String: Any]` – Additional metadata for extensions, as a JSON dictionary.
+* `links: [Link]`
+  * List of links relevant to this collection.
+  * For example, a link with `next` relation indicates how to get the next page of results.
+* `locators: [Locator]`
+  * List of locators belonging to this collection.
 
 ### Web Service
 
