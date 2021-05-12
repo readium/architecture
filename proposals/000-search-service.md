@@ -14,7 +14,7 @@ Being able to search through a publication's content is a useful feature, often 
 
 To ensure interoperability, this new Search Service will use the [Locator model](https://readium.org/architecture/models/locators/). This means that a mobile or desktop app could – with the same code – display a search interface for a remote Web Publication, if the Publication Server implements the proper Search Web Service.
 
-Besides, search can be implemented in many different ways, so being able to switch implementations without touching the UX layer would be valuable. For example, a reading app might want to use a [full-text search](https://en.wikipedia.org/wiki/Full-text_search) database to improve search performance and search across multiple publications in the user bookshelf.
+Search can be implemented in many different ways, so being able to switch implementations without touching the UX layer would be valuable. For example, a reading app might want to use a [full-text search](https://en.wikipedia.org/wiki/Full-text_search) database to improve search performance and search across multiple publications in the user bookshelf.
 
 
 ## Developer Guide
@@ -40,13 +40,13 @@ The search iterator may also provide the total number of occurrences with `resul
 
 A plain search can be an expensive operation. To keep the resource usage under control, the search results are paginated thanks to the **search iterator**. You can move forward in the pages with the `next()` function, which returns a `LocatorCollection` object.
 
-One of the usual ways to present the results is as a scrollable list of occurrences. You can use `next()` to implement the *infinite scroll* pattern by loading the next page of results when the user reaches the end of the list.
+One of the usual ways to present the results is as a scrollable list of occurrences. You can use `next()` to implement the *infinite scroll* pattern by loading the next page of results when the user reaches the end of the scroll view.
 
 After reaching the end of the publication, any subsequent call to `next()` will return `null`.
 
 #### Number of Items per Page
 
-You don't have any control over the number of items returned in a page. This depends on the implementation of the Search Service used. For example, a full-text search might return a constant number of locators per page, while a plain crawling search might return one full page per publication resource. 
+You don't have any control over the number of items returned in a page. This depends on the implementation of the Search Service used. For example, a full-text search might return a constant number of locators per page, while a plain crawling search could return one page per publication resource. 
 
 ### Terminating a Search
 
@@ -63,9 +63,9 @@ Depending on the search algorithm, the Search Service might be able to offer opt
 When searching for a query, you can customize some of the supported search options.
 
 ```typescript
-let searchIterator = publication.search("kiwi recipe", options: [
-  SearchService.Option.CaseSensitive(true),
-  SearchService.Option.CloseVariants(false),
+let searchIterator = publication.search("recette kiwi", options: SearchOptions(
+  caseSensitive: false,
+  language: "fr",
 ])
 ```
 
@@ -75,73 +75,80 @@ You should adapt the user interface according to the available search options an
 
 ```typescript
 diacriticCheckbox.visible =
-  publication.searchOptions.has(SearchService.Option.DiacriticSensitive)
+  publication.searchOptions.diacriticSensitive ?: false
 ```
 
 ### Backward Compatibility and Migration
 
 #### Mobile Toolkits
 
-This new proposal does not impact any existing API. The Kotlin Toolkit already provides a search feature implemented with [mark.js](https://markjs.io/), but its code is entirely in the test app, so out of scope for R2 modules. Reading apps are free to keep the implementation using mark.js and ignore the Search Service.
+This new proposal does not impact any existing API. The Kotlin toolkit already provides a search feature implemented with [mark.js](https://markjs.io/), but its code is entirely in the test app, so out of scope for R2 modules. Reading apps are free to keep the implementation using mark.js and ignore the new Search Service.
 
 
 ## Reference Guide
 
-### `SearchService` Interface
+### Types and APIs
 
-#### Properties
+#### `SearchService` Interface (implements `Publication.Service`)
 
-* `options: Set<SearchService.Option>`
-  * All search options available for this service.
-  * Also holds the default value for these options, which can be useful to setup the views in the search interface. If an option is missing when calling `search()`, its value is assumed to be the default one.
+##### Properties
 
-#### Methods
+* `options: SearchOptions`
+  * Default value for the search options of this service.
+  * If an option does not have a value, it is not supported by the service.
 
-* (async) `search(query: String, options: Set<SearchService.Option> = []) -> SearchIterator`
+##### Methods
+
+* (async) `search(query: String, options: SearchOptions? = null) -> SearchIterator`
   * Starts a new search through the publication content, with the given `query`.
+  * If an option is null when calling `search()`, its value is assumed to be the default one.
   * Returns a `SearchIterator` used to crawl through the results, or an error if the search could not be handled.
 
-#### `Publication` Helpers
+##### `Publication` Helpers
 
-* `searchOptions: Set<SearchService.Option> = findService(SearchService::class)?.options ?: []`
-  * All search options available for this service.
 * `isSearchable: Boolean = findService(SearchService::class) != null`
   * Indicates whether the content of this publication can be searched.
-* `search(query: String, options: Set<SearchService.Option> = []) -> SearchIterator = findService(SearchService::class).search(query, options)`
+* `searchOptions: SearchOptions = findService(SearchService::class)?.options ?: SearchOptions()`
+  * All search options available for this service.
+* `search(query: String, options: SearchOptions? = null) -> SearchIterator = findService(SearchService::class).search(query, options)`
   * Starts a new search through the publication content, with the given `query`.
 
-#### `SearchService.Option` Enum
+#### `SearchOptions` Class
 
-Search options which can be implemented by a Search Service.
+Holds the available search options and their current values.
 
-* `CaseSensitive(boolean)` - `case-sensitive`
+##### Properties
+
+* `caseSensitive: Boolean?` (JSON: `case-sensitive`)
   * Whether the search will differentiate between capital and lower-case letters.
-* `DiacriticSensitive(boolean)` - `diacritic-sensitive`
+* `diacriticSensitive: Boolean?` (JSON: `diacritic-sensitive`)
   * Whether the search will differentiate between letters with accents or not. 
-* `WholeWord(boolean)` - `whole-word`
+* `wholeWord: Boolean?` (JSON: `whole-word`)
   * Whether the query terms will match full words and not parts of a word.
-* `CloseVariants(boolean)` - `close-variants`
-  * Matches results similar but not identical to the query, such as reordered or words with a related stem.
-  * For example, "banana split" would match "I love banana split" but also "splitting all the bananas".
-  * When *close variants* are enabled, surround terms with double quotes for an exact match.
-* `Fuzzy(boolean)` - `fuzzy`
-  * Matches results with [typos or similar spelling](https://en.wikipedia.org/wiki/Approximate_string_matching).
-* `Custom(string)` - `<string>`
-    * A custom option implemented by a Search Service which is not officially recognized by Readium.
+* `exact: Boolean?` (JSON: `exact`)
+  * Matches results exactly as stated in the query terms, taking into account stop words, order and spelling.
+* `language: String?` (JSON: `language`)
+  * BCP 47 language code overriding the publication's language.
+* `regularExpression: Boolean?` (JSON: `regex`)
+  * The search string is treated as a regular expression.
+  * The particular flavor of regex depends on the service.
+* `otherOptions: Map<String, String>`
+    * Map of custom options implemented by a Search Service which are not officially recognized by Readium.
 
-Custom options can be declared by a Search Service in `searchOptions`. Such extensions should use a [reverse domain name notation](https://en.wikipedia.org/wiki/Reverse_domain_name_notation) as key to avoid conflicts, e.g. `com.company.x`.
+Custom options can be declared by a Search Service in `otherOptions`. Such extensions should use a [reverse domain name notation](https://en.wikipedia.org/wiki/Reverse_domain_name_notation) (e.g. `com.company.x`) as JSON key to avoid conflicts.
 
-### `SearchIterator` Interface
+#### `SearchIterator` Interface
 
 Iterates through search results.
 
-#### Properties
+##### Properties
 
 * `resultCount: Int?`
   * Number of matches for this search.
   * This property is optional because depending on the search algorithm, it may not be possible to know the result count until reaching the end of the publication.
+  * The count might be updated after each call to `next()`.
 
-#### Methods
+##### Methods
 
 * (async) `next() -> LocatorCollection?`
   * Retrieves the next page of results.
@@ -150,84 +157,106 @@ Iterates through search results.
   * Closes any resources allocated for the search query, such as a cursor.
   * To be called when the user dismisses the search.
 
-### `LocatorCollection` Object
+#### `LocatorCollection` Object
 
 Represents a sequential list of `Locator` objects. For example, a search result or a list of positions.
 
-#### Properties
+##### Properties
 
-* `metadata: LocatorCollection.Metadata`
-  * Holds the metadata of a `LocatorCollection`.
-  * Properties:
-      * `title: LocalizedTitle?` – A user-facing title representing this collection of locators.
-      * `numberOfItems: Int?` – Indicates the total number of locators in the collection.
-      * `otherMetadata: [String: Any]` – Additional metadata for extensions, as a JSON dictionary.
+* `metadata`
+  * `title: LocalizedTitle?` – A user-facing title representing this collection of locators.
+  * `numberOfItems: Int?` – Indicates the total number of locators in the collection.
+  * `otherMetadata: [String: Any]` – Additional metadata for extensions, as a JSON dictionary.
 * `links: [Link]`
   * List of links relevant to this collection.
-  * For example, a link with `next` relation indicates how to get the next page of results.
 * `locators: [Locator]`
   * List of locators belonging to this collection.
 
+### Default Implementations
+
+Example implementations which should be provided by the Readium toolkits.
+
+#### `StringSearchService`
+
+A rather naive implementation iterating over each resource of the publication and searching into the sanitized text content.
+
+#### `WebSearchService`
+
+A facade to the JSON Web Service described in the following section.
+
 ### Web Service
-
-#### `search/options` Route
-
-Returns the list of supported search options.
-
-* href: `/~readium/search/options`
-* type: `application/vnd.readium.search.options+json`
-
-```json
-{
-  "supportedOptions": ["case-sensitive", "diacritic-sensitive", "close-variants"]
-}
-```
 
 #### `search` Route
 
-* href: `/~readium/search{?query,options}`
+* HREF: `/~readium/search{?query}`
   * `query` is the percent-encoded text query to search.
-  * `options` is a comma-separated list of search options to enable for this query.
-    * When missing, it defaults to an empty options set.
-    * For example, `options=case-sensitive,close-variants`.
+* relation: `search`
 * type: `application/vnd.readium.locators+json`
 
-##### Response
+##### `OPTIONS` Response
 
-Status Code | Description | Format
------------ | ----------- | ------
-`200` | Returns the first page of results. | Locators Collection object
-`400` | Invalid search query or options. | [Problem Details object](https://tools.ietf.org/html/rfc7807#section-3.1)
+When using the `OPTIONS` HTTP method, without any query parameters, the server returns the supported search options as a JSON object.
 
-###### Locators Collection Object
+```
+OPTIONS https://publication-server.com/search
+```
+
+```json
+{
+    "options": {
+        "case-sensitive": false,
+        "diacritic-sensitive": false,
+        "com.company.regex-type": "perl"
+    }
+}
+```
+
+##### `GET` Response
+
+The `GET` HTTP method is used to perform the search. It expects the `query` parameter as well as one additional parameter per custom option, for example:
+
+```
+GET https://publication-server.com/search?query=orange&case-sensitive=1&com.company.regex-type=icu
+```
+
+A valid Search Web Service **must** support integer representations for boolean query options.
+
+| Status Code | Description                       | Format                                                                    |
+|-------------|-----------------------------------|---------------------------------------------------------------------------|
+| `200`       | Returns the first page of results | `LocatorCollection` object                                                |
+| `400`       | Invalid search query or options   | [Problem Details object](https://tools.ietf.org/html/rfc7807#section-3.1) |
+
+###### `LocatorCollection` Object
 
 In `metadata` a feed MAY contain the following elements:
 
-Key | Definition | Format
---- | ---------- | ------
-`numberOfItems` | Indicates the total number of results for this search. | Integer
+| Key             | Definition                                                   | Format           |
+|-----------------|--------------------------------------------------------------|------------------|
+| `numberOfItems` | Indicates the total number of results for this search        | Integer          |
+| `title`         | A user-facing title representing this collection of locators | Localized String |
 
 In `links` the following relations MAY be used:
 
-Relation | Definition | Reference
--------- | ---------- | ---------
-`self` | Refers to the current page of results | [RFC4287](https://www.iana.org/go/rfc4287)
-`next` | Refers to the next page of results, if the end of the publication is not already reached. | [HTML](http://www.w3.org/TR/html5/links.html#link-type-next)
+| Relation | Definition                                                                                | Reference                                                    |
+|----------|-------------------------------------------------------------------------------------------|--------------------------------------------------------------|
+| `self`   | Refers to the current page of results                                                     | [RFC4287](https://www.iana.org/go/rfc4287)                   |
+| `next`   | Refers to the next page of results, if the end of the publication is not already reached. | [HTML](http://www.w3.org/TR/html5/links.html#link-type-next) |
 
 ```json
 {
   "metadata": {
     "title": "Searching <riddle> in Alice in Wonderlands - Page 1",
-    "numberOfItems": 3
+    "numberOfItems": 42
   },
   "links": [
-    {"rel": "self", "href": "/978-1503222687/search?query=apple", "type": "application/vnd.readium.locators+json"},
-    {"rel": "next", "href": "/978-1503222687/search?query=apple&page=2", "type": "application/vnd.readium.locators+json"}
+    {"rel": "self", "href": "/978-1503222687/search?query=riddle", "type": "application/vnd.readium.locators+json"},
+    {"rel": "next", "href": "/978-1503222687/search?query=riddle&page=2", "type": "application/vnd.readium.locators+json"}
   ],
   "locators": [
     {
       "href": "/978-1503222687/chap7.html",
       "type": "application/xhtml+xml",
+      "title": "Chapter 1",
       "locations": {
         "fragments": [
           ":~:text=riddle,-yet%3F'"
@@ -243,6 +272,7 @@ Relation | Definition | Reference
     {
       "href": "/978-1503222687/chap7.html",
       "type": "application/xhtml+xml",
+      "title": "Chapter 1",
       "locations": {
         "fragments": [
           ":~:text=in%20asking-,riddles"
@@ -261,24 +291,80 @@ Relation | Definition | Reference
 
 ### Populating the `Locator` Objects
 
+#### Title
+
+Providing a `title` for locators is useful to group search results in the user interface. A common choice is to use the table of contents' title where the occurrence is located.
+
+#### Text Context
+
+A valid `Locator` object returned by a Search Service **must** have at least a `text` context. With long enough `before` and `after` snippets (> 30 characters), a Navigator is able to locate the search occurrence in most cases.
+
+The `text` is also used in the search user interface to display additional context to the user. As such, it should be sanitized by:
+
+* removing any markups (e.g. HTML)
+* collapsing whitespaces into a single space
+  * newlines may be kept
+
+#### Progression
+
+The `progression` and `totalProgression` locations are not mandatory, but a very useful addition to display in the user interface.
+
+#### Text Fragment
+
+A [text fragment](https://wicg.github.io/scroll-to-text-fragment/) such as `:~:text=in%20asking-,riddles` may be provided to improve interoperability in a web browser context.
+
 
 ## Rationale and Alternatives
 
-What other designs have been considered, and why you chose this approach instead.
+### EPUB: Crawling the Web Views
+
+A potential alternative currently implemented in the Kotlin test app is to crawl through each resource with Web View and using mark.js to locate search results.
+
+On the plus side, this solution ensures accurate results and "free" highlighting thanks to mark.js. Unfortunately this is very resource intensive and slow, and may loose the current navigator location.
+
+### Using Navigator-Specific Search APIs
+
+Some rendering SDKs (e.g. Web Views, PDF viewers, etc.) provide native search APIs which might offer more accurate search results.
+
+There are a few drawbacks when using such APIs:
+
+* They generally operate at a resource level instead of on the whole publication.
+* It is often not possible to accumulate search results in the background to be presented in the user interface.
+* They might mess up the current navigator location.
+* We cannot switch the Navigator implementation while retaining the same search features.
+
+However, in some cases (e.g. PDF) it might be still be beneficial to use them. In which case, we could wrap the native API into its own `SearchService` which would only be usable with a `Publication` loaded in a Navigator. 
 
 
 ## Drawbacks and Limitations
 
-Why should we *not* do this? Are there any unresolved questions?
+The main potential issue is with locators containing only a text context with reflowable publications, which is the case with the default `StringSearchService` implementation and probably FTS-based solutions. We cannot guarantee accurate locations compared to using CFI or DOM ranges. It might fail in very specific publications.
+
+However, I feel like this drawback is outweighed by the ease of implementation of text-only locations and the fact that they are less fragile. In practice, I did not notice any positioning errors during early implementation. Other solutions like [Hypothesis](https://hypothes.is/) have been using text-based locations for a while with success.
 
 
 ## Future Possibilities
 
-Making it more reactive
+### Full-text search
 
-FTS through a ContentIteratorService
+An implementation based on a [full-text search](https://en.wikipedia.org/wiki/Full-text_search) database would be an exciting solution for reading apps, since it offers near-instant results, cross-bookshelf search and advanced features like stemming.
+
+SQLite ships with an FTS extension making it easy to implement on most platforms without too much overhead.
 
 ## Implementation Notes
-(*after implementing the feature on a platform*)
 
-Any implementer can submit an amendment PR to offer insights for other platforms.
+While implementing the basic `StringSearchService` on mobile toolkits, I identified three important pieces:
+
+* The base `StringSearchService` itself, which:
+    * implements an iterator to crawl through the resources of the publication,
+    * delegates the text extraction and the actual search algorithm to the other two pieces,
+    * creates `Locator` collections from ranges of occurrences.
+* `ResourceContentExtractor` is a component which extracts and sanitizes the text of a resource. 
+  * There is one implementation per media type, since the extraction requires to remove markups (e.g. HTML), understand binary formats (e.g. PDF) or even transform the resource (speech recognition for audio resources).
+  * The `StringSearchService` is provided with a factory which will create a new `ResourceContentExtractor` for each resource, according to the media type declared in its Link object.
+* The search algorithm which finds ranges of query occurrences in the sanitized text.
+  * It can be implemented in multiple ways offering different search options, therefore it's useful to not hard-code it in the base `StringSearchService`.
+  * For example, the Kotlin toolkit offers two search algorithms:
+      * `ICU` (API 24) using the [International Components for Unicode](https://developer.android.com/reference/kotlin/android/icu/text/SearchIterator) library to offer language-aware search and case/diacritic sensitivity options.
+      * `Naive` (fallback) which performs a simple exact search with no options.
+
