@@ -17,24 +17,20 @@ A Readium LCP compliant app must update the Readium LCP certificate revocation l
 
 A Readium LCP compliant app must generate a unique device id and human readable device name at install time. 
 
-A quick note about the device ID: both Android and iOS "launcher app" default open-source implementations use UUID coupled with a per-app-install persistent storage (i.e. device "id" gets wiped and renewed if app is removed then reinstalled).
+A quick note about the device ID: both Android and iOS "test app" open-source implementations use a UUID coupled with a per-app-install persistent storage (i.e. the device "id" is renewed and the perstistent storage re-created if the app is removed then reinstalled).
 
 [Android sample 1](https://github.com/readium/readium-lcp-client/blob/cd65c5e5615828c41aded659a9d518059149c1f9/platform/android/lib/src/clientlib/java/org/readium/sdk/lcp/StatusDocumentProcessing.java#L62-L70) and [Android sample 2](https://github.com/readium/SDKLauncher-Android/blob/bbe16a5a8655d8e7260a2bc4a0e011a8419bf782/SDKLauncher-Android/app/src/main/java/org/readium/sdk/android/launcher/ContainerList.java#L448-L515)
 
-
 [iOS sample 1](https://github.com/readium/readium-lcp-client/blob/cd65c5e5615828c41aded659a9d518059149c1f9/platform/apple/src/LCPStatusDocumentProcessing.h#L29-L36) and [iOS sample 2](https://github.com/readium/SDKLauncher-iOS/blob/96f23bdc4cd9d5c0507c7aa3a6828d7c4fbc0e75/Classes/LCPStatusDocumentProcessing_DeviceIdManager.mm#L35-L118)
 
-
-## Import a protected publication
-
-When an .epub file is imported, the mimetype (value application/epub+zip) is checked and mandatory metadata are extracted. There is no additional test when the publication is protected by the LCP DRM. 
-
 ## Import a a DRM license
-An app which imports a DRM license will follow these steps:
+An app which imports a DRM license msut follow these steps:
 
 ### 1/ Validate the license structure
 
-Note: this avoids extracting a dummy publication link from the license. 
+The app checks that the license is valid (*). If the license is invalid, the user gets a notification like "This Readium LCP license is invalid, the publication cannot be processed". 
+
+(*) EDRLab provides a JSON schema for LCP licenses in the EDRLab github, lcp-testing-tools.
 
 ### 2/ Extract the "publication" link from the license
 
@@ -42,21 +38,29 @@ Note: this avoids extracting a dummy publication link from the license.
 
 ### 4/ Insert the license into the publication
 
-The license is added as META-INF/license.lcpl. In case of error, the user is notified and the app stops there. 
+The license is added to the package, as "license.lcpl". In case of error, the user is notified and the app stops there. 
 
+The app can now open the newly generated protected publication.
+
+## Import a protected publication
+
+When an .epub file is imported, the mimetype (value application/epub+zip) is checked and mandatory metadata are extracted. There is no additional test when the publication is protected by the LCP DRM.
+
+LCP protected PDF, Audiobooks and Divina publications are also imported with no specific checking.  
 
 ## Open a protected publication
-An app which opens an EPUB protected by LCP (i.e. containing its license) will follow these steps:
 
-### 1/ Check if the EPUB is DRM protected
+### 1/ Check if the LCP protected publication is well-formed
 
-An LCP protected publication is signaled by the presence of a license document (META-INF/license.lcpl) plus certain specific values in META-INF/encryption.xml which indicate which resources are encrypted and with which algorthm. 
+An LCP protected publication is signaled by the presence of a license document (license.lcpl). 
 
-As the licence document is mandatory, the app must raise an error if this file is missing but the content is declared encrypted. Also, the app should check that all resources referenced in encryption.xml are found in the EPUB archive.
+In the EPUB use-case it is also signaled by specific values in META-INF/encryption.xml, which indicate which resources are encrypted and with which algorthm. The app must raise an error if license.lcpl is missing but the content is declared encrypted. Also, the app should check that all resources referenced in encryption.xml are found in the EPUB archive.
+
+An app which opens an EPUB protected by LCP (i.e. containing its license) must follow these steps:
 
 ### 2/ Validate the license structure
 
-The app checks that the license is valid (EDRLab provides a JSON schema for LCP licenses in the EDRLab github, lcp-testing-tools). If the license is invalid, the user gets a notification like "This Readium LCP license is invalid, the publication cannot be processed". 
+The app must validate the license structure against the JSON schema. If the license is invalid, the user gets a notification like "This Readium LCP license is invalid, the publication cannot be processed". 
 
 ### 3/ Fetch the status document
 
@@ -64,27 +68,29 @@ An LCP license may contain a "status" link, i.e. a link to a status document. If
 
 1/ Fetch the status document.
 
-If the Status Document is unavailable or if the client is unable to obtain an internet connection, it MUST NOT block the user from accessing the Publication tied to the License Document. Jump to step 5.
+If the Status Document is unavailable or if the client is unable to obtain an internet connection, it MUST NOT block the user from accessing the Publication tied to the License Document. Jump to step 6.
 
-2/ Validate the structure of the status document. If the structure is not valid, the app must jump to step 5, as if no status link was present in the license. 
+2/ Validate the structure of the status document. If the structure is not valid, the app must jump to step 6, as if no status link was present in the license. 
 
-### 4/ Get an updated license if needed
+### 4/ Fetch an updated license if needed
 
 If the license timestamp in the 'updated' object of the Status Document is more recent than the timestamp contained in the local copy of the License Document, the app must try to download the License Document again. 
 
 If the download of the updated License Document does not succeed, log that information and jump to step 5.
 
-The app must then validate the new license structure against the JSON schema. If the updated license is ok, the app replaces the previous copy with the new one. If not, log that update of the License Document failed .
+The app must then validate the new license structure against the JSON schema. If the updated license is ok, the app replaces the previous copy with the new one. If not, it logs that the update of the License Document failed.
 
 Note: if the user passphrase has been modified server side after the initial license has been generated, the updated license is generated with the new passphrase. 
 
 ### 5/ Check the license status
 
-If there was a need to update the License Document AND this update failed, check the status in the status document. If it is "revoked", "returned", "cancelled" or "expired" the app MUST then notify the user and stop there.
+Check the status in the status document. If it is "revoked", "returned", "cancelled" or "expired" the app MUST then notify the user and stop there.
 
-Note: this assures that if the update of the License Document failed, the status takes precedence over the content of the obsolete license. 
+Note: the up-to-date status takes precedence over the content of the obsolete license. 
 
-The message to the user must be clear about the status of the license: e.g. don't display "expired" if the status is "revoked". The date and time corresponding to the new status should be displayed (e.g. "The license expired on 01 January 2018").
+The message to the user must be clear about the status of the license: e.g. don't display "expired" if the status is "revoked". 
+
+The end date-time corresponding to an expired status should be displayed (e.g. "The license expired on 01 January 2018"); this information is found in the license.
 
 If the license has been revoked, the user message should display the number of devices which registered to the server. This count can be calculated from the number of "register" events in the status document. If no event is logged in the status document, no such message should appear (certainly not "The license was registered by 0 devices"). 
 
@@ -106,23 +112,25 @@ Note also that the hash algorithm may depend on the LCP profile used in the lice
 
 ### 7/ Validate the integrity of the license
 
-1/ The app checks that the profile identifier in the license can be processed. If it is not the case, the user gets a notification like "This Readium LCP license has a profile identifier that this app cannot handle, the publication cannot be processed".
+1/ Check that the profile identifier found in the license can be processed. If it is not the case, the user gets a notification like "This Readium LCP license has a profile identifier that this app cannot handle, the publication cannot be processed".
 
-2/ The app calls the r2-lcp-client library (createContext()) with the license, the passphrase hash and CRL as parameters.
+2/ Call the r2-lcp-client library (createContext()) with the license, the passphrase hash and CRL as parameters.
 
-The r2-lcp-client library will verify the license integrity and create a DRM context, i.e.:
+The r2-lcp-client library verifies the license integrity, i.e.:
 
-* check the signature of the provider certificate using the embedded root certificate;
-* check that the provider certificate is not in the CRL; 
-* check that the provider certificate was not expired when the license was last updated;
+* checks the signature of the provider certificate using the embedded root certificate;
+* checks that the provider certificate is not in the CRL; 
+* checks that the provider certificate was not expired when the license was last updated;
 * validate the signature of the license;
-* check the user key;
-* check the date rights. An LCP license handles a datetime start and datetime end, which must be compared with the system datetime.
-* return a "context" structure, to be used later in decryption calls.
+* checks the user key;
+* checks the start/end rights; start/end date-time are compared with the system datetime.
+
+This library returns a "context" structure, to be used later in decryption calls.
 
 See the Readium LCP spec section 5.5 for additional details. 
 
-If the license is out of date, display the status of the license as detailed in step 5.  
+If the start date-time has not been readed, the license is considered "not usable until ...".
+If the end date-time has been reached, it is considered "expired".   
 
 ### 8/ Register the device / license 
 
@@ -136,21 +144,15 @@ If the app is online, a Status Document was fetched and it contains a "register"
 
 ### 9/ Open the publication 
 
-
-
-## Decrypt a publication
-
 For each encrypted resource or chunk, the app will call r2-lcp-lib (C++), passing the context previously initialized and the encrypted content as parameters.
 
 ## Check the print & copy rights
 
 Each time the user decides to print a page or copy a range of characters, the app will 
 
-### 1/ check the current counter vs the corresponding right 
+1/ check the current counter vs the corresponding right. The app will verify that the stored counter plus the additional volume to be printed or copied does not exceed the rights expressed in the license. 
 
-The app will verify that the stored counter plus the additional volume to be printed or copied does not exceed the rights expressed in the license. 
-
-### 2/ store the new counter
+2/ store the new counter
 
 
 
