@@ -19,7 +19,7 @@ These modules are not necessarily meant to be deployed on the same device or wri
 * [Readium Web Publication Manifest](https://readium.org/webpub-manifest)
 * [Locators](models/locators)
 * [OPDS 2.0](https://drafts.opds.io/opds-2.0) (maintained by the OPDS Community)
-* [Synchronized Narration](https://w3c.github.io/sync-media-pub/synchronized-narration.html) (maintained by a W3C CG)
+* [Synchronized Narration](https://w3c.github.io/sync-media-pub/archived/synchronized-narration.html) (maintained by a W3C CG)
 
 ### Main Modules
 
@@ -35,7 +35,9 @@ These modules are not necessarily meant to be deployed on the same device or wri
 
 ## Projects
 
-[See all active Readium projects](projects.md) based on the Readium Architecture.
+* [Readium Mobile](https://readium.org/mobile)
+* [Readium Desktop](https://readium.org/desktop)
+* [Readium Web](https://readium.org/web)
 
 ## Ecosystem
 

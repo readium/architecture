@@ -57,21 +57,21 @@ The Streamer is one of the main components of the Readium Architecture, whose re
 
 ### Usage
 
-#### Opening a Publication File
+#### Opening a Publication Asset
 
 Opening a `Publication` is really simple with an instance of `Streamer`. 
 
 ```kotlin
-file = File(path)
+asset = FileAsset(path)
 streamer = Streamer()
-publication = streamer.open(file)
+publication = streamer.open(asset)
 ```
 
-Your app will automatically support parsing new formats added in Readium. However, if you wish to limit the supported formats to a subset of what Readium offers, simply guard the call to `open()` by checking the value of `file.format` first.
+Your app will automatically support parsing new formats added in Readium. However, if you wish to limit the supported formats to a subset of what Readium offers, simply guard the call to `open()` by checking the value of `asset.mediaType` first.
 
 ```kotlin
-supportedFormats = [Format.EPUB, Format.PDF]
-if (!supportedFormats.contains(file.format)) {
+supportedMediaTypes = [MediaType.EPUB, MediaType.PDF]
+if (!supportedMediaTypes.contains(asset.mediaType)) {
     return
 }
 ```
@@ -107,9 +107,9 @@ The Streamer accepts a `Publication.Builder.Transform` closure which will be cal
 
 ```kotlin
 streamer = Streamer(
-    onCreatePublication = { format, manifest, fetcher, services ->
+    onCreatePublication = { mediaType, manifest, fetcher, services ->
         // Minifies the HTML resources in an EPUB.
-        if (format == Format.EPUB) {
+        if (mediaType == MediaType.EPUB) {
             fetcher = TransformingFetcher(fetcher, minifyHTML)
         }
 
@@ -120,7 +120,7 @@ streamer = Streamer(
         }
 
         // Sets a custom SearchService implementation for PDF.
-        is (format == Format.PDF) {
+        is (mediaType == MediaType.PDF) {
             services.searchServiceFactory = PDFSearchService.create
         }
     }
@@ -144,25 +144,25 @@ If you just want to add HTTP headers or set up caching and networking policies f
 
 The Readium Architecture is opened to support additional publication formats.
 
-1. [Register your new format and add a sniffer](https://github.com/readium/architecture/blob/master/proposals/001-format-api.md#supporting-a-custom-format). This step is optional but recommended to make your format a first-class citizen in the toolkit.
+1. [Register your new format and add a sniffer](https://readium.org/architecture/proposals/001-media-type.html#supporting-a-custom-media-type). This step is optional but recommended to make your format a first-class citizen in the toolkit.
 2. Implement a `PublicationParser` to parse the publication format into a `Publication` object. Then, provide an instance to the Streamer.
 
 ```swift
 class CustomParser: PublicationParser {
 
-    func parse(file: File, fetcher: Fetcher, warnings: WarningLogger?) -> Publication.Builder? {
-        if (file.format != Format.MyCustomFormat) {
+    func parse(asset: PublicationAsset, fetcher: Fetcher, warnings: WarningLogger?) -> Publication.Builder? {
+        if (asset.mediaType != MediaType.MyCustomFormat) {
             return null
         }
 
         return Publication.Builder(
-            manifest = parseManifest(from: file),
+            manifest = parseManifest(from: asset),
             fetcher = fetcher
             services = [CustomPositionsServiceFactory()]
         )
     }
 
-    private func parseManifest(from file: File) -> Manifest {
+    private func parseManifest(from asset: PublicationAsset) -> Manifest {
         ...
     }
 
@@ -182,36 +182,44 @@ Reading apps will still be able to use indivual parsers directly. However, we sh
 
 ## Reference Guide (`r2-shared`)
 
-### `File` Class
+### `PublicationAsset` Interface
 
-Represents a path on the file system.
+Represents a digital medium (e.g. a file) offering access to a publication.
 
-Used to cache the `Format` to avoid computing it at different locations.
+#### Properties
+
+* `name: String`
+  * Name of the asset, e.g. a filename.
+* (lazy) `mediaType: MediaType?`
+  * Media type of the asset, when known.
+  * **Warning:** This should not be called from the UI thread.
+
+#### Methods
+
+* (async) `createFetcher(dependencies: PublicationAssetDependencies, credentials: String?) -> Result<Fetcher, Publication.OpeningError>`
+  * Creates a fetcher used to access the asset's content.
+  * `dependencies: PublicationAssetDependencies`
+    * Platform-specific dependencies which can be used by the implementation to create the `Fetcher`. For example, an `ArchiveFactory`.
+  * `credentials: String?`
+    * Credentials provided by the reading app to open the asset. For example, a ZIP password.
+
+### `FileAsset` Class (implements `PublicationAsset`)
+
+Represents a publication stored as a file on the local file system.
 
 #### Constructors
 
-* `File(path: String, mediaType: String? = null)`
-  * Creates a `File` from a `path` and its known `mediaType`.
+* `FileAsset(path: String, mediaType: MediaType? = null)`
+  * Creates a `FileAsset` from a `path` and its known `mediaType`.
   * `path: String`
     * Absolute path to the file or directory.
-  * `mediaType: String? = null`
+  * `mediaType: MediaType? = null`
     * If the file's media type is already known, providing it will improve performances.
-* `File(path: String, format: Format)`
-  * Creates a `File` from a `path` and an already resolved `format`.
 
 #### Properties
 
 * `path: String`
   * Absolute path on the file system.
-* `name: String`
-  * Last path component, or filename.
-* (lazy) `format: Format?`
-  * Sniffed format, if the path points to a file.
-  * **Warning:** This should not be called from the UI thread.
-* (lazy) `isDirectory: Boolean`
-  * Whether the path points to a directory.
-  * This can be used to open exploded publication archives.
-  * **Warning:** This should not be called from the UI thread.
 
 ### `Publication.OpeningError` Enum
 
@@ -293,7 +301,7 @@ A `Publication`'s construction is distributed over the Streamer and its parsers,
 
 ```kotlin
 typealias Publication.Builder.Transform = (
-    format: Format,
+    mediaType: MediaType,
     manifest: *Manifest,
     fetcher: *Fetcher,
     services: *Publication.ServicesBuilder
@@ -306,21 +314,21 @@ The signature depends on the capabilities of the platform: `manifest`, `fetcher`
 
 ### `PublicationParser` Interface
 
-Parses a `Publication` from a file.
+Parses a `Publication` from an asset.
 
 #### Methods
 
-* `parse(file: File, fetcher: Fetcher, warnings: WarningLogger?) -> Publication.Builder?`
+* `parse(asset: PublicationAsset, fetcher: Fetcher, warnings: WarningLogger?) -> Publication.Builder?`
   * Constructs a `Publication.Builder` to build a `Publication` from a publication file.
   * Returns `null` if the file format is not supported by this parser, or throws an error if the parsing fails.
-  * `file: File`
-    * Path to the publication file.
+  * `asset: PublicationAsset`
+    * Digital medium (e.g. a file) used to access the publication.
   * `fetcher: Fetcher`
     * Initial leaf fetcher which should be used to read the publication's resources.
     * This can be used to:
       * support content protection technologies
       * parse exploded archives or in archiving formats unknown to the parser, e.g. RAR
-    * If the file is not an archive, it will be reachable at the HREF `/<file.name>`, e.g. with a PDF.
+    * If the asset is not an archive, it will be reachable at the HREF `/<asset.name>`, e.g. with a PDF.
   * `warnings: WarningLogger?`
     * Logger used to broadcast non-fatal parsing warnings.
     * Can be used to report publication authoring mistakes, to warn users of potential rendering issues or help authors debug their publications.
@@ -359,9 +367,9 @@ The specification of `HTTPClient`, `Archive`, `XMLDocument` and `PDFDocument` is
 
 #### Methods
 
-* (async) `open(file: File, onCreatePublication: Publication.Builder.Transform? = null, warnings: WarningLogger? = null) -> Result<Publication?, Publication.OpeningError>`
-  * Parses a `Publication` from the given `file`.
-  * Returns `null` if the file was not recognized by any parser, or a `Publication.OpeningError` in case of failure.
+* (async) `open(asset: PublicationAsset, onCreatePublication: Publication.Builder.Transform? = null, warnings: WarningLogger? = null) -> Result<Publication?, Publication.OpeningError>`
+  * Parses a `Publication` from the given `asset`.
+  * Returns `null` if the asset was not recognized by any parser, or a `Publication.OpeningError` in case of failure.
   * `onCreatePublication: Publication.Builder.Transform? = null`
     * Transformation which will be applied on the Publication Builder. It can be used to modify the `Manifest`, the root `Fetcher` or the list of service factories of the `Publication`.
   * `warnings: WarningLogger? = null`
@@ -398,11 +406,11 @@ Parses a `Publication` from a PDF document.
 
 ##### Reading Order
 
-The reading order contains a single link pointing to the PDF document, with the HREF `/<file.name>`.
+The reading order contains a single link pointing to the PDF document, with the HREF `/<asset.name>`.
 
 ##### Table of Contents
 
-The Document Outline (i.e. section 12.3.3) can be used to create a table of contents. The HREF of each link should use a `page=` fragment identifier, following this template: `/<file.name>#page=<pageNumber>`, where `pageNumber` starts from 1.
+The Document Outline (i.e. section 12.3.3) can be used to create a table of contents. The HREF of each link should use a `page=` fragment identifier, following this template: `/<asset.name>#page=<pageNumber>`, where `pageNumber` starts from 1.
 
 ##### Cover
 
