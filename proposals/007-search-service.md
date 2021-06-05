@@ -1,6 +1,7 @@
 # Search Service
 
 * Authors: [Mickaël Menu](https://github.com/mickael-menu)
+* Review PR: [#158](https://github.com/readium/architecture/pull/158)
 
 
 ## Summary
