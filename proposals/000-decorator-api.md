@@ -65,6 +65,33 @@ let decorations = highlights.map { highlight in
 navigator.apply(decorations: decorations, in: "user-highlights")
 ```
 
+### Handling User Clicks on Decorations
+
+To allow user clicks/taps on a decoration, you must first check that the `activate` interaction is available for the decoration style:
+
+```swift
+navigator.supportsDecorationInteraction(.activate, forStyle: Decoration.Style.Highlight)
+```
+
+Then, enable the `activate` interaction when creating each `Decoration` object.
+
+```swift
+Decoration(
+    id: "12",
+    locator: Locator(...),
+    style: Decoration.Style.Highlight(),
+    interactions: [.activate]
+)
+```
+
+Finally, listen to the `DecorationActivated` event which will be emitted when the user clicks the decoration. The API depends on the platform.
+
+```swift
+navigator.observe(DecorationActivated) { decoration in
+    // Present a highlight pop-up for `decoration`...
+}
+```
+
 ### Registering Decoration Styles
 
 Reading apps are welcome to register new decoration styles for custom use cases. The API depends on each Navigator, but here's an example using an HTML Navigator (e.g. for EPUB) to implement a sidemark:
@@ -118,7 +145,7 @@ let navigator = HTMLNavigator(config)
 You should check whether the Navigator supports drawing the decoration styles required by a particular feature before enabling it. For example, underlining an audiobook does not make sense, so an Audiobook Navigator would not support the `underline` decoration style.
 
 ```swift
-navigator.supportedDecorationStyles.contains(Decoration.Style.Underline)
+navigator.supportsDecorationStyle(Decoration.Style.Underline)
 ```
 
 ### Backward Compatibility and Migration
@@ -138,18 +165,23 @@ The Readium Swift toolkit did not yet have decoration capabilities, so there's n
 
 A navigator able to render arbitrary decorations.
 
-#### Properties
-
-* `supportedDecorationStyles: Set<Decoration.Style>`
-    * List of decoration styles supported by this Navigator.
-    * You should check whether the Navigator supports drawing the decoration styles required by a particular feature before enabling it. For example, underlining an audiobook does not make sense, so an Audiobook Navigator would not support the `underline` decoration style.
-
 #### Methods
 
 * `apply(decorations: [Decoration], group: String)`
     * Declares the current state of the decorations in the given decoration `group`.
     * Name each decoration group as you see fit. A good practice is to use the name of the feature requiring decorations, e.g. `annotation`, `search`, `tts`, etc.
     * The Navigator will decide when to actually render each decoration efficiently. Your only responsibility is to submit the updated list of decorations when there are changes.
+* `supportsDecorationStyles(style: Decoration.Style) -> Boolean`
+    * Indicates whether the Navigator supports the given decoration `style`.
+    * You should check whether the Navigator supports drawing the decoration styles required by a particular feature before enabling it. For example, underlining an audiobook does not make sense, so an Audiobook Navigator would not support the `underline` decoration style.
+* `supportsDecorationInteractionForStyle(interaction: Decoration.Interaction, style: Decoration.Style) -> Boolean`
+    * Indicates whether the Navigator supports the given `interaction` for this `style`.
+    * You should check whether the Navigator supports the interactions required by a particular feature before enabling it. Alternatively, you could offer a fallback in the user interface.
+
+#### Events
+
+* `DecorationActivated(Decoration)`
+    * Emitted when the user activates a decoration. For example, when clicking on a highlight.
 
 ### `Decoration` Class
 
@@ -165,6 +197,19 @@ For example, decorations can be used to draw highlights, images or buttons.
     * Location in the publication where the decoration will be rendered.
 * `style: Decoration.Style`
     * Declares the look and feel of the decoration.
+* `interaction: Set<Decoration.Interaction>`
+    * List of enabled user interactions for this decoration.
+
+### `Decoration.Interaction` Enum
+
+A type of user interaction with a decoration.
+
+* `Activate`
+    * Primary interaction with a decoration, such as a single tap or click.
+
+The user can interact with a decoration if it is enabled in `decoration.interactions` and supported by the Navigator for its style.
+
+The terminology avoids concrete gestures (e.g. tap) to fit all platforms (mouse vs. touch) and media type. For example, activating a decoration for an Audiobook Navigator might be very different than activating a visual highlight.
 
 ### `Decoration.Style` Interface
 
@@ -253,3 +298,8 @@ decorationStyles[Decoration.Style.MarginIcon] = HTMLDecorationTemplate.Image(
 This proposal focuses on the core use case which is highlighting a text range. But the Decorator API is not limited to static or even visual decorations.
 
 For example, we can "highlight" a portion of an audio resource by raising the volume or playing an audio cue when reaching the target time. Or display subtitles over a movie resource. Both of these examples rely on [Media Fragments](https://www.w3.org/TR/media-frags/) in the `Locator` to decorate a portion of the media.
+
+### Additional Interactions
+
+This proposal introduces only a single decoration interaction: `Activate`. We could extend this enum to add secondary interactions (press and hold) or hints (hover).
+
