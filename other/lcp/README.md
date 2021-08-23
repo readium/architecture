@@ -17,14 +17,14 @@ A Readium LCP compliant app must update the Readium LCP certificate revocation l
 
 A Readium LCP compliant app must generate a unique device id and human readable device name at install time. 
 
-A quick note about the device ID: both Android and iOS "test app" open-source implementations use a UUID coupled with a per-app-install persistent storage (i.e. the device "id" is renewed and the perstistent storage re-created if the app is removed then reinstalled).
+A quick note about the device ID: both Android and iOS "test app" open-source implementations use a UUID coupled with a per-app-install persistent storage (i.e. the device "id" is renewed and the persistent storage re-created if the app is removed then reinstalled).
 
 [Android sample 1](https://github.com/readium/readium-lcp-client/blob/cd65c5e5615828c41aded659a9d518059149c1f9/platform/android/lib/src/clientlib/java/org/readium/sdk/lcp/StatusDocumentProcessing.java#L62-L70) and [Android sample 2](https://github.com/readium/SDKLauncher-Android/blob/bbe16a5a8655d8e7260a2bc4a0e011a8419bf782/SDKLauncher-Android/app/src/main/java/org/readium/sdk/android/launcher/ContainerList.java#L448-L515)
 
 [iOS sample 1](https://github.com/readium/readium-lcp-client/blob/cd65c5e5615828c41aded659a9d518059149c1f9/platform/apple/src/LCPStatusDocumentProcessing.h#L29-L36) and [iOS sample 2](https://github.com/readium/SDKLauncher-iOS/blob/96f23bdc4cd9d5c0507c7aa3a6828d7c4fbc0e75/Classes/LCPStatusDocumentProcessing_DeviceIdManager.mm#L35-L118)
 
 ## Import a a DRM license
-An app which imports a DRM license msut follow these steps:
+An app which imports a DRM license must follow these steps:
 
 ### 1/ Validate the license structure
 
