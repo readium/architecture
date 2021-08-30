@@ -8,7 +8,7 @@ A protected publication may be imported in an R2 app in two ways:
 
 These resources may be imported via side loading (Open with ... from  a web page on a mobile app, Open file ... in a desktop app), via an OPDS feed or any other supported way to access extenal resources.
 
-To get more details about Reading system behavior in a Readium LCP context,  please read the [Readium LCP spec](https://readium.github.io/readium-lcp-specification/), specifically section 7 (Reading System Behavior). 
+To get more details about Reading system behavior in a Readium LCP context,  please read the [Readium LCP spec](https://readium.org/lcp-specs/releases/lcp/latest), specifically section 7 (Reading System Behavior). 
 
 ## Being ready
 A Readium LCP compliant app must embed a root certificate provided by the DRM administrator.  
