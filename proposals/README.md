@@ -53,4 +53,13 @@ Being able to search through a publication's content is a useful feature, often 
 
 Search can be implemented in many different ways, so being able to switch implementations without touching the UX layer would be valuable. For example, a reading app might want to use a [full-text search](https://en.wikipedia.org/wiki/Full-text_search) database to improve search performance and search across multiple publications in the user bookshelf.
 
+### [008 – Decorator API](008-decorator-api.md)
+
+This proposal introduces a new Navigator API to draw decorations on top of publications, in a media type agnostic way. This new API is a building block for a variety of features which need to draw user interface elements (decorations) over a publication's content, such as:
+
+* highlighting a text selection
+* displaying search results
+* underlining spoken text with speech synthesis
+* annotating a piece of content with an icon or button
+* drawing side marks in the margin
 
