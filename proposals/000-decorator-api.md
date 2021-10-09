@@ -1,6 +1,7 @@
 # Decorator API
 
 * Author: [Mickaël Menu](https://github.com/mickael-menu)
+* Review PR: [#160](https://github.com/readium/architecture/pull/160)
 
 ## Summary
 
@@ -67,29 +68,20 @@ navigator.apply(decorations: decorations, in: "user-highlights")
 
 ### Handling User Clicks on Decorations
 
-To allow user clicks/taps on a decoration, you must first check that the `activate` interaction is available for the decoration style:
+To handle user clicks/taps on a decoration, implement the `DecorationObserver` interface:
 
 ```swift
-navigator.supportsDecorationInteraction(.activate, forStyle: Decoration.Style.Highlight)
-```
-
-Then, enable the `activate` interaction when creating each `Decoration` object.
-
-```swift
-Decoration(
-    id: "12",
-    locator: Locator(...),
-    style: Decoration.Style.Highlight(),
-    interactions: [.activate]
-)
-```
-
-Finally, listen to the `DecorationActivated` event which will be emitted when the user clicks the decoration. The API depends on the platform.
-
-```swift
-navigator.observe(DecorationActivated) { decoration in
-    // Present a highlight pop-up for `decoration`...
+class MyObserver: DecorationObserver {
+    func onDecorationActivated(event: OnActivatedEvent) -> Boolean {
+        // Present a highlight pop-up for `event.decoration`, for example.
+    }
 }
+```
+
+Then, register your observer for the group of decorations you want to be interactive.
+
+```swift
+navigator.registerDecorationObserver(group: "highlights", observer: MyObserver())
 ```
 
 ### Registering Decoration Styles
@@ -172,14 +164,35 @@ A navigator able to render arbitrary decorations over a publication.
 * `supportsDecorationStyle(style: Decoration.Style) -> Boolean`
     * Indicates whether the Navigator supports the given decoration `style`.
     * You should check whether the Navigator supports drawing the decoration styles required by a particular feature before enabling it. For example, underlining an audiobook does not make sense, so an Audiobook Navigator would not support the `underline` decoration style.
-* `supportsDecorationInteractionForStyle(interaction: Decoration.Interaction, style: Decoration.Style) -> Boolean`
-    * Indicates whether the Navigator supports the given `interaction` for this `style`.
-    * You should check whether the Navigator supports the interactions required by a particular feature before enabling it. Alternatively, you could offer a fallback in the user interface.
+* `registerDecorationObserver(group: String, observer: DecorationObserver)
+    * Registers a new `observer` for decoration interactions in the given `group`.
+* unregisterDecorationObserver(observer: DecorationObserver)`
+    * Removes the given `observer` for all decoration interactions.
 
-#### Events
+### `DecorationObserver` Interface
 
-* `DecorationActivated(Decoration)`
-    * Emitted when the user activates a decoration. For example, when clicking on a highlight.
+Receives interaction events for decorations.
+
+#### Methods
+
+* `onDecorationActivated(event: OnActivatedEvent) -> Boolean`
+    * Called when the user activates a decoration, e.g. with a click or tap.
+    * Returns whether the observer handled the interaction.
+
+#### `OnActivatedEvent` Class
+
+Holds the metadata about a decoration activation interaction.
+
+##### Properties
+
+* `decoration: Decoration`
+    * Activated decoration.
+* `group: String`
+    * Name of the group the decoration belongs to.
+* `rect: Rect?`
+    * Frame of the bounding rectangle for the decoration, in the coordinate of the navigator view. This is only useful in the context of a `VisualNavigator`.
+* `point: Point?`
+    * Event point of the interaction, in the coordinate of the navigator view. This is only useful in the context of a `VisualNavigator`.
 
 ### `Decoration` Class
 
@@ -195,19 +208,8 @@ For example, decorations can be used to draw highlights, images or buttons.
     * Location in the publication where the decoration will be rendered.
 * `style: Decoration.Style`
     * Declares the look and feel of the decoration.
-* `interaction: Set<Decoration.Interaction>`
-    * List of enabled user interactions for this decoration.
-
-### `Decoration.Interaction` Enum
-
-A type of user interaction with a decoration.
-
-* `Activate`
-    * Primary interaction with a decoration, such as a single tap or click.
-
-The user can interact with a decoration if it is enabled in `decoration.interactions` and supported by the Navigator for its style.
-
-The terminology avoids concrete gestures (e.g. tap) to fit all platforms (mouse vs. touch) and media type. For example, activating a decoration for an Audiobook Navigator might be very different from activating a visual highlight.
+* `extras: Map<String, Any>`
+    * Additional context data specific to a reading app. Readium does not use it.
 
 ### `Decoration.Style` Interface
 
@@ -318,5 +320,5 @@ For example, we can "highlight" a portion of an audio resource by raising the vo
 
 ### Additional Interactions
 
-This proposal introduces only a single decoration interaction: `Activate`. We could extend this enum to add secondary interactions (press and hold) or hints (hover).
+This proposal introduces only a single decoration interaction: *activation*. We could extend this enum to add secondary interactions (press and hold) or hints (hover).
 
