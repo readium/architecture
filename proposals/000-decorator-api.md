@@ -322,3 +322,9 @@ For example, we can "highlight" a portion of an audio resource by raising the vo
 
 This proposal introduces only a single decoration interaction: *activation*. We could extend this enum to add secondary interactions (press and hold) or hints (hover).
 
+### A new HTML template layout for continuous boxes bounds
+
+The specified HTML template layouts are not sufficient to render side marks when two columns are enabled. Using `bounds` would result in a decoration spanning the whole viewport if the locator is overlapping both columns.
+
+We could solve this by adding a third layout for "continuous boxes bounds", which would coalesce boxes together only if they are close enough. This requires some heuristics and is not so straightforward to implement.
+
