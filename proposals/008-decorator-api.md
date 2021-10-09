@@ -128,7 +128,7 @@ config.decorationStyles[Decoration.Style.Sidemark] = sidemarkTemplate
 let navigator = HTMLNavigator(config)
 ```
 
-![](assets/000-sidemark.png)
+![](assets/008-sidemark.png)
 
 ### Checking Whether a Navigator Supports a Decoration Style
 
@@ -256,10 +256,10 @@ An `HTMLDecorationTemplate` renders a `Decoration` into a set of HTML elements a
 
 | width↓&nbsp;&nbsp;layout→ | `boxes`                            | `bounds`                            |
 |---------------------------|------------------------------------|-------------------------------------|
-| `wrap`                    | ![](assets/000-boxes-wrap.png)     | ![](assets/000-bounds-wrap.png)     |
-| `bounds`                  | ![](assets/000-boxes-bounds.png)   | ![](assets/000-bounds-bounds.png)   |
-| `page`                    | ![](assets/000-boxes-page.png)     | ![](assets/000-bounds-page.png)     |
-| `viewport`                | ![](assets/000-boxes-viewport.png) | ![](assets/000-bounds-viewport.png) |
+| `wrap`                    | ![](assets/008-boxes-wrap.png)     | ![](assets/008-bounds-wrap.png)     |
+| `bounds`                  | ![](assets/008-boxes-bounds.png)   | ![](assets/008-bounds-bounds.png)   |
+| `page`                    | ![](assets/008-boxes-page.png)     | ![](assets/008-bounds-page.png)     |
+| `viewport`                | ![](assets/008-boxes-viewport.png) | ![](assets/008-bounds-viewport.png) |
 
 
 ## Future Possibilities
