@@ -46,3 +46,11 @@ Offers a way to support more content protection technologies in Readium 2.
 * Be able to support other DRMs than LCP, without modifying the toolkit itself.
 * Handle decryption/transformation of publication resources.
 * Consume user rights in a DRM-agnostic way, e.g. copy or print.
+
+### [007 – Search Service](007-search-service.md)
+
+Being able to search through a publication's content is a useful feature, often expected by end users. We can offer a unified API for the wide variety of publication formats supported by Readium to make it easy for reading apps to implement such feature.
+
+Search can be implemented in many different ways, so being able to switch implementations without touching the UX layer would be valuable. For example, a reading app might want to use a [full-text search](https://en.wikipedia.org/wiki/Full-text_search) database to improve search performance and search across multiple publications in the user bookshelf.
+
+

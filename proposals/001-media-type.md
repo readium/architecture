@@ -252,7 +252,7 @@ Computed properties for convenience. More can be added as needed.
   * Used to determine the type of remote catalogs.
 * `isBitmap: Boolean`
   * Returns whether this media type is a bitmap image, so excluding SVG and other vectorial formats.
-    It must be contained by `BMP`, `GIF`, `JPEG`, `PNG`, `TIFF` or `WebP`.
+    It must be contained by `BMP`, `GIF`, `JPEG`, `JXL`, `PNG`, `TIFF`, `WebP` or `AVIF`.
   * Used to determine if a RWPM is a DiViNa publication.
 * `isAudio: Boolean`
   * Returns whether this media type is of an audio clip.
@@ -282,6 +282,7 @@ instances, not `String`.
 | `ACSM`                     | application/vnd.adobe.adept+xml                      | acsm      | Adobe Content Server Message |
 | `AIFF`                     | audio/aiff                                           | aiff      |                              |
 | `AVI`                      | video/x-msvideo                                      | avi       |                              |
+| `AVIF`                     | image/avif                                           | avif      |                              |
 | `Binary`                   | application/octet-stream                             |           |                              |
 | `BMP`                      | image/bmp                                            | bmp       |                              |
 | `CBZ`                      | application/vnd.comicbook+zip                        | cbz       | Comic Book Archive           |
@@ -293,6 +294,7 @@ instances, not `String`.
 | `GZ`                       | application/gzip                                     | gz        |                              |
 | `JavaScript`               | text/javascript                                      | js        |                              |
 | `JPEG`                     | image/jpeg                                           | jpeg      |                              |
+| `JXL`                      | image/jxl                                            | jxl       |                              |
 | `HTML`                     | text/html                                            | html      |                              |
 | `JSON`                     | application/json                                     | json      |                              |
 | `LCPProtectedAudiobook`    | application/audiobook+lcp                            | lcpa      | LCP Protected Audiobook      |
@@ -442,7 +444,7 @@ formats are subsets of others.
 2. OPDS 1
 3. OPDS 2
 4. LCP License Document
-5. Bitmap (BMP, GIF, JPEG, PNG, TIFF and WebP)
+5. Bitmap (BMP, GIF, JPEG, JXL, PNG, TIFF, WebP, AVIF)
 6. Readium Web Publication (WebPub, Audiobook, DiViNa, RWPM, LCPA and LCPDF)
 7. W3C Web Publication
 8. EPUB
@@ -488,7 +490,7 @@ files.
   * extension is `cbz`
   * media type is `application/vnd.comicbook+zip`, `application/x-cbz` or `application/x-cbr`
 * Heavy ([reference](https://wiki.mobileread.com/wiki/CBR_and_CBZ)):
-  * it's a ZIP archive containing only entries with the given extensions: [`acbf`](https://wiki.mobileread.com/wiki/ACBF), `gif`, `jpeg`, `jpg`, `png`, `tiff`, `tif`, `webp` or `xml`
+  * it's a ZIP archive containing only entries with the given extensions: [`acbf`](https://wiki.mobileread.com/wiki/ACBF), `gif`, `jpeg`, `jpg`, `jxl`, `png`, `tiff`, `tif`, `webp`, `avif` or `xml`
   * entries starting with a `.` and `Thumbs.db` are ignored
 
 ##### DiViNa
@@ -533,6 +535,12 @@ files.
 * Light:
   * extension is `jpg`, `jpeg`, `jpe`, `jif`, `jfif` or `jfi`
   * media type is `image/jpeg`
+
+##### JPEG XL
+
+* Light:
+  * extension is `jxl`
+  * media type is `image/jxl`
 
 ##### OPDS 1 Feed
 
@@ -654,6 +662,12 @@ files.
 * Light:
   * extension is `webp`
   * media type is `image/webp`
+
+##### AVIF
+
+* Light:
+  * extension is `avif`
+  * media type is `image/avif`
 
 ##### ZAB (Zipped Audio Book)
 
