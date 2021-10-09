@@ -150,7 +150,7 @@ Readium makes no assumption about the way a third-party protection can unlock a 
 
 Note that if, for a given third-party protection, a restricted publication can't be used to create its `Manifest` at all, then the parsing should fail with an `IncorrectCredentials` error, like with a password-protected ZIP.
 
-<img src="assets/000-open-statechart.svg">
+<img src="assets/006-open-statechart.svg">
 
 ### API Reference (`r2-shared`)
 
