@@ -31,7 +31,7 @@ The actual rendering routines depend on the media type of the decorated resource
 
 ### Creating a New Decoration
 
-The `Decoration` object associates a location (`Locator`) in a publication with a *decoration style* to render. By relying on the style to indicate its look and feel, `Decoration` avoids any specific rendering instructions. This allows to reuse the same decorating code for any kind of publication or different Navigators.
+The `Decoration` object associates a location ([`Locator`](../models/locators)) in a publication with a *decoration style* to render. By relying on the style to indicate its look and feel, `Decoration` avoids any specific rendering instructions. This allows to reuse the same decorating code for any kind of publication or different Navigators.
 
 Each `Decoration` object has an identifier which **must** be unique in the decoration's group. This is necessary to compute efficiently changes when applying updates. A database ID is a perfect candidate.
 
@@ -63,7 +63,7 @@ let decorations = highlights.map { highlight in
 }
 
 // Finally, apply the decorations in a group named "user-highlights".
-navigator.apply(decorations: decorations, in: "user-highlights")
+navigator.applyDecorations(decorations: decorations, in: "user-highlights")
 ```
 
 ### Handling User Clicks on Decorations
@@ -81,7 +81,7 @@ class MyObserver: DecorationObserver {
 Then, register your observer for the group of decorations you want to be interactive.
 
 ```swift
-navigator.registerDecorationObserver(group: "highlights", observer: MyObserver())
+navigator.registerDecorationObserver(group: "user-highlights", observer: MyObserver())
 ```
 
 ### Registering Decoration Styles
@@ -157,16 +157,16 @@ A navigator able to render arbitrary decorations over a publication.
 
 #### Methods
 
-* `apply(decorations: [Decoration], group: String)`
+* `applyDecorations(decorations: [Decoration], group: String)`
     * Declares the current state of the decorations in the given decoration `group`.
     * Name each decoration group as you see fit. A good practice is to use the name of the feature requiring decorations, e.g. `annotation`, `search`, `tts`, etc.
     * The Navigator will decide when to actually render each decoration efficiently. Your only responsibility is to submit the updated list of decorations when there are changes.
 * `supportsDecorationStyle(style: Decoration.Style) -> Boolean`
     * Indicates whether the Navigator supports the given decoration `style`.
     * You should check whether the Navigator supports drawing the decoration styles required by a particular feature before enabling it. For example, underlining an audiobook does not make sense, so an Audiobook Navigator would not support the `underline` decoration style.
-* `registerDecorationObserver(group: String, observer: DecorationObserver)
+* `registerDecorationObserver(group: String, observer: DecorationObserver)`
     * Registers a new `observer` for decoration interactions in the given `group`.
-* unregisterDecorationObserver(observer: DecorationObserver)`
+* `unregisterDecorationObserver(observer: DecorationObserver)`
     * Removes the given `observer` for all decoration interactions.
 
 ### `DecorationObserver` Interface
@@ -196,7 +196,7 @@ Holds the metadata about a decoration activation interaction.
 
 ### `Decoration` Class
 
-A decoration is a user interface element drawn on top of a publication. It associates a style to be rendered with a precise location (`Locator`) in the publication.
+A decoration is a user interface element drawn on top of a publication. It associates a style to be rendered with a precise location ([`Locator`](../models/locators)) in the publication.
 
 For example, decorations can be used to draw highlights, images or buttons.
 
@@ -217,8 +217,8 @@ The Decoration Style determines the look and feel of a decoration once rendered 
 
 The Readium toolkit supports two default styles:
 
-* `Highlight(tint: Color?)`
-* `Underline(tint: Color?)`
+* `Highlight(tint: Color?, isActive: Boolean)`
+* `Underline(tint: Color?, isActive: Boolean)`
 
 **Note**: This can be implemented differently depending on the platform capabilities. Ideally, this is a marker interface and each concrete type is used to identify the style.
 
@@ -232,13 +232,6 @@ An `HTMLDecorationTemplate` renders a `Decoration` into a set of HTML elements a
 
 ##### Properties
 
-* `element: (Decoration) -> String`
-    * Closure used to generate a new HTML element for the given `Decoration`. 
-    * Several elements will be created for a single decoration when using the `boxes` layout.
-    * The Navigator will automatically position the created elements according to the decoration's `Locator`. The template is only responsible for the look and feel of the generated elements.
-* `stylesheet: String?`
-    * A CSS stylesheet which will be injected in the resource, which can be referenced by the created elements.
-    * Make sure to use unique identifiers for your classes and IDs to avoid conflicts with the HTML resource itself. Best practice is to prefix with your app name. `r2-` and `readium-` are reserved by the Readium toolkit.
 * `layout: Layout`
     * Determines the number of created HTML elements and their position relative to the matching DOM range.
     * Possible values:
@@ -251,6 +244,13 @@ An `HTMLDecorationTemplate` renders a `Decoration` into a set of HTML elements a
         * `bounds`: Fills the bounds layout.
         * `page`: Fills the anchor page, useful for dual page.
         * `viewport`: Fills the whole viewport.
+* `element: (Decoration) -> String`
+    * Closure used to generate a new HTML element for the given `Decoration`. 
+    * Several elements will be created for a single decoration when using the `boxes` layout.
+    * The Navigator will automatically position the created elements according to the decoration's `Locator`. The template is only responsible for the look and feel of the generated elements.
+* `stylesheet: String?`
+    * A CSS stylesheet which will be injected in the resource, which can be referenced by the created elements.
+    * Make sure to use unique identifiers for your classes and IDs to avoid conflicts with the HTML resource itself. Best practice is to prefix with your app name. `r2-` and `readium-` are reserved by the Readium toolkit.
 
 ##### Cheatsheet
 
@@ -309,7 +309,7 @@ let decorations = [
     )
 ]
 
-navigator.apply(decorations: decorations, in: "user-highlights")
+navigator.applyDecorations(decorations: decorations, in: "user-highlights")
 ```
 
 ### Media-Based Decorations
@@ -320,11 +320,14 @@ For example, we can "highlight" a portion of an audio resource by raising the vo
 
 ### Additional Interactions
 
-This proposal introduces only a single decoration interaction: *activation*. We could extend this enum to add secondary interactions (press and hold) or hints (hover).
+This proposal introduces only a single decoration interaction: *activation*. Here are some examples of additional interactions that could be implemented:
+
+* secondary interactions (press and hold)
+* hints (hover)
 
 ### A new HTML template layout for continuous boxes bounds
 
-The specified HTML template layouts are not sufficient to render side marks when two columns are enabled. Using `bounds` would result in a decoration spanning the whole viewport if the locator is overlapping both columns.
+The specified HTML template layouts are not sufficient to render side marks when two columns are enabled. If a locator is overlapping both columns, using `bounds` would result in a decoration spanning the whole viewport.
 
 We could solve this by adding a third layout for "continuous boxes bounds", which would coalesce boxes together only if they are close enough. This requires some heuristics and is not so straightforward to implement.
 
