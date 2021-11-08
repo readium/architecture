@@ -8,18 +8,21 @@ Related Repository: [Readium Web Publication Manifest](https://github.com/readiu
 
 References: 
 
-- https://www.w3.org/Submission/epub-a11y/
+- *OLD*: https://www.w3.org/Submission/epub-a11y/
+  - http://idpf.org/epub/a11y/accessibility.html
+- *NEW*: https://www.w3.org/TR/epub-a11y-11/
+  - https://www.w3.org/TR/epub-a11y-tech-11
 - http://kb.daisy.org/publishing/docs/metadata/schema-org.html
 - http://kb.daisy.org/publishing/docs/metadata/evaluation.html
 - https://www.w3.org/wiki/WebSchemas/Accessibility
 - https://www.w3.org/TR/pub-manifest/#accessibility
-- https://w3c.github.io/publ-a11y/UX-Guide-Metadata/techniques/schema-org.html
+- https://www.w3.org/publishing/a11y/UX-Guide-metadata/techniques/epub-metadata/
 
 ## AccessMode
 
 `accessMode` is a key whose value is an array of strings.
 
-It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
+It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package) and [EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/#sec-disc-package)).
 
 At the time of writing, known values are:
 
@@ -81,7 +84,7 @@ When it is a multiple:
 
 `accessibilitySummary` is a key whose value is a map of localized strings (JSON-LD language maps).
 
-It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
+It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package) and [EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/#sec-disc-package)).
 
 ### EPUB 2.x
 
@@ -158,7 +161,7 @@ The array is created from the `link` elements whose `property` attribute has the
 
 `accessibilityFeature` is a key whose value is an array of strings.
 
-It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
+It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package) and [EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/#sec-disc-package)).
 
 At the time of writing, known values are:
 
@@ -218,7 +221,7 @@ The array is created from the `meta` elements whose `property` attribute has the
 
 `accessibilityHazard` is a key whose value is an array of strings.
 
-It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
+It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package) and [EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/#sec-disc-package)).
 
 At the time of writing, known values are:
 
@@ -241,6 +244,14 @@ The array is created from the `meta` elements whose `property` attribute has the
 
 ## AccessibilityControl
 
+**NOTE** deprecation:
+
+- *OLD*: https://www.w3.org/Submission/epub-a11y/#sec-disc-package
+  - http://idpf.org/epub/a11y/accessibility.html#sec-disc-package
+- *NEW*: https://www.w3.org/TR/epub-a11y-11/#sec-disc-package
+  - https://www.w3.org/TR/epub-a11y-tech-11/#meta-007
+  - http://kb.daisy.org/publishing/docs/metadata/schema.org/accessibilityControl.html
+
 `accessibilityControl` is a key whose value is an array of strings.
 
 At the time of writing, known values are:
@@ -262,6 +273,14 @@ The array is created from the `meta` elements whose `property` attribute has the
 The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityControl`. Their value (i.e. child textual content) is pushed to the array.
 
 ## AccessibilityAPI
+
+**NOTE** deprecation:
+
+- *OLD*: https://www.w3.org/Submission/epub-a11y/#sec-disc-package
+  - http://idpf.org/epub/a11y/accessibility.html#sec-disc-package
+- *NEW*: https://www.w3.org/TR/epub-a11y-11/#sec-disc-package
+  - https://www.w3.org/TR/epub-a11y-tech-11/#meta-006
+  - http://kb.daisy.org/publishing/docs/metadata/schema.org/accessibilityAPI.html
 
 `accessibilityAPI` is a key whose value is an array of strings.
 
