@@ -17,7 +17,7 @@ These modules are not necessarily meant to be deployed on the same device or wri
 * [Readium Mobile](https://readium.org/mobile)
 * [Readium Desktop](https://readium.org/desktop)
 * [Readium Web](https://readium.org/web)
-* 
+
 ## Components
 
 ### Models
