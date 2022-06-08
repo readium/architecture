@@ -11,7 +11,13 @@ On all platforms, the [Navigator](navigator) is meant to navigate in the resourc
 These modules are not necessarily meant to be deployed on the same device or written in the same language, which lets developers select the best implementation based on their requirements.
 
 ![Diagram of the Readium Architecture](other/images/architecture.svg)
+ 
+## Projects
 
+* [Readium Mobile](https://readium.org/mobile)
+* [Readium Desktop](https://readium.org/desktop)
+* [Readium Web](https://readium.org/web)
+* 
 ## Components
 
 ### Models
@@ -28,16 +34,13 @@ These modules are not necessarily meant to be deployed on the same device or wri
 * [Readium CSS](https://readium.org/readium-css)
 * [Streamer](streamer)
 
-
 ### Services
 
 * [Positions List](models/locators/positions)
 
-## Projects
+## API
 
-* [Readium Mobile](https://readium.org/mobile)
-* [Readium Desktop](https://readium.org/desktop)
-* [Readium Web](https://readium.org/web)
+The API of each module is specified via [Readium Evolution Proposals](https://readium.org/architecture/proposals/), which are discussed collaborativelty before being implemented by the core developers of the toolkits. 
 
 ## Ecosystem
 
