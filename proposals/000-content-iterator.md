@@ -1,7 +1,7 @@
 # Content Iterator
 
 * Author: [Mickaël Menu](https://github.com/mickael-menu)
-* Review PR: [#X](https://github.com/readium/architecture/pull/X) (*added by maintainers, after merging the PR*)
+* Review PR: [#177](https://github.com/readium/architecture/pull/177)
 
 ## Summary
 
