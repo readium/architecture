@@ -1,7 +1,7 @@
 # Presentation API
 
-* Authors: [Mickaël Menu](https://github.com/mickael-menu), [Quentin Gliosca](https://github.com/qnga)
-* Review PR: [#x](https://github.com/readium/architecture/pull/x) (*added by maintainers, after merging the PR*)
+* Authors: [Hadrien Gardeur](https://github.com/HadrienGardeur), [Mickaël Menu](https://github.com/mickael-menu), [Quentin Gliosca](https://github.com/qnga)
+* Review PR: [#164](https://github.com/readium/architecture/pull/164)
 
 
 ## Summary
@@ -131,7 +131,7 @@ Holds the current values for the Presentation Properties determining how a publi
 `PresentationProperties` offers type-safe helpers for each standard properties, for example:
 
 * `fontSize: Observable<RangeProperty?>`
-* `publisherDefaults: Observable<SwitchProperty?>`
+* `publisherDefaults: Observable<ToggleProperty?>`
 * ...
 
 #### `PresentationProperty<T>` Interface
@@ -164,7 +164,7 @@ Property holding an arbitrary color. For example, "text color" or "background co
 
 The `Color` type depends on the platform.
 
-#### `SwitchProperty` Class (implements `PresentationProperty<Boolean>`)
+#### `ToggleProperty` Class (implements `PresentationProperty<Boolean>`)
 
 Property representable as a toggle switch in the user interface. For example, "publisher defaults" or "continuous".
 
@@ -287,7 +287,7 @@ Helper class which simplifies the modification of Presentation Settings and desi
         userSettings[setting.key] = value
     }
     ```
-* `toggle(setting: PresentationController.SwitchSetting)`
+* `toggle(setting: PresentationController.ToggleSetting)`
     * Inverts the value of the given switch setting.
     ```
     toggle(setting) {
@@ -308,7 +308,7 @@ Helper class which simplifies the modification of Presentation Settings and desi
 `PresentationController` offers type-safe helpers for each standard settings, for example:
 
 * `fontSize: Observable<PresentationController.RangeSetting?>`
-* `publisherDefaults: Observable<PresentationController.SwitchSetting?>`
+* `publisherDefaults: Observable<PresentationController.ToggleSetting?>`
 * ...
 
 
@@ -329,7 +329,7 @@ All properties are immutable.
 
 #### `PresentationController.ColorSetting` Class (implements `PresentationController.Setting<Color>`)
 
-#### `PresentationController.SwitchSetting` Class (implements `PresentationController.Setting<Boolean>`)
+#### `PresentationController.ToggleSetting` Class (implements `PresentationController.Setting<Boolean>`)
 
 #### `PresentationController.EnumSetting` Class (implements `PresentationController.Setting<String>`)
 
@@ -370,8 +370,8 @@ All properties are immutable.
 | `backgroundColor`       | `Color`                                          | Color of the background                                                                               |
 | `textColor`             | `Color`                                          | Color of the text content                                                                             |
 | `textAlignment`         | `Enum` (`left`, `right`, `center`, `justify`)    | Alignment of the text content                                                                         |
-| `hyphenation`           | `Switch`                                         | Indicates whether the text should be hyphenated                                                       |
-| `ligature`              | `Switch`                                         | Indicates whether ligatures should be enabled                                                         |
+| `hyphenation`           | `Toggle`                                         | Indicates whether the text should be hyphenated                                                       |
+| `ligature`              | `Toggle`                                         | Indicates whether ligatures should be enabled                                                         |
 | `fontFamily`            | `Enum`                                           | Font family stack used for the text content                                                           |
 | `fontSize`              | `Range`                                          | Font size used for the text content                                                                   |
 | `lineHeight`            | `Range`                                          | Height of a text line                                                                                 |
@@ -379,12 +379,12 @@ All properties are immutable.
 | `paragraphSpacing`      | `Range`                                          | Spacing between paragraphs                                                                            |
 | `wordSpacing`           | `Range`                                          | Spacing between words                                                                                 |
 | `letterSpacing`         | `Range`                                          | Spacing between letters                                                                               |
-| `publisherDefaults`     | `Switch`                                         | Indicates whether the publisher's styles should be honored                                            |
+| `publisherDefaults`     | `Toggle`                                         | Indicates whether the publisher's styles should be honored                                            |
 | `readingProgression`    | `Enum` (`ltr`, `rtl`, `ttb`, `btt`, `auto`)      | Direction in which resources are laid out                                                             |
 | `doublePageSpread`      | `Enum` (`landscape`, `portrait`, `both`, `auto`) | Indicates the condition to be met for the publication to be rendered with synthetic spreads           |
 | `columns`               | `Range`                                          | Number of columns displayed in a reflowable publication                                               |
 | `overflow`              | `Enum` (`paginated`, `scrolled`, `auto`)         | Indicates if the overflow of the content from should be handled using dynamic pagination or scrolling |
-| `continuous`            | `Switch`                                         | Indicates if consecutive resources should be handled in a continuous or discontinuous way             |
+| `continuous`            | `Toggle`                                         | Indicates if consecutive resources should be handled in a continuous or discontinuous way             |
 | `orientation`           | `Enum`                                           | Suggested orientation for the device when displaying the publication                                  |
 | `fit`                   | `Enum` (`contain`, `cover`, `width`, `height`)   | Specifies constraints for the presentation of the publication within the viewport                     |
 | `playbackRate`          | `Range`                                          | Speed of the media playback                                                                           |
@@ -404,7 +404,7 @@ All properties are immutable.
 ### Requirements
 
 * Four types of settings:
-    * Switch (boolean, e.g. continuous)
+    * Toggle (boolean, e.g. continuous)
     * Range (0 - 100%, e.g. font size)
     * Fixed Enum (depends on the particular setting, e.g. orientation)
     * Dynamic Enum (depends on the current navigator, e.g. font families)
@@ -425,7 +425,7 @@ All properties are immutable.
 		* For a given value (0-100%), a user-facing label with units. E.g. 20% = "50px" page margin
     * For a Dynamic Enum setting, which values are available (e.g. list of fonts).
     * For all settings, what is the default (not current) value. This is useful when a setting is "unset". For example:
-        * With a Switch, we need to know if it's on or off by default, otherwise toggling the Switch might not produce any effect.
+        * With a Toggle, we need to know if it's on or off by default, otherwise toggling the Toggle might not produce any effect.
         * With a Range, we need to know the starting step when increasing/decreasing the value.
 
 
