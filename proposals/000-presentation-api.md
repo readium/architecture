@@ -14,14 +14,131 @@ One paragraph description of what the proposal is.
 Describe the problems that this proposal seeks to address. How this new functionality would help Readium developers create better reading apps?
 
 
-# Presentation Settings
-
 ## Developer Guide
 
-### Terms
+### Presentable Navigator
 
-* **Presentation Properties**: A list of dynamic key-value pairs determining how a publication is rendered by a Navigator. For example, "font size" or "playback rate".
-    * **Key**: Each property has a unique string key, e.g. `fontSize`. Extensions use URIs for custom properties, such as `https://company.com/hyphenate`.
+Each `Navigator` implementing the Presentation API has a set of *presentation settings* influencing how a publication is rendered.
+
+#### Presentation Settings
+
+A *setting* determines one aspect of the presentation, such as the font size or the playback rate. It is identified by a unique string key (e.g. `fontSize`) and holds a configurable value.
+
+You can get the current list of *presentation settings* with `navigator.presentationSettings`. This is an observable property.
+
+##### Updating the settings
+
+The application cannot directly overwrite the setting values, as the Navigator controls the validity of its settings. Instead, the app can submit *preferences* (a dictionary of setting values) which will be applied by the Navigator when possible. The effective *value* of a *setting* might not be the one submitted by the app.
+
+```swift
+navigator.submit(PresentationValues(
+    readingProgression: .ttb,
+    columnCount: 2
+))
+
+let settings = navigator.presentationSettings
+assert(settings.overflow.value == .scrolled)
+// columnCount = 2 requires that overflow be paginated,
+// so the effective value is null.
+assert(settings.columnCount.value == 2)
+assert(settings.columnCount.effectiveValue == nil)
+```
+
+##### Setting constraints
+
+*Settings* are not active at all times, as two *settings* can be incompatible. For example, the `columnCount` setting is only active with a `overflow` setting set to `paginated`. Besides, a *setting* might have a restricted set of possible values, depending on the Navigator, such as only `ltr` and `rtl` for the `readingProgression` setting. Each *setting* has a set of *constraints* holding these rules and dependencies. The available constraint properties depend on the type of the *setting*.
+
+Given a fictional Navigator implementation:
+
+```swift
+let settings = navigator.presentationSettings
+
+// columnCount requires the overflow setting to be set to paginated to be active.
+assert(settings.columnCount.requiredValues == PresentationValues(overflow = .paginated))
+
+// This Navigator supports only LTR and RTL reading progressions.
+assert(settings.readingProgression.supportedValues == [.ltr, .rtl])
+
+// This Navigator has 20 different values for the font size.
+assert(settings.fontSize.stepCount)
+```
+
+##### Settings are low-level
+
+The *presentation settings* are technical low-level properties. While some of them can be directly exposed to the user, such as the font size, other *settings* should not be displayed as-is. For example in EPUB, we simulate two-page spreads with `columnCount` (`auto`, `1`, `2`) for reflowable resources and `spread` (`auto`, `landscape`, `both`, `none`) for a fixed layout publication. Instead of showing both *settings* with all their possible values in the user interface, an app might prefer to show a single switch button to enable "dual-page" which will set both *settings* appropriately.
+
+Similarly, an app might want to cluster several *settings* together. For example, given a *scrolled* mode switch in the user interface:
+
+* When on, `overflow` is set to `scrolled` and `readingProgression` to `ttb`.
+* When off, `overflow` is set to `paginated` and the user can freely select the `readingProgression` between the two values `ltr` and `rtl`.
+
+#### Presentation Controller
+
+The Navigator Presentation API is pretty simple, but requires a lot of glue code to build an effective user interface and handle settings persistence. The `PresentationController` helper provides a set of API to handle this.
+
+First, create a `PresentationController` with an initial set of setting preferences.
+
+```swift
+let controller = PresentationController(navigator: navigator, preferences: userValues)
+```
+
+##### Setting up the user interface
+
+You can observe the *settings* changes to update your user interface accordingly.
+
+```swift
+let overflow = controller.settings.overflow
+if (overflow != null) {
+    Row {
+        Label("Scrolled mode")
+
+        Switch(
+            checked: (overflow.value == .scrolled)
+        ) { isChecked in
+            controller.set(overflow, isChecked ? .scrolled : .paginated)
+        }
+    }
+}
+
+let fontSize = controller.settings.fontSize
+if (fontSize != null) {
+    Row {
+        Label("Font size")
+
+        Button("-") {
+            controller.decrement(fontSize)
+        }
+
+        Label(fontSize.valueDescription)
+            .color(fontSize.isActive ? .black : .gray)
+
+        Button("+") {
+            controller.increment(fontSize)
+        }
+    }
+}
+```
+
+#### Persisting the user preferences.
+
+The `PresentationValue` object holds a simple map which can be serialized into a JSON object. Reading apps are responsible for storing and retrieving the JSON when needed.
+
+When using the `PresentationController` helper class, you can observe the list of user settings to save any changes.
+
+```typescript
+controller.userSettings.observe { settings ->
+    preferencesStorage.save(settings.values)
+}
+```
+
+#### Terms
+
+* **Setting** – A configurable property that determines one aspect of the publication presentation, e.g. the font size or the playback rate.
+* **Key** – Each setting is identified by a unique string key, e.g. `fontSize`.
+* **Value** – Each setting has a value of a given value type, e.g. the `Orientation` enum or a boolean.
+* **Preference** – A preference is a preferred setting value provided by the app, usually set by the user.
+* **Constraints** – A set of rules and dependencies constraining a setting's value.
+
     * The properties are computed by the Navigator from, by order of precedence:
         1. *User Presentation Settings* provided by the app.
         2. *App Presentation Settings* provided by the app.
@@ -30,64 +147,8 @@ Describe the problems that this proposal seeks to address. How this new function
 * **Presentation Settings**: A list of key-value pairs provided by the app to influence the current Navigator's *Presentation Properties*. The keys must be valid *Presentation Property Keys*.
     * **User Settings**: A dynamic list of *Presentation Settings* the app chooses to expose in the user settings interface for the user to modify.
     * **App Settings**: A hard coded list of *Presentation Settings* that the app chooses to customize but without user input.
-* **Presentation Hints**: An immutable list of metadata embedded in a publication. Navigators use them to compute default values for the *Presentation Properties*. [See the RWPM specification](https://readium.org/webpub-manifest/modules/presentation.html).
+* **Presentation Hints**: An immutable list of metadata embedded in a publication. Navigators use them to compute default values for the settings. [See the RWPM specification](https://readium.org/webpub-manifest/modules/presentation.html).
 * **Presentation Defaults**: A static list of *Presentation Property Values* used as fallback by a Navigator when a property is not overriden by *Presentation Hints* or *Presentation Settings*.
-
-### Setting Up the User Settings Interface
-
-```typescript
-// Set up a list of app-level default settings statically.
-let appSettings: PresentationSettings = PresentationSettings(
-    publisherDefaults: false,
-    pageMargins: 0.2
-)
-
-// Load the saved user settings.
-let userSettings: PresentationSettings = userSettingsStorage.read()
-
-let presentation = PresentationController(navigator, appSettings, userSettings)
-
-// Update the views every time the font size changes.
-presentation.fontSize.observe { fontSize ->
-    if (fontSize == null) {
-        // Font size is not supported by this Navigator.
-        // We should hide the views.
-
-    } else {
-        // If the font size is currently inactive in the
-        // Navigator, we can show it in the user interface.
-        fontSizeLabel.color = fontSize.isActive ? black : gray
-        // Display the current value for the font size
-        //  as a localized user string, e.g. 14 pt
-        fontSizeLabel.text = fontSize.label
-
-        // Setup the action when the user clicks on the "+" button.
-        // We increase the font size and then update the Navigator.
-        fontSizePlus.onClick {
-            presentation.increment(fontSize)
-            presentation.apply()
-        }
-    }
-}
-```
-
-Note that we modify the font size with: `presentation.increment(fontSize)` instead of `presentation.incrementFontSize()` or `presentation.fontSize.increment()`, for several reasons:
-
-* The value of `fontSize` is an immutable object, to make it safer to use.
-* To avoid confusing the users, we want to increase the font size from the last value displayed in the view instead of the actual current value, if it was changed in the meantime.
-
-
-### Persisting User Settings
-
-The `PresentationSettings` object holds a simple map which can be serialized into a JSON object. Reading apps are responsible for storing and retrieving the JSON when needed.
-
-When using the `PresentationController` helper class, you can observe the list of user settings to save any changes.
-
-```typescript
-presentationController.userSettings.observe { settings ->
-    userSettingsStorage.save(settings.toJSON())
-}
-```
 
 
 ## Reference Guide
