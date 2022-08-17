@@ -1,6 +1,7 @@
-# Presentation API
+# Settings API
 
-* Authors: [Hadrien Gardeur](https://github.com/HadrienGardeur), [Mickaël Menu](https://github.com/mickael-menu), [Quentin Gliosca](https://github.com/qnga)
+* Editor: [Mickaël Menu](https://github.com/mickael-menu)
+* Contributors: [Hadrien Gardeur](https://github.com/HadrienGardeur), [Quentin Gliosca](https://github.com/qnga), [Steven Zeck](https://github.com/stevenzeck)
 * Review PR: [#164](https://github.com/readium/architecture/pull/164)
 
 
@@ -16,142 +17,234 @@ Describe the problems that this proposal seeks to address. How this new function
 
 ## Developer Guide
 
-### Presentable Navigator
+### Overview
 
-Each `Navigator` implementing the Presentation API has a set of *presentation settings* influencing how a publication is rendered.
+A few Readium components – such as the Navigator – support dynamic configuration through the `Configurable` interface. It provides an easy way to build a user settings interface and save user preferences as a JSON object.
 
-#### Presentation Settings
+The application cannot explicitly set the Navigator settings. Instead, you can submit a set of `Preferences` to the Navigator (`Configurable`) which will in turn recompute its settings and refresh the presentation. Then, the application can update its user settings interface with the new settings emitted by the Navigator.
 
-A *setting* determines one aspect of the presentation, such as the font size or the playback rate. It is identified by a unique string key (e.g. `fontSize`) and holds a configurable value.
+For a concrete example: "font size" is a **setting**, the application can submit the font size value `150%` which is a **preference**.
 
-You can get the current list of *presentation settings* with `navigator.presentationSettings`. This is an observable property.
+<img src="assets/000-flow.svg">
 
-##### Updating the settings
+```javascript
+// 1. Get the current Navigator settings.
+let settings = navigator.settings;
 
-The application cannot directly overwrite the setting values, as the Navigator controls the validity of its settings. Instead, the app can submit *preferences* (a dictionary of setting values) which will be applied by the Navigator when possible. The effective *value* of a *setting* might not be the one submitted by the app.
+// 2. Create a new set of preferences.
+let preferences = Preferences()
+    .set(settings.fontFamily, FontFamily.Monospace)
+    .increment(settings.fontSize)
+    .toggle(settings.publisherStyles);
 
-```swift
-navigator.submit(PresentationValues(
-    readingProgression: .ttb,
-    columnCount: 2
-))
-
-let settings = navigator.presentationSettings
-assert(settings.overflow.value == .scrolled)
-// columnCount = 2 requires that overflow be paginated,
-// so the effective value is null.
-assert(settings.columnCount.value == 2)
-assert(settings.columnCount.effectiveValue == nil)
+// 3. Submit the preferences, the Navigator will in turn update its settings. 
+navigator.submitPreferences(preferences);
 ```
 
-##### Setting constraints
+#### Settings
 
-*Settings* are not active at all times, as two *settings* can be incompatible. For example, the `columnCount` setting is only active with a `overflow` setting set to `paginated`. Besides, a *setting* might have a restricted set of possible values, depending on the Navigator, such as only `ltr` and `rtl` for the `readingProgression` setting. Each *setting* has a set of *constraints* holding these rules and dependencies. The available constraint properties depend on the type of the *setting*.
+The `Settings` (*plural*) object is unique for each `Configurable` implementation and holds the currently available `Setting` (*single*) properties. Each `Setting` object represents a single configurable property of the `Configurable` object, such as the font size or the theme. It holds the current value of the setting, as well as additional metadata and constraints depending on the setting type.
 
-Given a fictional Navigator implementation:
+Here are some of the available setting types:
 
-```swift
-let settings = navigator.presentationSettings
+* `ValueSetting<V>` - a setting holding an arbitrary value of type `V`.
+* `ToggleSetting` - a simple boolean setting, e.g. whether or not the publisher styles are enabled.
+* `RangeSetting<V>` - a setting for numbers constrained in a range, e.g. the page margins as a `RangeSetting<Int>` could range from 0 to 200 pixels.
+* `PercentSetting` - a specialization of `RangeSetting<Double>` which represents a percentage from, by default, 0.0 to 1.0.
+* `EnumSetting<V>` - a setting whose value is a member of the enum `V`, e.g. the theme (`light`, `dark`, `sepia`) or the font family.
 
-// columnCount requires the overflow setting to be set to paginated to be active.
-assert(settings.columnCount.requiredValues == PresentationValues(overflow = .paginated))
+##### `Setting` objects are low-level
 
-// This Navigator supports only LTR and RTL reading progressions.
-assert(settings.readingProgression.supportedValues == [.ltr, .rtl])
+The `Setting` objects are technical low-level properties. While some of them can be directly exposed to the user, such as the font size, other settings should not be displayed as-is.
 
-// This Navigator has 20 different values for the font size.
-assert(settings.fontSize.stepCount)
+For example in EPUB, we simulate two pages side by side with `columnCount` (`auto`, `1`, `2`) for reflowable resources and `spread` (`auto`, `landscape`, `both`, `none`) for a fixed layout publication. Instead of showing both settings with all their possible values in the user interface, you might prefer showing a single switch button to enable a dual-page mode which will set both settings appropriately.
+
+#### Preferences
+
+The `Preferences` object holds the values which should be preferred by the Navigator when computing its `Settings`. Preferences can be combined by the app from different sources:
+
+* Hard-coded app defaults.
+* User preferences restored from JSON.
+* User settings interface.
+
+##### Inactive settings
+
+A setting can be inactive if its activation conditions are not met in a set of preferences. A Navigator will ignore inactive settings when refreshing its presentation. For instance with the EPUB navigator, the word spacing setting requires the publisher styles to be disabled to take effect.
+
+You can check if a setting is active with:
+
+```javascript
+preferences.isActive(settings.wordSpacing);
 ```
 
-##### Settings are low-level
+To force activate a setting, use `Preferences.activate()` which will automatically reset the other preferences to the required values.
 
-The *presentation settings* are technical low-level properties. While some of them can be directly exposed to the user, such as the font size, other *settings* should not be displayed as-is. For example in EPUB, we simulate two-page spreads with `columnCount` (`auto`, `1`, `2`) for reflowable resources and `spread` (`auto`, `landscape`, `both`, `none`) for a fixed layout publication. Instead of showing both *settings* with all their possible values in the user interface, an app might prefer to show a single switch button to enable "dual-page" which will set both *settings* appropriately.
-
-Similarly, an app might want to cluster several *settings* together. For example, given a *scrolled* mode switch in the user interface:
-
-* When on, `overflow` is set to `scrolled` and `readingProgression` to `ttb`.
-* When off, `overflow` is set to `paginated` and the user can freely select the `readingProgression` between the two values `ltr` and `rtl`.
-
-#### Presentation Controller
-
-The Navigator Presentation API is pretty simple, but requires a lot of glue code to build an effective user interface and handle settings persistence. The `PresentationController` helper provides a set of API to handle this.
-
-First, create a `PresentationController` with an initial set of setting preferences.
-
-```swift
-let controller = PresentationController(navigator: navigator, preferences: userValues)
+```javascript
+preferences.activate(settings.wordSpacing);
 ```
 
-##### Setting up the user interface
+:point_up: For convenience, settings are force activated by default when set in a `Preferences`. This helps the user see the impact of a setting right away when changing it in the user interface. If you want to set a preference without modifying the other ones, set the `activate` option to `false`.
 
-You can observe the *settings* changes to update your user interface accordingly.
+```javascript
+preferences
+    .set(settings.fontFamily, FontFamily.Monospace, { activate: false })
+    .increment(settings.fontSize, { activate: false })
+    .toggle(settings.publisherStyles, { activate: false });
+```
 
-```swift
-let overflow = controller.settings.overflow
-if (overflow != null) {
-    Row {
-        Label("Scrolled mode")
+### Setting the initial Navigator preferences and app defaults
 
-        Switch(
-            checked: (overflow.value == .scrolled)
-        ) { isChecked in
-            controller.set(overflow, isChecked ? .scrolled : .paginated)
+When opening a publication, you want to apply the user preferences right away. You can do that by providing them to the Navigator constructor. The API depends on each Navigator implementation, but looks like this:
+
+```javascript
+let config = EPUBNavigatorConfiguration({
+    preferences: preferencesStore.get(publication.profile),
+    defaultPreferences: Preferences()
+        .set(EPUBSettings.SCROLLED, true)
+});
+
+let navigator = EPUBNavigator(publication, { config: config });
+```
+
+The `defaultPreferences` are used as fallback values when the default Navigator settings are not suitable for your application.
+
+:point_up: When you don't have access to an `EPUBSettings` instance, the "prototype" settings (e.g. `EPUBSettings.SCROLLED`) are helpful to modify a `Preferences` object.
+
+## Building a user settings interface
+
+:question: This API works best with a declarative UI toolkit like Jetpack Compose, Flutter or SwiftUI, but could be used with a regular imperative toolkit as well.
+
+You can use the `Configurable` API to build a user settings interface dynamically. As this API is agnostic to the type of publication, you can reuse parts of the user settings screen across Navigator implementations or media types.
+
+For example, you could group the user settings per nature of presentation:
+
+* `ReflowableUserSettings` for a visual publication with adjustable fonts and dimensions, such as a reflowable EPUB, HTML document or PDF with reflow mode enabled.
+* `FixedLayoutUserSettings` for a visual publication with a fixed layout, such as FXL EPUB, PDF or comic books.
+* `PlaybackUserSettings` for an audiobook, text-to-speech or EPUB media overlays settings.
+
+To avoid bugs and race conditions, use the following single sources of truth:
+
+* The `PreferencesStore` holds the user `Preferences` object.
+* The `Configurable` (Navigator) holds the `Settings` object.
+
+The `View` itself is created using the combination of the latest user `Preferences` and `Settings`:
+
+* `Preferences` is used to show which value the user selected.
+* `Settings` is used to know which settings are available, their constraints and effective value.
+
+Here's an example showing the flow of actions and events:
+
+<img src="assets/000-flow-detailed.svg">
+
+1. The view is laid out using the latest stored `Preferences` and navigator `Settings` objects.
+2. When the user changes a setting in the user interface, the view model will send the updated `Preferences` to the `PreferencesStore` to save it.
+3. The `PreferencesStore` stores the `Preferences` then emit a "changed" event with the updated `Preferences`.
+4. As the view model observes changes from the `PreferencesStore`, it will:
+    * Trigger an update of the view with the updated `Preferences`.
+    * Submit the new `Preferences` to the Navigator.
+5. The Navigator updates its current `Settings` object using the submitted `Preferences`, then emit a "changed" event with the updated `Settings`.
+    * The presentation will be updated asynchronously to reflect the new settings.
+6. As the view model observes changes from the Navigator's `settings` property, it will trigger an update of the view with the updated `Settings`.
+
+Here's an example using an hypothetical declarative UI toolkit.
+
+```javascript
+function renderView(viewModel, settings, preferences) {
+    let overflow = settings.overflow;
+    if (overflow != null) {
+        let value = preferences.get(overflow) ?: overflow.value;
+
+        Row {
+            Label("Scrolled mode")
+
+            Switch(
+                checked: (value == Overflow.SCROLLED)
+            ) { isChecked in
+                viewModel.updatePreferences(prefs => {
+                    prefs.set(overflow, isChecked ? Overflow.SCROLLED : Overflow.PAGINATED);
+                });
+            }
+        }
+    }
+
+    let fontSize = settings.fontSize;
+    if (fontSize != null) {
+        let value = preferences.get(fontSize) ?: fontSize.value;
+
+        Row {
+            Label("Font size")
+
+            Button("-") {
+                viewModel.updatePreferences(prefs => {
+                    prefs.decrement(fontSize);
+                });
+            }
+
+            Label(fontSize.label(value))
+                .opacity(fontSize.isActive ? 1.0 : 0.5)
+
+            Button("+") {
+                viewModel.updatePreferences(prefs => {
+                    prefs.increment(fontSize);
+                });
+            }
         }
     }
 }
-
-let fontSize = controller.settings.fontSize
-if (fontSize != null) {
-    Row {
-        Label("Font size")
-
-        Button("-") {
-            controller.decrement(fontSize)
-        }
-
-        Label(fontSize.valueDescription)
-            .color(fontSize.isActive ? .black : .gray)
-
-        Button("+") {
-            controller.increment(fontSize)
-        }
-    }
-}
 ```
 
-#### Persisting the user preferences.
+### Saving and restoring the user preferences
 
-The `PresentationValue` object holds a simple map which can be serialized into a JSON object. Reading apps are responsible for storing and retrieving the JSON when needed.
+Having a user settings screen is moot if you cannot save and restore the selected preferences for future sessions. Thankfully you can serialize `Preferences` to a JSON object.
 
-When using the `PresentationController` helper class, you can observe the list of user settings to save any changes.
-
-```typescript
-controller.userSettings.observe { settings ->
-    preferencesStorage.save(settings.values)
-}
+```javascript
+let json = JSON.stringify(preferences.toJSON());
 ```
 
-#### Terms
+When you are ready to restore the user preferences, construct a new `Preferences` object from the JSON string.
 
-* **Setting** – A configurable property that determines one aspect of the publication presentation, e.g. the font size or the playback rate.
-* **Key** – Each setting is identified by a unique string key, e.g. `fontSize`.
-* **Value** – Each setting has a value of a given value type, e.g. the `Orientation` enum or a boolean.
-* **Preference** – A preference is a preferred setting value provided by the app, usually set by the user.
-* **Constraints** – A set of rules and dependencies constraining a setting's value.
+```javascript
+let preferences = Preferences(JSON.parse(json));
+```
 
-    * The properties are computed by the Navigator from, by order of precedence:
-        1. *User Presentation Settings* provided by the app.
-        2. *App Presentation Settings* provided by the app.
-        3. *Presentation Hints* embedded in the publication.
-        4. *Presentation Defaults* provided by the Navigator.
-* **Presentation Settings**: A list of key-value pairs provided by the app to influence the current Navigator's *Presentation Properties*. The keys must be valid *Presentation Property Keys*.
-    * **User Settings**: A dynamic list of *Presentation Settings* the app chooses to expose in the user settings interface for the user to modify.
-    * **App Settings**: A hard coded list of *Presentation Settings* that the app chooses to customize but without user input.
-* **Presentation Hints**: An immutable list of metadata embedded in a publication. Navigators use them to compute default values for the settings. [See the RWPM specification](https://readium.org/webpub-manifest/modules/presentation.html).
-* **Presentation Defaults**: A static list of *Presentation Property Values* used as fallback by a Navigator when a property is not overriden by *Presentation Hints* or *Presentation Settings*.
+#### Splitting and merging preferences
 
+How you store user preferences has an impact on the available features. You could have, for example:
+
+* A different unique set of preferences for each publication.
+* Preferences shared between publications with the same profile or media type (EPUB, PDF, etc.).
+* Global preferences shared with all publications (e.g. theme).
+* Several user setting profiles/themes that the user can switch to and modify independently.
+* Some settings that are not stored as JSON and will need to be reconstructed (e.g. the publication language).
+
+Use the `filter` and `filterNot` API to extract settings from a `Preferences` object. You can then merge them again together.
+
+```javascript
+let appPrefs = prefs.filter(settings.theme);
+let bookPrefs = prefs.filter(settings.language, settings.readingProgression);
+let profilePrefs = prefs.filterNot(settings.theme, settings.language, settings.readingProgression);
+
+let combinedPrefs = appPrefs.copy()
+    .merge(profilePrefs)
+    .merge(bookPrefs);
+```
+
+#### Settings scoped to a publication
+
+:warning: Some settings are really tied to a particular publication and should never be shared between several publications, such as the language. It's recommended that you store these settings separately per book.
+
+While you can filter such settings explicitly, Readium offers a list of known publication-scoped settings with `PUBLICATION_SETTINGS`.
+
+```javascript
+// Filter the preferences that are related to the publication.
+let bookPrefs = prefs.filter(...PUBLICATION_SETTINGS);
+// Filter the preferences that will be shared between publications of the same profile.
+let profilePrefs = prefs.filterNot(...PUBLICATION_SETTINGS);
+```
 
 ## Reference Guide
+
+:warning: THE REST OF THE DOCUMENT IS OBSOLETE, PLEASE IGNORE FOR NOW.
 
 ### `Observable<T>` Class
 
