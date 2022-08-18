@@ -47,7 +47,6 @@ The `Settings` (*plural*) object is unique for each `Configurable` implementatio
 
 Here are some of the available setting types:
 
-* `ValueSetting<V>` - a setting holding an arbitrary value of type `V`.
 * `ToggleSetting` - a simple boolean setting, e.g. whether or not the publisher styles are enabled.
 * `RangeSetting<V>` - a setting for numbers constrained in a range, e.g. the page margins as a `RangeSetting<Int>` could range from 0 to 200 pixels.
 * `PercentSetting` - a specialization of `RangeSetting<Double>` which represents a percentage from, by default, 0.0 to 1.0.
@@ -244,349 +243,226 @@ let profilePrefs = prefs.filterNot(...PUBLICATION_SETTINGS);
 
 ## Reference Guide
 
-:warning: THE REST OF THE DOCUMENT IS OBSOLETE, PLEASE IGNORE FOR NOW.
+:point_up: This reference is only a broad guide. Each platform should use the most idiomatic patterns to implement this API.
 
-### `Observable<T>` Class
+### `Configurable` Interface
 
-A value holder which has a current value and notifies observers when its value changes, for example:
-* `BehaviorSubject` with ReactiveX
-* `StateFlow` with Kotlin coroutines
-* `@Published`/`CurrentValueSubject` with Swift Combine
-
-If the platform does not offer reactive programming capabilities, `Observable` can be implemented with a simple callback registry. [Here's a Swift implementation](https://github.com/readium/r2-shared-swift/blob/7c66c3b7eb8711946b4fca4a1cce8f5ae0bc6bfe/r2-shared-swift/Toolkit/Observable.swift). 
-
-### `PresentationNavigator` Interface
-
-A Navigator whose presentation can be customized with app-provided settings.
+A `Configurable` is a component with a set of configurable `Settings`.
 
 #### Properties
 
-* `presentation: PresentationProperties`
-    * Current values for the Presentation Properties and their metadata.
+* `settings: Settings`
+    * Current `Settings` values.
+    * Implementers should override this property to set the actual `Settings` sub-type.
+    * This property must be observable, for example with a separate callback registry (`addSettingsObserver()`) or with a dedicated reactive object such as `StateFlow` (Kotlin coroutines) or `@Published`/`CurrentValueSubject` with Swift Combine. 
 
 #### Methods
 
-* `apply(settings: PresentationSettings)`
-    * Submits a new set of Presentation Settings used by the Navigator to recompute its Presentation Properties.
-    * Note that the Navigator might not update its presentation right away, or might even ignore some of the provided settings. They are only used as guidelines to compute the Presentation Properties.
+* `submitPreferences(preferences: Preferences)`
+    * Submits a new set of `Preferences` to update the current `Settings`.
+    * Note that the `Configurable` might not update its `settings` right away, or might even ignore some of the provided preferences. They are only used as hints to compute the new settings.
 
-### `PresentationProperties` Class
+#### `Configurable.Settings` Interface
 
-Holds the current values for the Presentation Properties determining how a publication is rendered by a Navigator. For example, "font size" or "playback rate".
+Marker interface for the `Setting` properties holder of a `Configurable`.
 
-#### Properties
+### `Setting<V>` Class
 
-* `properties: Map<String, Observable<PresentationProperty?>>`
-    * Maps each Property Key to the current property value.
-    * If a property is null, it means that the Navigator does not support it.
+Represents a single configurable property of a [Configurable] component and holds its current [value].
 
-#### Helpers
+:warning: This class **must** be immutable.
 
-`PresentationProperties` offers type-safe helpers for each standard properties, for example:
-
-* `fontSize: Observable<RangeProperty?>`
-* `publisherDefaults: Observable<ToggleProperty?>`
-* ...
-
-#### `PresentationProperty<T>` Interface
-
-Holds the current value and the metadata of a Presentation Property of type `T`.
-
-##### Properties
-
-All properties are immutable.
-
-* `value: T`
-    * Current value for the property.
-
-##### Methods
-
-*Note*: For convenience, these methods can be implemented as closures in the implementing classes.
-
-* `isActiveForSettings(settings: PresentationSettings) -> Boolean`
-    * Determines whether the property will be active when the given settings are applied to the Navigator.
-    * For example, with an EPUB Navigator using Readium CSS, the property "letter spacing" requires to switch off the "publisher defaults" setting to be active.
-    * This is useful to determine whether to grey out a view in the user settings interface.
-* `activateInSettings(settings: PresentationSettings) throws -> PresentationSettings`
-    * Modifies the given settings to make sure the property will be activated when applying them to the Navigator.
-    * For example, with an EPUB Navigator using Readium CSS, activating the "letter spacing" property means ensuring the "publisher defaults" setting is disabled.
-    * If the property cannot be activated, returns a user-facing localized error.
-
-#### `ColorProperty` Class (implements `PresentationProperty<Color>`)
-
-Property holding an arbitrary color. For example, "text color" or "background color".
-
-The `Color` type depends on the platform.
-
-#### `ToggleProperty` Class (implements `PresentationProperty<Boolean>`)
-
-Property representable as a toggle switch in the user interface. For example, "publisher defaults" or "continuous".
-
-#### `EnumProperty` Class (implements `PresentationProperty<String>`)
-
-Property representable as a dropdown menu or radio buttons group in the user interface. For example, "reading progression" or "font family".
-
-##### Properties
-
-* `values: [String]`
-    * List of available values for this property, in logical order.
-
-##### Methods
-
-* `labelForValue(String) -> LocalizedString`
-    * Returns a user-facing localized label for the given value, which can be used in the user interface.
-    * For example, with the "reading progression" property, the value `ltr` has for label "Left to right" in English.
-
-#### `RangeProperty` Class (implements `PresentationProperty<Double>`)
-
-Property representable as a draggable slider or a pair of increment/decrement buttons. For example, "font size" or "playback volume".
-
-A range value is valid between 0.0 to 1.0.
-
-##### Properties
-
-* `stepsCount: Int?`
-    * Number of discrete values in the range.
-    * A given range property might not have the same number of effective steps. Therefore, knowing the number of steps is important to make sure that incrementing a property triggers a visible change in the Navigator.
-    * It can be null for continuous properties, such as "playback volume". 
-
-##### Methods
-
-* `labelForValue(Double) -> LocalizedString`
-    * Returns a user-facing localized label for the given value, which can be used in the user interface.
-    * For example, with the "font size" property, the value `0.4` might have for label "12 pt", depending on the Navigator.
-
-### `PresentationSettings` Class
-
-Holds a list of key-value pairs provided by the app to influence a Navigator's Presentation Properties. The keys must be valid Presentation Property Keys.
-
-#### Constructor
-
-* `PresentationSettings(json: String)`
-    * Parses Presentation Settings from a serialized JSON object.
+For clarity, this reference guide is using a class hierarchy to represent specialization of the `Setting<V>` class, but you could use other solutions. For example in the Kotlin toolkit, there's a unique `Setting<V, E>` class which uses composition to store additional metadata into a `extras: E` property. Specialization are declared as type aliases, e.g. the `RangeSetting` is associated with a `RangeExtras` and declared as `RangeSetting<V> = Setting<V, RangeExtras>`.
 
 #### Properties
-
-* `settings: Map<String, Any?>`
-    * Maps a Presentation Property Key with a value.
-    * Contrary to `PresentationProperties`, the value of a setting can be null to let the Navigator use a default value.
-
-#### Methods
-
-* `merge(other: PresentationSettings) -> PresentationSettings`
-    * Returns a copy of self after overwriting any setting with the values from `other`.
-* `toJSON() -> String`
-    * Serializes the settings into a JSON object.
- 
-#### Helpers
-
-`PresentationSettings` provides type-safe helpers to access their values, for example:
-
-* `fontSize: Double?`
-* `publisherDefaults: Boolean?`
-* ...
-
-
-### `PresentationController`
-
-Helper class which simplifies the modification of Presentation Settings and designing a user settings interface.
-
-#### Constructor
-
-* `PresentationController(navigator: Navigator, appSettings: PresentationSettings, userSettings: PresentationSettings)`
-   * `appSettings` An immutable list of *Presentation Settings* that the app chooses to customize but without user input.
-   * `userSettings` A dynamic list of *Presentation Settings* the app chooses to expose in the user settings interface for the user to modify.
-
-#### Properties
-
-* `userSettings: Observable<PresentationSettings>`
-    * Current set of raw User Presentation Settings, which is updated every time the settings are changed.
-    * The initial value is the one provided in the constructor.
-    * The reading app can observe it to persist the latest user settings.
-* `settings: Map<String, Observable<PresentationController.Setting?>>`
-    * Maps each Property Key to a high-level user setting object.
-    * If a setting is null, it means that the Navigator does not support the matching Presentation Property.
-    * To ensure that we always display an appropriate value in the user interface, we want to get the one selected by the user or the effective one from the Navigator as a fallback. To do that, the current value of the setting is computed automatically from, by order of precedence:
-        1. The `userSettings` value.
-        2. The `appSettings` value.
-        3. The `PresentationProperty` value observed from the matching `navigator.presentation` property.
-
-#### Methods
-
-* `apply()`
-    * Applies the current set of `userSettings` to the Navigator.
-    * Typically, this is called after the user changes a single setting, or after restoring a bunch of settings together.
-    ```
-    apply() {
-        navigator.apply(appSettings.merge(userSettings))
-    }
-    ```
-* `reset()`
-    * Clears all user settings to revert to the Navigator default values.
-    ```
-    reset() {
-        userSettings = {}
-    }
-    ```
-* `reset(setting: PresentationController.Setting)`
-    * Clears the given setting to revert to the Navigator default value.
-* `set<T>(setting: PresentationController.Setting<T>, value: T?)`
-    * Changes the value of the given setting.
-    * The new value will be saved in the `userSettings` object.
-    ```
-    set(setting, value) {
-        if (value != null) {
-            activate(setting)
-        }
-        userSettings[setting.key] = value
-    }
-    ```
-* `toggle(setting: PresentationController.ToggleSetting)`
-    * Inverts the value of the given switch setting.
-    ```
-    toggle(setting) {
-        set(setting, !setting.value)
-    }
-    ```
-* `increment(setting: PresentationController.RangeSetting)`
-    * Increments the value of the given range setting to the next effective step.
-    * The minimum step is calculated from the `setting.stepCount` property.
-* `decrement(setting: PresentationController.RangeSetting)`
-    * Decrements the value of the given range setting to the previous effective step.
-    * The minimum step is calculated from the `setting.stepCount` property.
-* `activate(setting: PresentationController.Setting)`
-    * Updates the user setting to ensure the matching Presentation Property is active.
-    
-#### Helpers
-
-`PresentationController` offers type-safe helpers for each standard settings, for example:
-
-* `fontSize: Observable<PresentationController.RangeSetting?>`
-* `publisherDefaults: Observable<PresentationController.ToggleSetting?>`
-* ...
-
-
-#### `PresentationController.Setting<T>` Interface
-
-Holds the current value and the metadata of a Presentation Setting of type `T`.
-
-##### Properties
-
-All properties are immutable.
 
 * `key: String`
-    * Presentation Property Key for this setting.
-* `value: T`
-    * Current value for the property.
-* `isActive: Boolean`
-    * Indicates whether the Presentation Property is active for the current set of user settings.
+    * Unique identifier used to serialize [Preferences] to JSON.
+* `value: V`
+    * Current value for this setting.
+* `coder: SettingCoder<V> = IdentitySettingCoder()`
+    * JSON serializer for the [value]
+* `validator: SettingValidator<V> = IdentitySettingValidator()`
+    * Ensures the validity of a [V] value.
+* `activator: SettingActivator = NullSettingActivator()`
+    * Ensures that the condition required for this setting to be active are met in the given [Preferences] – e.g. another setting having a certain preference.
 
-#### `PresentationController.ColorSetting` Class (implements `PresentationController.Setting<Color>`)
+#### Methods
 
-#### `PresentationController.ToggleSetting` Class (implements `PresentationController.Setting<Boolean>`)
+:question: A parameter prefixed with `...` indicates that the function can receive a variable number of arguments.
 
-#### `PresentationController.EnumSetting` Class (implements `PresentationController.Setting<String>`)
+* `jsonValue() -> Any`
+    * JSON raw representation for the current value.
+    * It is computed using `coder.encode(value)`.
+* `copyFirstValidValueFrom(...candidates: Preferences?, fallback: Setting<V> = this) -> Setting<V>`
+    * Creates a copy of the [Setting] receiver, after replacing its value with the first valid value taken from the given [Preferences] objects, in order.
+    * Each preference is verified using the setting [validator].
+    * If no valid value is found, falls back on the value of `fallback` which defaults to the current value.
 
-##### Properties
+### `ToggleSetting` Class (extends `Setting<Boolean>`)
 
-* `values: [String]`
-    * List of available values for this setting, in logical order.
+A boolean [Setting].
 
-##### Methods
+### `RangeSetting<V>` Class (extends `Setting<V>`)
 
-* `labelForValue(String) -> LocalizedString`
-    * Returns a user-facing localized label for the given value, which can be used in the user interface.
-    * For example, with the "reading progression" setting, the value `ltr` has for label "Left to right" in English.
+A [Setting] whose value is constrained to a range.
 
-#### `PresentationController.RangeSetting` Class (implements `PresentationController.Setting<Double>`)
+#### Properties
 
-##### Properties
+* `range: Range<V>`
+    * The valid range for the setting value.
+* `suggestedSteps: List<V>?`
+    * Value steps which can be used to decrement or increment the setting. It **must** be sorted in increasing order.
+* `suggestedIncrement: V?`
+    * Suggested value increment which can be used to decrement or increment the setting.
+* `label: (V) -> String`
+    * Returns a user-facing label for the given value. This can be used to format the value unit.
 
-* `stepsCount: Int?`
-    * Number of discrete values in the range.
-    * A given range setting might not have the same number of effective steps. Therefore, knowing the number of steps is important to make sure that incrementing a setting triggers a visible change in the Navigator.
-    * It can be null for continuous settings, such as "playback volume". 
+### `PercentSetting` Class (extends `RangeSetting<Double>`)
 
-##### Methods
+A [RangeSetting] representing a percentage from 0.0 to 1.0.
 
-* `labelForValue(Double) -> LocalizedString`
-    * Returns a user-facing localized label for the given value, which can be used in the user interface.
-    * For example, with the "font size" setting, the value `0.4` might have for label "12 pt", depending on the Navigator.
+It adds the following default values to the `RangeSetting` properties:
 
+* `range: Range<Double> = 0.0..1.0`
+* `suggestedIncrement: Double? = 0.1`
+* `label: (V) -> String = { value -> "${value * 100}%"`
 
-## Appendix A: Readium Standard Presentation Properties
+### `EnumSetting<E>` Class (extends `Setting<E>`)
 
-| Key                     | Type                                             | Description                                                                                           |
-|-------------------------|--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
-| `verticalPageMargins`   | `Range`                                          | Vertical margins around a page                                                                        |
-| `horizontalPageMargins` | `Range`                                          | Horizontal margins around a page                                                                      |
-| `appearance`            | `Enum`                                           | Predefined theme, e.g. `dark` or `sepia`                                                              |
-| `backgroundColor`       | `Color`                                          | Color of the background                                                                               |
-| `textColor`             | `Color`                                          | Color of the text content                                                                             |
-| `textAlignment`         | `Enum` (`left`, `right`, `center`, `justify`)    | Alignment of the text content                                                                         |
-| `hyphenation`           | `Toggle`                                         | Indicates whether the text should be hyphenated                                                       |
-| `ligature`              | `Toggle`                                         | Indicates whether ligatures should be enabled                                                         |
-| `fontFamily`            | `Enum`                                           | Font family stack used for the text content                                                           |
-| `fontSize`              | `Range`                                          | Font size used for the text content                                                                   |
-| `lineHeight`            | `Range`                                          | Height of a text line                                                                                 |
-| `paragraphIndent`       | `Range`                                          | Indent of the first line of a paragraph                                                               |
-| `paragraphSpacing`      | `Range`                                          | Spacing between paragraphs                                                                            |
-| `wordSpacing`           | `Range`                                          | Spacing between words                                                                                 |
-| `letterSpacing`         | `Range`                                          | Spacing between letters                                                                               |
-| `publisherDefaults`     | `Toggle`                                         | Indicates whether the publisher's styles should be honored                                            |
-| `readingProgression`    | `Enum` (`ltr`, `rtl`, `ttb`, `btt`, `auto`)      | Direction in which resources are laid out                                                             |
-| `doublePageSpread`      | `Enum` (`landscape`, `portrait`, `both`, `auto`) | Indicates the condition to be met for the publication to be rendered with synthetic spreads           |
-| `columns`               | `Range`                                          | Number of columns displayed in a reflowable publication                                               |
-| `overflow`              | `Enum` (`paginated`, `scrolled`, `auto`)         | Indicates if the overflow of the content from should be handled using dynamic pagination or scrolling |
-| `continuous`            | `Toggle`                                         | Indicates if consecutive resources should be handled in a continuous or discontinuous way             |
-| `orientation`           | `Enum`                                           | Suggested orientation for the device when displaying the publication                                  |
-| `fit`                   | `Enum` (`contain`, `cover`, `width`, `height`)   | Specifies constraints for the presentation of the publication within the viewport                     |
-| `playbackRate`          | `Range`                                          | Speed of the media playback                                                                           |
-| `playbackVolume`        | `Range`                                          | Rendition volume of the media                                                                         |
-| `quality`               | `Range`                                          | Quality of the publication resources                                                                  |
-| `captions`              | `Enum`                                           | Caption sources for the media                                                                         |
+A [Setting] whose value is a member of the enum [E].
 
+The default `validator` uses an `AllowlistSettingValidator` initialized with the `values`.
 
-## Writing Notes
+#### Properties
 
-### References
+* `values: List<E>?`
+    * List of valid [E] values for this setting. Not all members of the enum are necessary supported.
+* `label: (E) -> String?`
+    * Returns a user-facing label for the given value, when one is available.
 
-* [Readium CSS variables](https://github.com/readium/readium-css/blob/master/docs/CSS08-defaults.md)
-* [Presentation Hints](https://readium.org/webpub-manifest/modules/presentation)
+### `ColorSetting` Class (extends `EnumSetting<Color>`)
+
+A color [Setting].
+
+The `Color` type depends on what is available on the platform.
+
+A `Configurable` implementation might restrict the available colors with the `EnumSetting`'s `values` property. With a special `coder`, it can also recognize various types of JSON colors: integers, hexadecimal, named colors (`red`, `green`, etc.).
 
 
-### Requirements
+### `Preferences` Class
 
-* Four types of settings:
-    * Toggle (boolean, e.g. continuous)
-    * Range (0 - 100%, e.g. font size)
-    * Fixed Enum (depends on the particular setting, e.g. orientation)
-    * Dynamic Enum (depends on the current navigator, e.g. font families)
-* Every setting is optional. When unset, the Navigator uses a default value.
-    * "Reset to defaults" means unsetting all settings.
-* A navigator should be able to declare custom settings that are not known by the toolkit.
-* (Recommended for app implementers) Settings should be shared between publications of the same media type, but not between two different media types. For example, users might want to:
-    * play audiobooks at a higher speed rate, but without changing the rate of movie-based publications
-    * read ebooks as paginated but PDFs as continuous scroll
-* The app needs:
-    * To know which settings are available in the navigator / current resource, to show only relevant settings (e.g. rate is useless in an EPUB).
-    * To know which setting is currently inactive, to grey it out in the user settings interface (e.g. "double page spread" requires "scroll mode off").
-    * If possible, a way to switch on an inactive setting, e.g. either by:
-        * Being provided a list of required setting and their values (e.g. "scroll mode = off"). Pro: we can tell the user why a setting is inactive.
-        * A Navigator API to modify the settings as needed. Each Navigator might have a different dependency graph between the settings, so this can't be hard-coded in the Settings object directly.
-    * For a Range setting:
-	    * How many steps are available in the range? If we don't know this, we might increase the value too little with no visible effect.
-		* For a given value (0-100%), a user-facing label with units. E.g. 20% = "50px" page margin
-    * For a Dynamic Enum setting, which values are available (e.g. list of fonts).
-    * For all settings, what is the default (not current) value. This is useful when a setting is "unset". For example:
-        * With a Toggle, we need to know if it's on or off by default, otherwise toggling the Toggle might not produce any effect.
-        * With a Range, we need to know the starting step when increasing/decreasing the value.
+Set of preferences used to update a `Configurable`'s settings.
 
+:point_up: Prefer implementing an immutable and a mutable version of `Preferences`, if possible. The mutable APIs are marked with "(*mutable*)". If not possible, the `copy()` method should be sufficient to prevent mutations of the preferences after submitting them to a `Configurable` object.
 
-All settings are optional. When not set, the actual value is automatically determined by the navigator.
+#### Properties
 
+* `values: Map<String, *>`
+    * Direct access to the JSON values.
+    * Prefer using the safe `Setting`-based accessors instead.
 
-> It is important to note that the list of user settings you may provide users with can change depending on the primary language of the publication.
-> 
-> Indeed, it doesn’t make sense to have some user settings in some languages, and they would do more harm than good e.g. hyphens in CJK. Ideally, those settings should therefore be removed from the UI, or at least disabled, if needed.
-> https://github.com/readium/readium-css/blob/master/docs/CSS12-user_prefs.md#user-settings-can-be-language-specific
+#### Methods
+
+* `copy() -> Preferences`
+    * Creates a deep copy of this `Preferences`.
+* (*mutable*) `merge(other: Preferences)`
+    * Merges the preferences of [other], overwriting the ones from the receiver in case of conflict.
+
+##### JSON serialization
+
+* `Preferences(jsonString: String?)`
+    * Creates a `Preferences` object from its JSON representation.
+* `toJSON() -> Map<String, *>`
+    * Serializes this [Preferences] to a JSON object.
+* `toJSONString() -> String`
+    * Serializes this [Preferences] to a JSON object.
+
+##### Setting accessors
+
+* `get(setting: Setting<V>) -> V?`
+    * Gets the preference for the given [setting], if set.
+* (*mutable*) `set(setting: Setting<V>, preference: V?, activate: Boolean = true)`
+    * Sets the preference for the given [setting].
+    * `activate: Boolean = true`
+        * Indicates whether the setting will be force activated if needed.
+* (*mutable*) `update(setting: Setting<V>, activate: Boolean = true, transform: (V) -> V`
+    * Sets the preference for the given [setting] after transforming the current value.
+* (*mutable*) `remove(setting: Setting<*>)`
+    * Removes the preference for the given [setting].
+* (*mutable*) `clear()`
+    * Clears all preferences.
+
+##### Setting activation
+
+* `isActive(setting: Setting<*>) -> Boolean`
+    * Returns whether the given [setting] is active in these preferences.
+    * An inactive setting is ignored by the [Configurable] until its activation conditions are met (e.g. another setting has a certain preference).
+* (*mutable*) `activate(setting: Setting<*>) -> Boolean`
+    * Activates the given [setting] in the preferences, if needed.
+
+##### Filtering
+
+:question: A parameter prefixed with `...` indicates that the function can receive a variable number of arguments.
+
+* `filter(...settings: Setting<*>) -> Preferences`
+    * Creates a copy of this [Preferences], keeping only the preferences for the given settings.
+* `filter(...keys: String) -> Preferences`
+    * Creates a copy of this [Preferences], keeping only the preferences for the given setting [keys].
+* `filterNot(...settings: Setting<*>) -> Preferences`
+    * Creates a copy of this [Preferences], excluding the preferences for the given settings.
+* `filterNot(...keys: String) -> Preferences`
+    * Creates a copy of this [Preferences], excluding the preferences for the given setting [keys].
+
+##### Type-specific helpers
+
+###### `ToggleSetting`
+
+* (*mutable*) `toggle(setting: ToggleSetting, activate: Boolean = true)`
+    * Toggles the preference for the given boolean [setting].
+
+###### `EnumSetting<E>`
+
+* (*mutable*) `toggle(setting: EnumSetting<E>, preference: E, activate: Boolean = true)`
+    * Toggles the preference for the enum [setting] to the given [preference].
+    * If the preference was already set to the same value, it is removed.
+
+###### `RangeSetting<V>`
+
+* (*mutable*) `increment(setting: RangeSetting<V>, activate: Boolean = true, next: (V) -> V)`
+    * Increments the preference for the given [setting] to the next step.
+    * If the [setting] doesn't have any suggested steps, the [next] function will be used instead to determine the next step.
+* (*mutable*) `decrement(setting: RangeSetting<V>, activate: Boolean = true, previous: (V) -> V)`
+    * Decrements the preference for the given [setting] to the previous step.
+    * If the [setting] doesn't have any suggested steps, the [previous] function will be used instead to determine the previous step.
+
+###### `RangeSetting<Int>`
+
+* (*mutable*) `increment(setting: RangeSetting<Int>, amount: Int = setting.extras.suggestedIncrement ?: 1, activate: Boolean = true)`
+    * Increments the preference for the given [setting] to the next step.
+    * `amount: Int = setting.extras.suggestedIncrement ?: 1`
+        * Amount to increment, when the [setting] doesn't have any suggested steps or increment.
+* (*mutable*) `decrement(setting: RangeSetting<Int>, amount: Int = setting.extras.suggestedIncrement ?: 1, activate: Boolean = true)`
+    * Decrements the preference for the given [setting] to the previous step.
+    * `amount: Int = setting.extras.suggestedIncrement ?: 1`
+        * Amount to decrement, when the [setting] doesn't have any suggested steps or increment.
+*  (*mutable*)`adjustBy(setting: RangeSetting<Int>, amount: Int, activate: Boolean = true)`
+    * Adjusts the preference for the given [setting] by the [amount].
+    * `amount: Int`
+        * Amount to add to the current preference value.
+
+###### `RangeSetting<Double>`
+
+* (*mutable*) `increment(setting: RangeSetting<Double>, amount: Double = setting.extras.suggestedIncrement ?: 0.1, activate: Boolean = true)`
+    * Increments the preference for the given [setting] to the next step.
+    * `amount: Double = setting.extras.suggestedIncrement ?: 0.1`
+        * Amount to increment, when the [setting] doesn't have any suggested steps or increment.
+* (*mutable*) `decrement(setting: RangeSetting<Double>, amount: Double = setting.extras.suggestedIncrement ?: 0.1, activate: Boolean = true)`
+    * Decrements the preference for the given [setting] to the previous step.
+    * `amount: Double = setting.extras.suggestedIncrement ?: 0.1`
+        * Amount to decrement, when the [setting] doesn't have any suggested steps or increment.
+* (*mutable*) `adjustBy(setting: RangeSetting<Double>, amount: Double, activate: Boolean = true)`
+    * Adjusts the preference for the given [setting] by the [amount].
+    * `amount: Double`
+        * Amount to add to the current preference value.
+
