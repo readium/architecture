@@ -9,6 +9,7 @@ Related Repository: [Readium Web Publication Manifest](https://github.com/readiu
 References: 
 
 - https://www.w3.org/Submission/epub-a11y/
+- https://www.w3.org/TR/epub-a11y-11/
 - http://kb.daisy.org/publishing/docs/metadata/schema-org.html
 - http://kb.daisy.org/publishing/docs/metadata/evaluation.html
 - https://www.w3.org/wiki/WebSchemas/Accessibility
@@ -47,7 +48,12 @@ The array is created from the `meta` elements whose `property` attribute has the
 
 `accessModeSufficient` is a key whose value is an array of arrays of strings.
 
-The known values are the same as `accessMode`.
+The known values are:
+
+- `auditory`
+- `tactile`
+- `textual`
+- `visual`
 
 ### EPUB 2.x
 
@@ -60,7 +66,7 @@ When it is a multiple:
 - split the value based on comma (`,`) separator;
 - trim (left + right) each resulting string token, but leave original whitespaces inside the token – some EPUBs might be using a space separator instead of comma;
 - remove duplicate tokens (if any);
-- make an array from the remaining ordered tokens;
+- make an array from the remaining tokens;
 - insert this array into the `accessModeSufficient` array.
 
 ### EPUB 3.X
@@ -74,65 +80,62 @@ When it is a multiple:
 - split the value based on comma (`,`) separator;
 - trim (left + right) each resulting string token, but leave original whitespaces inside the token – some EPUBs might be using a space separator instead of comma;
 - remove duplicate tokens (if any);
-- make an array from the remaining ordered tokens;
+- make an array from the remaining tokens;
 - insert this array into the `accessModeSufficient` array.
 
 ## AccessibilitySummary
 
-`accessibilitySummary` is a key whose value is a map of localized strings (JSON-LD language maps).
-
-It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
+`accessibilitySummary` is a key whose value is a string.
 
 ### EPUB 2.x
 
-The map is created from the `meta` elements whose `name` attribute has the value `schema:accessibilitySummary`. The key of the localized string is the value of the `xml:lang` attribute, and its value the value of the `content` attribute.
-
-In case there is no `xml:lang` attribute to be found, use the `und` (undefined) language value.
+The string is the value of the first `meta` element whose `name` attribute has the value `schema:accessibilitySummary`.
 
 ### EPUB 3.X
 
-The map is created from the `meta` elements whose `property` attribute has the value `schema:accessibilitySummary`. The key of the localized string is the value of the `xml:lang` attribute, and its value the child textual content.
-
-In case there is no `xml:lang` attribute to be found, use the `und` (undefined) language value.
+The string is the value of the first `meta` element whose `property` attribute has the value `schema:accessibilitySummary`.
 
 ## CertifiedBy
 
-`certifiedBy` is a key whose value is an array of strings.
+`certifiedBy` is a key whose value is a string.
 
 ### EPUB 2.x
 
-The array is created from the `meta` elements whose `name` attribute has the value `a11y:certifiedBy`. The value of their `content` attribute is pushed to the array.
+The string is the value of the first `meta` element whose `name` attribute has the value `a11y:certifiedBy`.
 
 ### EPUB 3.X
 
-The array is created from the `meta` elements whose `property` attribute has the value `a11y:certifiedBy`. Their value (i.e. child textual content) is pushed to the array.
+The string is the value of the first `meta` element whose `property` attribute has the value `a11y:certifiedBy`.
 
 ## CertifierCredential
 
-`certifierCredential` is a key whose value is an array of strings.
+`certifierCredential` is a key whose value is a string
 
 ### EPUB 2.x
 
-The array is created from the `meta` elements whose `name` attribute has the value `a11y:certifierCredential`. The value of their `content` attribute is pushed to the array.
+The string is the value of the first `meta` element whose `name` attribute has the value `a11y:certifierCredential`.
 
 ### EPUB 3.X
 
-The array is created from: 
+- Check if the `certifiedBy` element that has been picked is refined by any `meta` whose `property` attribute has the value `certifierCredential`.
+- If not, use the first `meta` element whose `property` attribute has the value `certifierCredential`.
 
-- the `meta` elements whose `property` attribute has the value `a11y:certifierCredential`. Their value (i.e. child textual content) is pushed to the array;
-- the `link` elements whose `property` attribute has the value `a11y:certifierCredential`. The value of their `href` attribute is pushed to the array – the value is expected to be a URL.
+The string is the textual value of this `meta` element. 
 
 ## CertifierReport
 
-`certifierReport` is a key whose value is an array of strings.
+`certifierReport` is a key whose value is a string.
 
 ### EPUB 2.x
 
-The array is created from the `meta` elements whose `name` attribute has the value `a11y:certifierReport`. The value of their `content` attribute is pushed to the array.
+The string is the value of the first `meta` element whose `name` attribute has the value `a11y:certifierReport`.
 
 ### EPUB 3.X
 
-The array is created from the `link` elements whose `property` attribute has the value `a11y:certifierReport`. The value of their `href` attribute is pushed to the array – the value is expected to be a URL.
+- Check if the `certifiedBy` element that has been picked is refined by any `link` whose `rel` attribute has the value `a11y:certifierReport`.
+- If `certifiedBy` is not refined by any suitable `link`, use the first `link` whose `rel` attribute has the value `a11y:certifierReport`.
+
+The string is the textual value of this `link` – the value is expected to be a URL.
 
 ## ConformsTo
 
@@ -148,11 +151,15 @@ Although this URL can be arbitrary, it is likely one of the following:
 
 ### EPUB 2.x
 
-The array is created from the `meta` elements whose `name` attribute has the value `dcterms:conformsTo`. The value of their `content` attribute is pushed to the array.
+The array is created from the `meta` elements whose `name` attribute has the value `dcterms:conformsTo`
+and `content` attribute has a value matching any well-known accessibility profile.
+The value of their `content` attribute is pushed to the array.
 
 ### EPUB 3.X
 
-The array is created from the `link` elements whose `property` attribute has the value `dcterms:conformsTo`. The value of their `href` attribute is pushed to the array.
+The array is created from the `link` elements whose `rel` attribute has the value `dcterms:conformsTo`
+and `href` attribute is matching any well-known accessibility profile.
+The value of their `href` attribute is pushed to the array.
 
 ## AccessibilityFeature
 
@@ -238,53 +245,3 @@ The array is created from the `meta` elements whose `name` attribute has the val
 ### EPUB 3.X
 
 The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityHazard`. Their value (i.e. child textual content) is pushed to the array.
-
-## AccessibilityControl
-
-`accessibilityControl` is a key whose value is an array of strings.
-
-At the time of writing, known values are:
-
-- `fullAudioControl`
-- `fullKeyboardControl`
-- `fullMouseControl`
-- `fullSwitchControl`
-- `fullTouchControl`
-- `fullVideoControl`
-- `fullVoiceControl`
-
-### EPUB 2.x
-
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityControl`. The value of their `content` attribute is pushed to the array.
-
-### EPUB 3.X
-
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityControl`. Their value (i.e. child textual content) is pushed to the array.
-
-## AccessibilityAPI
-
-`accessibilityAPI` is a key whose value is an array of strings.
-
-At the time of writing, known values are:
-
-- `ARIA`
-- `AndroidAccessibility`
-- `ATK`
-- `AT-SPI`
-- `BlackberryAccessibility`
-- `IAccessible2`
-- `iOSAccessibility`
-- `JavaAccessibility`
-- `MacOSXAccessibility`
-- `MSAA`
-- `UIAutomation`
-
-Currently, only the `ARIA` value is known to be relevant in the EPUB context.
-
-### EPUB 2.x
-
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityAPI`. The value of their `content` attribute is pushed to the array.
-
-### EPUB 3.X
-
-The array is created from the `meta` elements whose `property` attribute has the value `schema:accessibilityAPI`. Their value (i.e. child textual content) is pushed to the array.
