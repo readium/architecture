@@ -14,13 +14,14 @@ References:
 - http://kb.daisy.org/publishing/docs/metadata/evaluation.html
 - https://www.w3.org/wiki/WebSchemas/Accessibility
 - https://www.w3.org/TR/pub-manifest/#accessibility
-- https://w3c.github.io/publ-a11y/UX-Guide-Metadata/techniques/schema-org.html
+- https://www.w3.org/publishing/a11y/UX-Guide-metadata/techniques/epub-metadata/
 
 ## AccessMode
 
 `accessMode` is a key whose value is an array of strings.
 
-It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
+It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package) and
+[EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/#sec-disc-package)).
 
 At the time of writing, known values are:
 
@@ -183,7 +184,8 @@ The value of their `href` attribute is pushed to the array.
 
 `accessibilityFeature` is a key whose value is an array of strings.
 
-It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
+It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)) and
+[EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/#sec-disc-package)).
 
 At the time of writing, known values are:
 
@@ -243,7 +245,8 @@ The array is created from the `meta` elements whose `property` attribute has the
 
 `accessibilityHazard` is a key whose value is an array of strings.
 
-It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)).
+It is expected in a conformant EPUB publication ([EPUB Accessibility 1.0](https://www.w3.org/Submission/epub-a11y/#sec-disc-package)) and
+[EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/#sec-disc-package)).
 
 At the time of writing, known values are:
 
