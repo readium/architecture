@@ -141,13 +141,31 @@ The string is the textual value of this `link` – the value is expected to be a
 
 `conformsTo` is a key whose value is an array of strings.
 
-These strings must be valid URLs. 
+Values are likely to point to some version of the EPUB accessibility specification and some WCAG profile.
+Try to canonicalize the values to well-known URLs.
 
-Although this URL can be arbitrary, it is likely one of the following:
+Replace any of the following strings with "http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-a":
+- "EPUB Accessibility 1.1 - WCAG 2.0 Level A"
+- "http://idpf.org/epub/a11y/accessibility-20170105.html#wcag-a"
+- "http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-a"
+- "http://wwwidpf.org/epub/a11y/accessibility-20170105.html#wcag-a"
+- "https://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-a"
 
-- http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-a 
-- http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa
-- http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aaa
+Replace any of the following strings with "http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa":
+- "EPUB Accessibility 1.1 - WCAG 2.0 Level AA"
+- "http://idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"
+- "http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"
+- "http://wwwidpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"
+- "https://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"
+
+Replace any of the following strings with "http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aaa":
+- "EPUB Accessibility 1.1 - WCAG 2.0 Level AAA",
+- "http://idpf.org/epub/a11y/accessibility-20170105.html#wcag-aaa",
+- "http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aaa",
+- "http://wwwidpf.org/epub/a11y/accessibility-20170105.html#wcag-aaa",
+- "https://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aaa",
+
+Put canonicalized values into the array. Drop the unknown ones.
 
 ### EPUB 2.x
 
