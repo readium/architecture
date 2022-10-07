@@ -149,21 +149,21 @@ Replace any of the following strings with "http://www.idpf.org/epub/a11y/accessi
 - "EPUB Accessibility 1.1 - WCAG 2.0 Level A"
 - "http://idpf.org/epub/a11y/accessibility-20170105.html#wcag-a"
 - "http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-a"
-- "http://wwwidpf.org/epub/a11y/accessibility-20170105.html#wcag-a"
+- "https://idpf.org/epub/a11y/accessibility-20170105.html#wcag-a"
 - "https://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-a"
 
 Replace any of the following strings with "http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa":
 - "EPUB Accessibility 1.1 - WCAG 2.0 Level AA"
 - "http://idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"
 - "http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"
-- "http://wwwidpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"
+- "https://idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"
 - "https://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"
 
 Replace any of the following strings with "http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aaa":
 - "EPUB Accessibility 1.1 - WCAG 2.0 Level AAA",
 - "http://idpf.org/epub/a11y/accessibility-20170105.html#wcag-aaa",
 - "http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aaa",
-- "http://wwwidpf.org/epub/a11y/accessibility-20170105.html#wcag-aaa",
+- "https://idpf.org/epub/a11y/accessibility-20170105.html#wcag-aaa",
 - "https://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aaa",
 
 Put canonicalized values into the array. Drop the unknown ones.
