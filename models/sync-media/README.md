@@ -63,3 +63,9 @@ This is a WIP, based on current discussions between De Marque and EDRLab.
   ]
 }
 ```
+
+## TODO
+
+- [ ] Skippability
+- [ ] Escapability
+- [ ] EPUB styling
