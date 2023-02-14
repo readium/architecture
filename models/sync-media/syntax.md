@@ -8,6 +8,7 @@ The new syntax is based around a single JSON object called a Sync Media Object:
 
 | Name | Description | Format |
 | ---- | ----------- | ------ |
+| `alt` | Text alternative for the current Sync Media Object. | URI |
 | `audioref` | Points to a media fragment in an audio resource. | URI |
 | `children` | Array of Sync Media Objects. | Sync Media Objects |
 | `imgref` | Points to a media fragment in an image resource. | URI |
@@ -37,12 +38,13 @@ Each Sync Media Object MUST contain:
 }
 ```
 
-*Example 2: Text equivalent of a speech bubble in an image*
+*Example 2: Text equivalent of a speech bubble in a comic book*
 
 ```json
 {
   "role": ["panel"],
-  "imgref": "page10.jpg#xywh=percent:10,10,20,20",
+  "imgref": "page10.jpg#xywh=percent:10,10,60,40",
+  "alt": "A cowboy is looking at the city as the sun sets into the horizon."
   "children": [
     {
       "role": ["balloon"]
