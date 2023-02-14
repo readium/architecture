@@ -41,9 +41,15 @@ Each Sync Media Object MUST contain:
 
 ```json
 {
-  "role": ["balloon"]
+  "role": ["panel"],
   "imgref": "page10.jpg#xywh=percent:10,10,20,20",
-  "text": "This is a dialogue in a speech bubble."
+  "children": [
+    {
+      "role": ["balloon"]
+      "imgref": "page10.jpg#xywh=percent:10,10,20,20",
+      "text": "This is a dialogue in a speech bubble."
+    }
+  ]
 }
 ```
 
