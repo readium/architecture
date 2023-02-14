@@ -15,12 +15,10 @@ This is a WIP, based on current discussions between De Marque and EDRLab.
 ```json
 "syncMedia": [
   {
-    "href": "sync.json",
-    "type": "application/vnd.readium.sync-media+json"
+    "href": "sync.json"
   },
   {
-    "href": "sync2.json",
-    "type": "application/vnd.readium.sync-media+json"
+    "href": "sync2.json"
   }
 ]
 ```
@@ -41,8 +39,7 @@ This is a WIP, based on current discussions between De Marque and EDRLab.
   "links": [
     {
       "rel": "next",
-      "href": "sync2.json",
-      "type": "application/vnd.readium.sync-media+json"
+      "href": "sync2.json"
     }
   ],
   "syncMedia": [
