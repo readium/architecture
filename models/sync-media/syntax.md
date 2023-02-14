@@ -9,7 +9,7 @@ The new syntax is based around a single JSON object called a Sync Media Object:
 | Name | Description | Format |
 | ---- | ----------- | ------ |
 | `audioref` | Points to a media fragment in an audio resource. | URI |
-| `children` | Array of media overlay nodes. | Sync Media Objects |
+| `children` | Array of Sync Media Obects. | Sync Media Objects |
 | `imgref` | Points to a media fragment in an image resource. | URI |
 | `role`     | Array of roles relevant for the current node. | Array of roles |
 | `text`  | Text equivalent for the current Sync Media Object. | String |

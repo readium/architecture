@@ -13,7 +13,7 @@ This is a WIP, based on current discussions between De Marque and EDRLab.
 *Note: Should we make the media type optional?*
 
 ```json
-"sync-media": [
+"syncMedia": [
   {
     "href": "sync.json",
     "type": "application/vnd.readium.sync-media+json"
@@ -45,7 +45,7 @@ This is a WIP, based on current discussions between De Marque and EDRLab.
       "type": "application/vnd.readium.sync-media+json"
     }
   ],
-  "sync-media": [
+  "syncMedia": [
     {
       "textref": "chapter1.html",
       "role": ["chapter"],
