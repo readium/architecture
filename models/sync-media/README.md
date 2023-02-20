@@ -22,7 +22,7 @@ The new syntax is based around a single JSON object called a Sync Media Object:
 
 | Name | Description | Format |
 | ---- | ----------- | ------ |
-| `alt` | Text alternative for the current Sync Media Object. | URI |
+| `alt` | Text alternative for the current Sync Media Object. | String |
 | `audioref` | Points to a media fragment in an audio resource. | URI |
 | `children` | Array of Sync Media Objects. | Sync Media Objects |
 | `imgref` | Points to a media fragment in an image resource. | URI |
