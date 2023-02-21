@@ -91,6 +91,10 @@ Each Sync Media Object MUST contain:
 
 ## TODO
 
+- [ ] Audio descriptions
+- [ ] Additional fragments for images
+- [ ] Step by step reading mode
+- [ ] Support for Sync Media Objects with a single reference
 - [ ] Skippability
 - [ ] Escapability
 - [ ] EPUB styling
