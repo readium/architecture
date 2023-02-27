@@ -40,6 +40,16 @@ Each Sync Media Object MUST contain:
 - <https://www.w3.org/TR/epub-ssv-11/>
 
 
+## Fragments
+
+- Audio: <https://www.w3.org/TR/media-frags/#naming-time>
+- Images:
+  - Rectangular regions: <https://www.w3.org/TR/media-frags/#naming-space>
+  - Polygonal regions: <https://idpf.org/epub/renditions/region-nav/#sec-3.5.1>
+- Text:
+  - Fragment ID: `#identifier` 
+  - Text fragments: <https://wicg.github.io/scroll-to-text-fragment/>		
+
 
 ## Examples
 
@@ -95,9 +105,9 @@ Each Sync Media Object MUST contain:
 ## TODO
 
 - [x] Audio descriptions
-- [ ] Additional fragments for images
-- [ ] Step by step reading mode
-- [ ] Support for Sync Media Objects with a single reference
+- [x] Additional fragments for images
+- [x] Step by step reading mode
+- [x] Support for Sync Media Objects with a single reference
 - [ ] Skippability
 - [ ] Escapability
 - [ ] EPUB styling
