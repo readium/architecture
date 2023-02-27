@@ -22,9 +22,9 @@ The new syntax is based around a single JSON object called a Sync Media Object:
 
 | Name | Description | Format |
 | ---- | ----------- | ------ |
-| `alt` | Text alternative for the current Sync Media Object. | String |
 | `audioref` | Points to a media fragment in an audio resource. | URI |
 | `children` | Array of Sync Media Objects. | Sync Media Objects |
+| `description` | Text, audio or image description for the current Sync Media Object. | Object |
 | `imgref` | Points to a media fragment in an image resource. | URI |
 | `role`     | Array of roles relevant for the current Sync Media Object. | Array of roles |
 | `text`  | Text equivalent for the current Sync Media Object. | String |
@@ -58,7 +58,10 @@ Each Sync Media Object MUST contain:
 {
   "role": ["panel"],
   "imgref": "page10.jpg#xywh=percent:10,10,60,40",
-  "alt": "A cowboy is looking at the city as the sun sets into the horizon."
+  "description": {
+    "text": "A cowboy is looking at the city as the sun sets into the horizon.",
+    "audioref": "description.mp3t=0,5"
+  },
   "children": [
     {
       "role": ["balloon"]
@@ -91,7 +94,7 @@ Each Sync Media Object MUST contain:
 
 ## TODO
 
-- [ ] Audio descriptions
+- [x] Audio descriptions
 - [ ] Additional fragments for images
 - [ ] Step by step reading mode
 - [ ] Support for Sync Media Objects with a single reference
