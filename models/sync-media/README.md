@@ -33,7 +33,7 @@ The new syntax is based around a single JSON object called a Sync Media Object:
 Each Sync Media Object MUST contain:
 
 - a `children` object containg at least one Sync Media Object
-- or at least two of the following elements: `audioref`, `imgref`, `text` or `textref`
+- and at one of the following elements: `audioref`, `imgref`, `text` or `textref`
 
 ## Roles
 
@@ -104,10 +104,16 @@ Each Sync Media Object MUST contain:
 
 ## TODO
 
-- [x] Audio descriptions
+- [ ] High level recommendations for reading systems and authoring
+- [ ] Should we call this work "guided navigation"?
 - [x] Additional fragments for images
 - [x] Step by step reading mode
 - [x] Support for Sync Media Objects with a single reference
-- [ ] Skippability
-- [ ] Escapability
-- [ ] EPUB styling
+- [x] Skippability
+- [x] Escapability
+- [x] EPUB styling
+
+## Postponed
+
+- [ ] Synthetic spread: [spec](https://idpf.org/epub/renditions/region-nav/#sec-3.5.2) and [example](https://idpf.org/epub/renditions/region-nav/#app-a.2)
+- [ ] Descriptions ?
