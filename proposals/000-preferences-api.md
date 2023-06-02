@@ -6,13 +6,17 @@
 
 ## Summary
 
-One paragraph description of what the proposal is.
-
+The Preferences API is a tool for creating components configurable during runtime. It provides a useful framework for constructing user settings interfaces, taking into account all the rules and dependencies associated with each setting. This makes it easy for developers to create a user interface that can be customized to their individual needs.
 
 ## Motivation
 
-Describe the problems that this proposal seeks to address. How this new functionality would help Readium developers create better reading apps?
+Navigators in Readium are built differently depending on the type of publication. In the past, the API for modifying their presentation varied across implementations, making it more difficult to build a user interface and store user preferences.
 
+Developers now have access to a single API enabling them to reuse user interface views across types of publications, such as:
+
+* Visual publication with adjustable fonts and dimensions, e.g. reflowable EPUB, HTML document or PDF with reflow mode enabled.
+* Visual publication with a fixed layout, e.g. fixed-layout EPUB, PDF or comic books.
+* Publication with media playback, e.g. audiobook, text-to-speech or EPUB media overlays settings.
 
 ## Developer Guide
 
@@ -166,203 +170,100 @@ Each implementation must adhere to the interface that enables JSON serialization
     * In case of conflict, `other` takes precedence.
     * Note: It should be adapted for each platform to be more idiomatic.
 
-### `Setting<V>` Class
+### `PreferencesEditor<P : Configurable.Preferences>` Interface
 
-Represents a single configurable property of a [Configurable] component and holds its current [value].
+Interactive editor of preferences. This can be used as a helper for a user preferences screen.
 
-:warning: This class **must** be immutable.
-
-For clarity, this reference guide is using a class hierarchy to represent specialization of the `Setting<V>` class, but you could use other solutions. For example in the Kotlin toolkit, there's a unique `Setting<V, E>` class which uses composition to store additional metadata into a `extras: E` property. Specialization are declared as type aliases, e.g. the `RangeSetting` is associated with a `RangeExtras` and declared as `RangeSetting<V> = Setting<V, RangeExtras>`.
+Each implementation provides a set of `Preference<V>` properties to modify the associated preference value.
 
 #### Properties
 
-* `key: String`
-    * Unique identifier used to serialize [Preferences] to JSON.
-* `value: V`
-    * Current value for this setting.
-* `coder: SettingCoder<V> = IdentitySettingCoder()`
-    * JSON serializer for the [value]
-* `validator: SettingValidator<V> = IdentitySettingValidator()`
-    * Ensures the validity of a [V] value.
-* `activator: SettingActivator = NullSettingActivator()`
-    * Ensures that the condition required for this setting to be active are met in the given [Preferences] – e.g. another setting having a certain preference.
+* `preferences: P`
+    * The current preferences.
 
 #### Methods
 
-:question: A parameter prefixed with `...` indicates that the function can receive a variable number of arguments.
+* `clear()`
+    * Unset all preferences.
 
-* `jsonValue() -> Any`
-    * JSON raw representation for the current value.
-    * It is computed using `coder.encode(value)`.
-* `copyFirstValidValueFrom(...candidates: Preferences?, fallback: Setting<V> = this) -> Setting<V>`
-    * Creates a copy of the [Setting] receiver, after replacing its value with the first valid value taken from the given [Preferences] objects, in order.
-    * Each preference is verified using the setting [validator].
-    * If no valid value is found, falls back on the value of `fallback` which defaults to the current value.
+### `Preference<V>` Interface
 
-### `ToggleSetting` Class (extends `Setting<Boolean>`)
-
-A boolean [Setting].
-
-### `RangeSetting<V>` Class (extends `Setting<V>`)
-
-A [Setting] whose value is constrained to a range.
+A handle to edit the value of a specific preference which is able to predict which value the `Configurable` will effectively use.
 
 #### Properties
 
-* `range: Range<V>`
-    * The valid range for the setting value.
-* `suggestedSteps: List<V>?`
-    * Value steps which can be used to decrement or increment the setting. It **must** be sorted in increasing order.
-* `suggestedIncrement: V?`
-    * Suggested value increment which can be used to decrement or increment the setting.
-* `label: (V) -> String`
-    * Returns a user-facing label for the given value. This can be used to format the value unit.
-
-### `PercentSetting` Class (extends `RangeSetting<Double>`)
-
-A [RangeSetting] representing a percentage from 0.0 to 1.0.
-
-It adds the following default values to the `RangeSetting` properties:
-
-* `range: Range<Double> = 0.0..1.0`
-* `suggestedIncrement: Double? = 0.1`
-* `label: (V) -> String = { value -> "${value * 100}%"`
-
-### `EnumSetting<E>` Class (extends `Setting<E>`)
-
-A [Setting] whose value is a member of the enum [E].
-
-The default `validator` uses an `AllowlistSettingValidator` initialized with the `values`.
-
-#### Properties
-
-* `values: List<E>?`
-    * List of valid [E] values for this setting. Not all members of the enum are necessary supported.
-* `label: (E) -> String?`
-    * Returns a user-facing label for the given value, when one is available.
-
-### `ColorSetting` Class (extends `EnumSetting<Color>`)
-
-A color [Setting].
-
-The `Color` type depends on what is available on the platform.
-
-A `Configurable` implementation might restrict the available colors with the `EnumSetting`'s `values` property. With a special `coder`, it can also recognize various types of JSON colors: integers, hexadecimal, named colors (`red`, `green`, etc.).
-
-
-### `Preferences` Class
-
-Set of preferences used to update a `Configurable`'s settings.
-
-:point_up: Prefer implementing an immutable and a mutable version of `Preferences`, if possible. The mutable APIs are marked with "(*mutable*)". If not possible, the `copy()` method should be sufficient to prevent mutations of the preferences after submitting them to a `Configurable` object.
-
-#### Properties
-
-* `values: Map<String, *>`
-    * Direct access to the JSON values.
-    * Prefer using the safe `Setting`-based accessors instead.
+* `value: V?`
+    * The current value of the preference.
+* `effectiveValue: V`
+    * The value that will be effectively used by the `Configurable` object if preferences are submitted as they are.
+* `isEffective: Boolean`
+    * Indicates if this preference will be effectively used by the `Configurable` object if preferences are submitted as they are.
 
 #### Methods
 
-* `copy() -> Preferences`
-    * Creates a deep copy of this `Preferences`.
-* (*mutable*) `merge(other: Preferences)`
-    * Merges the preferences of [other], overwriting the ones from the receiver in case of conflict.
+* `set(value: V?)`
+    * Set the preference to `value`.
+    * A null value means unsetting the preference.
+* `clear()`
+    * Unset the preference.
+    * Equivalent to `set(null)`
+    
+#### `Preference<Boolean>`
 
-##### JSON serialization
+A `Preference` with a boolean for value.
 
-* `Preferences(jsonString: String?)`
-    * Creates a `Preferences` object from its JSON representation.
-* `toJSON() -> Map<String, *>`
-    * Serializes this [Preferences] to a JSON object.
-* `toJSONString() -> String`
-    * Serializes this [Preferences] to a JSON object.
+##### Methods
 
-##### Setting accessors
+* `toggle()`
+    * Toggle the preference value. A default value is taken as the initial one if the preference is currently unset.
+    
+#### `EnumPreference<V>`
+    
+A `Preference` which accepts a closed set of values.
 
-* `get(setting: Setting<V>) -> V?`
-    * Gets the preference for the given [setting], if set.
-* (*mutable*) `set(setting: Setting<V>, preference: V?, activate: Boolean = true)`
-    * Sets the preference for the given [setting].
-    * `activate: Boolean = true`
-        * Indicates whether the setting will be force activated if needed.
-* (*mutable*) `update(setting: Setting<V>, activate: Boolean = true, transform: (V) -> V`
-    * Sets the preference for the given [setting] after transforming the current value.
-* (*mutable*) `remove(setting: Setting<*>)`
-    * Removes the preference for the given [setting].
-* (*mutable*) `clear()`
-    * Clears all preferences.
+##### Properties
 
-##### Setting activation
+* `supportedValues: List<V>`
+    * List of valid values for this preference.
+    
+#### `RangePreference<V>`
 
-* `isActive(setting: Setting<*>) -> Boolean`
-    * Returns whether the given [setting] is active in these preferences.
-    * An inactive setting is ignored by the [Configurable] until its activation conditions are met (e.g. another setting has a certain preference).
-* (*mutable*) `activate(setting: Setting<*>) -> Boolean`
-    * Activates the given [setting] in the preferences, if needed.
+A `Preference` whose values must lie in a range of `V`.
 
-##### Filtering
+##### Properties
 
-:question: A parameter prefixed with `...` indicates that the function can receive a variable number of arguments.
+* `supportedRange: Range<V>`
+    * Supported range for the values.
+    
+##### Methods
 
-* `filter(...settings: Setting<*>) -> Preferences`
-    * Creates a copy of this [Preferences], keeping only the preferences for the given settings.
-* `filter(...keys: String) -> Preferences`
-    * Creates a copy of this [Preferences], keeping only the preferences for the given setting [keys].
-* `filterNot(...settings: Setting<*>) -> Preferences`
-    * Creates a copy of this [Preferences], excluding the preferences for the given settings.
-* `filterNot(...keys: String) -> Preferences`
-    * Creates a copy of this [Preferences], excluding the preferences for the given setting [keys].
+* `increment()`
+    * Increment the preference value from its current value or a default value.
+* `decrement()`
+    * Decrement the preference value from its current value or a default value.
+* `format(value: V) -> String`
+    * Format `value` in a way suitable for display, including unit if relevant.
+    
+#### Mapping helpers
+    
+The toolkit ships with mapping helpers to create new custom `Preference` objects, allowing a reading app to adapt the type and range of values available in its user interface.
 
-##### Type-specific helpers
+##### `Preference<V>`
 
-###### `ToggleSetting`
+* `map<T>(from: (V) -> T, to: (T) -> V) -> Preference<T>`
+    * Creates a new `Preference` object wrapping the receiver and converting its value `from` and `to` the target type `T`.
+* `withSupportedValues(values: List<V>) -> EnumPreference<V>`
+    * Creates a new `EnumPreference` object wrapping the receiver with the provided supported `values`.
 
-* (*mutable*) `toggle(setting: ToggleSetting, activate: Boolean = true)`
-    * Toggles the preference for the given boolean [setting].
+##### `Preference<Boolean>`
 
-###### `EnumSetting<E>`
+* `flipped() -> Preference<Boolean>`
+    * Returns a new preference with its boolean value flipped.
 
-* (*mutable*) `toggle(setting: EnumSetting<E>, preference: E, activate: Boolean = true)`
-    * Toggles the preference for the enum [setting] to the given [preference].
-    * If the preference was already set to the same value, it is removed.
+##### `EnumPreference<V>`
 
-###### `RangeSetting<V>`
-
-* (*mutable*) `increment(setting: RangeSetting<V>, activate: Boolean = true, next: (V) -> V)`
-    * Increments the preference for the given [setting] to the next step.
-    * If the [setting] doesn't have any suggested steps, the [next] function will be used instead to determine the next step.
-* (*mutable*) `decrement(setting: RangeSetting<V>, activate: Boolean = true, previous: (V) -> V)`
-    * Decrements the preference for the given [setting] to the previous step.
-    * If the [setting] doesn't have any suggested steps, the [previous] function will be used instead to determine the previous step.
-
-###### `RangeSetting<Int>`
-
-* (*mutable*) `increment(setting: RangeSetting<Int>, amount: Int = setting.extras.suggestedIncrement ?: 1, activate: Boolean = true)`
-    * Increments the preference for the given [setting] to the next step.
-    * `amount: Int = setting.extras.suggestedIncrement ?: 1`
-        * Amount to increment, when the [setting] doesn't have any suggested steps or increment.
-* (*mutable*) `decrement(setting: RangeSetting<Int>, amount: Int = setting.extras.suggestedIncrement ?: 1, activate: Boolean = true)`
-    * Decrements the preference for the given [setting] to the previous step.
-    * `amount: Int = setting.extras.suggestedIncrement ?: 1`
-        * Amount to decrement, when the [setting] doesn't have any suggested steps or increment.
-*  (*mutable*)`adjustBy(setting: RangeSetting<Int>, amount: Int, activate: Boolean = true)`
-    * Adjusts the preference for the given [setting] by the [amount].
-    * `amount: Int`
-        * Amount to add to the current preference value.
-
-###### `RangeSetting<Double>`
-
-* (*mutable*) `increment(setting: RangeSetting<Double>, amount: Double = setting.extras.suggestedIncrement ?: 0.1, activate: Boolean = true)`
-    * Increments the preference for the given [setting] to the next step.
-    * `amount: Double = setting.extras.suggestedIncrement ?: 0.1`
-        * Amount to increment, when the [setting] doesn't have any suggested steps or increment.
-* (*mutable*) `decrement(setting: RangeSetting<Double>, amount: Double = setting.extras.suggestedIncrement ?: 0.1, activate: Boolean = true)`
-    * Decrements the preference for the given [setting] to the previous step.
-    * `amount: Double = setting.extras.suggestedIncrement ?: 0.1`
-        * Amount to decrement, when the [setting] doesn't have any suggested steps or increment.
-* (*mutable*) `adjustBy(setting: RangeSetting<Double>, amount: Double, activate: Boolean = true)`
-    * Adjusts the preference for the given [setting] by the [amount].
-    * `amount: Double`
-        * Amount to add to the current preference value.
-
+* `map<T>(from: (V) -> T, to: (T) -> V, supportedValues: (List<V>) -> List<T>)? = null) -> EnumPreference<T>`
+    * Creates a new `EnumPreference` object wrapping the receiver and converting its value and `supportedValues`, `from` and `to` the target type `T`.
+    * If `supportedValues` is null, then the original supported values will be mapped with `from`.
+* `mapSupportedValues(transform: (List<V>) -> List<V>) -> EnumPreference<V>`
+    * Creates a new `EnumPreference` object wrapping the receiver and transforming its supported values with `transform`.
