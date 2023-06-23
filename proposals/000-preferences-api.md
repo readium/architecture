@@ -100,7 +100,7 @@ For example, we can display two EPUB pages side-by-side using the `columnCount` 
 
 ### Saving and restoring user preferences
 
-A user settings screen is not useful unless you can save and restore the selected preferences for future sessions. All `Preferences` types can be serialized to and from JSON. The API varies depending on the platform..
+A user settings screen is not useful unless you can save and restore the selected preferences for future sessions. All `Preferences` types can be serialized to and from JSON. The API varies depending on the platform.
 
 ```swift
 let jsonData = try JSONEncoder().encode(preferences)
@@ -122,7 +122,7 @@ The way you store user preferences can impact the features available. For instan
 * Several user preferences profiles/themes that the user can switch between and modify independently.
 * Some preferences that are not stored as JSON and will need to be reconstructed – e.g. the publication language.
 
-The toolkit provides suggested filters for each `Preferences` type to help you extract the preferences that are intrinsic to a publication..
+The toolkit provides suggested filters for each `Preferences` type to help you extract the preferences that are intrinsic to a publication.
 
 ```swift
 let publicationPrefs = preferences.filterPublicationPreferences()
@@ -132,7 +132,7 @@ let sharedPrefs = preferences.filterSharedPreferences()
 let combinedPrefs = publicationPrefs.merging(sharedPrefs)
 ```
 
-:warning: Preferences that are specific to a certain publication, such as `language`, should not be shared across different publications. It is recommended to store these preferences separately for each book. Using the suggested filters will accomplish this..
+:warning: Preferences that are specific to a certain publication, such as `language`, should not be shared across different publications. It is recommended to store these preferences separately for each book. Using the suggested filters will accomplish this.
 
 ## Reference Guide
 
