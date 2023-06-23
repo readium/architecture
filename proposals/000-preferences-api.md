@@ -8,6 +8,8 @@
 
 The Preferences API is a tool for creating components configurable during runtime. It provides a useful framework for constructing user settings interfaces, taking into account all the rules and dependencies associated with each setting. This makes it easy for developers to create a user interface that can be customized to their individual needs.
 
+Multiple Readium components, such as Navigators, use this new framework to provide a unified API that enables them to change their settings on-the-fly.
+
 ## Motivation
 
 Navigators in Readium are built differently depending on the type of publication. In the past, the API for modifying their presentation varied across implementations, making it more difficult to build a user interface and store user preferences.
@@ -49,7 +51,7 @@ assert(epubNavigator.settings.fontFamily == .serif)
 
 ```swift
 // 1. Create a preferences editor.
-let editor = epubNavigator.editor(of: preferences)
+let editor = EPUBPreferencesEditor(preferences)
     
 // 2. Modify the preferences through the editor.
 editor.fontFamily.set(.serif)
@@ -88,7 +90,7 @@ If the activation conditions of a setting are not met in the preferences, the se
 You can use the `PreferencesEditor` to determine if a setting is effective for a given set of preferences.
 
 ```swift
-let editor = epubNavigator.editor(of: preferences)
+let editor = EPUBPreferencesEditor(preferences)
 editor.wordSpacing.isEffective
 ```
 
@@ -100,7 +102,7 @@ For example, we can display two EPUB pages side-by-side using the `columnCount` 
 
 ### Saving and restoring user preferences
 
-A user settings screen is not useful unless you can save and restore the selected preferences for future sessions. All `Preferences` types can be serialized to and from JSON. The API varies depending on the platform.
+All `Preferences` types can be serialized to and from JSON, which is useful for saving and restoring the selected preferences for future sessions. The API differs depending on the platform.
 
 ```swift
 let jsonData = try JSONEncoder().encode(preferences)
