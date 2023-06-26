@@ -28,7 +28,7 @@ The Navigator and other Readium components support dynamic configuration through
 
 The application can't directly set the Navigator settings. Instead, it can submit a `Preferences` set to the Navigator (`Configurable`), which will recalculate its actual settings and refresh the display. The application can then update its user settings interface with the new settings emitted by the Navigator.
 
-<img src="assets/000-flow.svg">
+<img src="assets/009-flow.svg">
 
 ```swift
 // 1. Create a set of preferences.
