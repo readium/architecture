@@ -37,7 +37,7 @@ It <strong class="rfc">may</strong> also contain:
 | ---- | ---------- | ------ | -------- |
 | `fragments` |  Contains one or more fragment in the resource referenced by the Locator Object.  | Array of strings | No |
 | `progression`  | Progression in the resource expressed as a percentage.  | Float between 0 and 1 | No |
-| `position`  | An index in the publication.  | Integer where the value is > 1 | No |
+| `position`  | An index in the publication.  | Integer where the value is > 0 | No |
 | `totalProgression` | Progression in the publication expressed as a percentage.  | Float between 0 and 1 | No |
 
 Additional locations <strong class="rfc">may</strong> also be included in this object, using an extension officially registered on this repository or a URI.
