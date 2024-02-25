@@ -47,7 +47,7 @@ The Locator Object <strong class="rfc">must</strong> contain:
 - `type`
 - `text`
 - `progression` in `location`
-- a CSS Selector, DOM Range or CFI
+- either: `cssSelector` in `location`, or `domRange` in `location`, or `partialCfi` in `location`
 
 The Locator Object <strong class="rfc">should</strong> contain:
 
