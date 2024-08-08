@@ -15,6 +15,7 @@ These modules are not necessarily meant to be deployed on the same device or wri
 ## Projects
 
 * [Readium Mobile](https://readium.org/mobile)
+* [Readium CSS](https://readium.org/readium-css)
 * [Readium Desktop](https://readium.org/desktop)
 * [Readium Web](https://readium.org/web)
 
@@ -23,16 +24,9 @@ These modules are not necessarily meant to be deployed on the same device or wri
 ### Models
 
 * [Readium Web Publication Manifest](https://readium.org/webpub-manifest)
+* [Guided Navigation](https://readium.org/guided-navigation)
 * [Locators](models/locators)
 * [OPDS 2.0](https://drafts.opds.io/opds-2.0) (maintained by the OPDS Community)
-* [Synchronized Narration](https://w3c.github.io/sync-media-pub/archived/synchronized-narration.html) (maintained by a W3C CG)
-
-### Main Modules
-
-* [Publication Server](server)
-* [Navigator](navigator)
-* [Readium CSS](https://readium.org/readium-css)
-* [Streamer](streamer)
 
 ### Services
 
