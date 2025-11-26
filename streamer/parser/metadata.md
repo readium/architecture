@@ -21,7 +21,6 @@ To fill such a map from an EPUB metadata element, proceed as follows:
 
 Localized sorting keys are supported in RWPM for publication title, contributor/collection' names and subject' names. While computing the localized string, use the language of the carrying element as defined in [the XML specification](https://www.w3.org/TR/xml/#sec-lang-tag) and fallback to `null` or `und`.
 
-
 ## Title
 
 The `title` and `sortAs` keys of a publication are objects where each key is a BCP 47 language tag and each value of this key is a string.
@@ -297,69 +296,11 @@ Does not apply.
 
 The integer is the value of the `meta` element whose `property` attribute has the value `schema:numberOfPages`.
 
-## Rendition / Presentation
-
-The `presentation` of a publication is an object containing the following keys: 
-
-- `continuous`;
-- `layout`;
-- `orientation`;
-- `overflow`;
-- `spread`.
-
-In addition, the following elements may be included in `properties` in a Link Object from the `readingOrder` (spine overrides):
-
-- `layout`;
-- `orientation`;
-- `overflow`;
-- `page`;
-- `spread`.
-
-### Flow
-
-The `rendition:flow` metadata is mapped to `overflow` and `continuous`.
-
-The `overflow` of a publication is a key whose value can be the following string: 
-
-- `auto`;
-- `paginated`;
-- `scrolled`.
-
-This `overflow` can be `continuous`, which is a key whose value is a boolean: `true` or `false`
-
-#### EPUB 2.x
-
-Does not apply.
-
-#### EPUB 3.x
-
-##### Global Property
-
-The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:flow` with the following mapping:
-
-| rendition:flow      | values                                        |
-|---------------------|-----------------------------------------------|
-| auto                | "overflow": "auto" + "continuous": false      |
-| paginated           | "overflow": "paginated" + "continuous": false |
-| scrolled-doc        | "overflow": "scrolled" + "continuous": false  |
-| scrolled-continuous | "overflow": "scrolled" + "continuous": true   |
-
-If no value is set, it defaults to `auto`.
-
-##### Spine Overrides
-
-For each spine item, the value of `overflow` must be inferred from the `properties` attribute whose value contains `rendition:flow-`.
-
-| Properties                         | value     |
-|------------------------------------|-----------|
-| rendition:flow-auto                | auto      |
-| rendition:flow-paginated           | paginated |
-| rendition:flow-scrolled-doc        | scrolled  |
-| rendition:flow-scrolled-continuous | scrolled  |
+## Rendition
 
 ### Layout
 
-The `layout` of a publication is a key whose value can be the following string: 
+The `layout` of a publication `metadata` object is a key whose value can be the following string: 
 
 - `reflowable`;
 - `fixed`.
@@ -382,8 +323,6 @@ If the publication either has a `com.kobobooks.display-options.xml` or `com.appl
 
 #### EPUB 3.x
 
-##### Global Property
-
 The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:layout` with the following mapping:
 
 | rendition:layout | value      |
@@ -392,100 +331,6 @@ The string is the value of the `<meta>` element whose `property` attribute has t
 | pre-paginated    | fixed      |
 
 If no value is set, it defaults to `reflowable`.
-
-##### Spine Overrides
-
-For each spine item, the value of `layout` must be inferred from the `properties` attribute whose value contains `rendition:layout-`.
-
-| Properties                     | value      |
-|--------------------------------|------------|
-| rendition:layout-reflowable    | reflowable |
-| rendition:layout-pre-paginated | fixed      |
-
-### Orientation
-
-The `orientation` of a publication is a key whose value can be the following string: 
-
-- `auto`;
-- `landscape`;
-- `portrait`.
-
-#### EPUB 2.x
-
-If the publication has a `com.apple.ibooks.display-options.xml` in its `META-INF` folder, then: 
-
-1. prioritize the `platform` element whose `name` attribute has a value of `*`;
-2. if there is none, then prioritize `ipad`;
-3. if there is still none, then fall back on `iphone`.
-
-The string is the value of the `<option>` element whose `name` attribute is `orientation-lock` with the following mapping: 
-
-| option         | value     |
-|----------------|-----------|
-| none           | auto      |
-| landscape-only | landscape |
-| portrait-only  | portrait  |
-
-If no such option is set, it defaults to `auto`.
-
-#### EPUB 3.x
-
-##### Global Property
-
-The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:orientation`.
-
-If no value is set, it defaults to `auto`.
-
-##### Spine Overrides
-
-For each spine item, the value of `orientation` must be inferred from the `properties` attribute whose value contains `rendition:orientation-`.
-
-| Properties                      | value     |
-|---------------------------------|-----------|
-| rendition:orientation-auto      | auto      |
-| rendition:orientation-landscape | landscape |
-| rendition:orientation-portrait  | portrait  |
-
-### Spread
-
-The `spread` of a publication is a key whose value can be the following string: 
-
-- `none`;
-- `auto`;
-- `landscape`;
-- `both`.
-
-#### EPUB 2.x
-
-Does not apply.
-
-#### EPUB 3.x
-
-##### Global Property
-
-The string is the value of the `<meta>` element whose `property` attribute has the value `rendition:spread` with the following mapping:
-
-| rendition:spread | value     |
-|------------------|-----------|
-| none             | none      |
-| auto             | auto      |
-| landscape        | landscape |
-| portrait         | both      |
-| both             | both      |
-
-If no value is set, it defaults to `auto`.
-
-##### Spine Overrides
-
-For each spine item, the value of `spread` must be inferred from the `properties` attribute whose value contains `rendition:spread-`.
-
-| Properties                 | value     |
-|----------------------------|-----------|
-| rendition:spread-none      | none      |
-| rendition:spread-auto      | auto      |
-| rendition:spread-landscape | landscape |
-| rendition:spread-portrait  | both      |
-| rendition:spread-both      | both      |
 
 ### Page-spread-* properties
 
@@ -508,3 +353,55 @@ For each spine item, the value of `page` must be inferred from the `properties` 
 | rendition:page-spread-center  | center  |
 | rendition:page-spread-left    | left    |
 | rendition:page-spread-right   | right   |
+
+
+## Appendix: Deprecated properties
+
+### Layout in a Presentation object 
+
+This document was initially responsible for documenting the parsing of the `layout` of an entire publication using either: `reflowable` or `fixed`.
+
+This was handled using a `layout` property in a `presentation` object.
+
+This is now handled using the `layout` key of a publication directly in `metadata`.
+
+### Layout as a property of a Link Object
+
+This document was initially responsible for documenting the Spine Overrides for the `layout` property. 
+
+This was originally supported in the EPUB Profile of the Readium Web Publication Manifest through a `layout` property in `properties`.
+
+This is no longer documented since [the Readium Web Publication Manifest does no longer support this](https://github.com/readium/webpub-manifest/blob/master/profiles/epub.md#appendix-b---deprecated-properties).
+
+### Flow
+
+The EPUB Specification allow content creators to specify the intended flow of an entire publication, or a specific resource.
+
+This was originally supported in this EPUB profile of the Readium Web Publication Manifest through:
+
+- an `overflow` property for the `presentation` object in `metadata` (for the entire publication)
+- an `overflow` property in the `properties` of a Link Object (for a specific resource)
+
+This document was initially responsible for documenting both but is no longer as it is now handled using the `layout` key of a publication directly in `metadata`, but not for EPUB.
+
+### Orientation
+
+The EPUB specification allow content creators to specify the intended orientation of an entire publication, or a specific resource.
+
+This was originally supported in this EPUB profile of the Readium Web Publication Manifest through:
+
+- an `orientation` property for the `presentation` object in `metadata` (for the entire publication)
+- an `orientation` property in the `properties` of a Link Object (for a specific resource)
+
+This document was initially responsible for documenting both but is no longer since [the Readium Web Publication Manifest does no longer support this](https://github.com/readium/webpub-manifest/blob/master/profiles/epub.md#appendix-b---deprecated-properties).
+
+### Spread
+
+The EPUB specification allow content creators to specify the intended spread of an entire publication, or a specific resource. 
+
+This was originally supported in this EPUB profile of the Readium Web Publication Manifest through:
+
+- a `spread` property for the `presentation` object in `metadata` (for the entire publication)
+- a `spread` property in the `properties` of a Link Object (for a specific resource)
+
+This document was initially responsible for documenting both but is no longer since [the Readium Web Publication Manifest does no longer support this](https://github.com/readium/webpub-manifest/blob/master/profiles/epub.md#appendix-b---deprecated-properties).
