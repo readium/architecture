@@ -6,7 +6,7 @@
 
 ## Summary
 
-Introduction of a new [publication service](https://readium.org/architecture/proposals/004-publication-helpers-services.html) providing a way to search an excerpt through the content of a publication.
+Introduction of a new [publication service](https://readium.org/architecture/specs/004-publication-helpers-services.html) providing a way to search an excerpt through the content of a publication.
 
 
 ## Motivation

@@ -1,12 +1,12 @@
-# REP - Readium Evolution Proposals
+# Readium Specifications
 
-Many changes, such as bug fixes, internal refactorings and documentation improvements, can be implemented and reviewed via the usual GitHub tools: issues and pull requests.
+This directory contains the reference specifications for the public APIs of the Readium toolkit.
 
-However, we ask that any change impacting the public API be put through a bit of design process and produce a consensus among the Readium community.
+These specifications are living documents: changes to them, including changes impacting the public API, are discussed and made directly against these documents through the usual GitHub tools — issues and pull requests — until they reach consensus among the Readium community.
 
-The REP (Readium Evolution Proposals) process is intended to provide a public space for discussing new features entering the Readium toolkit, so that all stakeholders can be confident about the direction the toolkit is following. It also serves as an archive and reference for existing (or soon to be) features.
+This directory used to be `proposals/`, under the Readium Evolution Proposals (REP) process: new features were written up as standalone proposal documents, discussed, and approved before being merged as a historical record. That process is retired. It has been renamed to `specs/` — the documents below still read like proposals (with Motivation, Rationale, Drawbacks sections, etc.) rather than plain reference docs; that has not been rewritten.
 
-## Approved Proposals
+## Specifications
 
 ### [001 - Media Type](001-media-type.md)
 

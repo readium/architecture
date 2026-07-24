@@ -52,7 +52,7 @@ While Readium ships with sane default parser settings, some degree of configurat
 The Streamer is one of the main components of the Readium Architecture, whose responsibilities are to:
 
 * parse packaged or exploded publications into a Readium `Publication` model
-* [compose the `Fetcher` tree](https://github.com/readium/architecture/blob/master/proposals/002-composite-fetcher-api.md#developer-guide) providing access to publication resources
+* [compose the `Fetcher` tree](https://github.com/readium/architecture/blob/master/specs/002-composite-fetcher-api.md#developer-guide) providing access to publication resources
 * unlock content protection technologies
 
 ### Usage
@@ -144,7 +144,7 @@ If you just want to add HTTP headers or set up caching and networking policies f
 
 The Readium Architecture is opened to support additional publication formats.
 
-1. [Register your new format and add a sniffer](https://readium.org/architecture/proposals/001-media-type.html#supporting-a-custom-media-type). This step is optional but recommended to make your format a first-class citizen in the toolkit.
+1. [Register your new format and add a sniffer](https://readium.org/architecture/specs/001-media-type.html#supporting-a-custom-media-type). This step is optional but recommended to make your format a first-class citizen in the toolkit.
 2. Implement a `PublicationParser` to parse the publication format into a `Publication` object. Then, provide an instance to the Streamer.
 
 ```swift

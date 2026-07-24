@@ -34,7 +34,7 @@ These modules are not necessarily meant to be deployed on the same device or wri
 
 ## API
 
-The API of each module is specified via [Readium Evolution Proposals](https://readium.org/architecture/proposals/), which are discussed collaborativelty before being implemented by the core developers of the toolkits. 
+The API of each module is specified in the [Readium Specifications](specs), which are discussed collaboratively before being implemented by the core developers of the toolkits. 
 
 ## Ecosystem
 
