@@ -81,7 +81,7 @@ A chapter has an optional title, a start time and a duration.
 2. A chapter without a title, or with a blank title, is left out.
 3. The `toc` is only produced when at least one file has a titled chapter. Otherwise the manifest has no `toc`.
 4. A chapter link has:
-   - `href`: the HREF of the file, with the fragment `#t=<start>`. The first chapter of a file carries `#t=0`.
+   - `href`: the HREF of the file, with the fragment `#t=<start>`.
    - `title`: the chapter title.
    - `duration`: the chapter duration in seconds.
 5. When a `toc` is produced, a file without any titled chapter contributes one link:
@@ -113,7 +113,7 @@ A package with a chaptered M4B followed by a plain MP3:
   },
   "readingOrder": [
     {"href": "part1.m4b", "type": "audio/mp4", "title": "Part One", "duration": 3600, "bitrate": 64},
-    {"href": "part2.mp3", "type": "audio/mpeg", "duration": 1800, "bitrate": 64}
+    {"href": "part2.mp3", "type": "audio/mpeg", "title": "Part 2", "duration": 1800, "bitrate": 64}
   ],
   "toc": [
     {"href": "part1.m4b#t=0", "title": "Opening Credits", "duration": 71.5},
@@ -165,7 +165,7 @@ Reading policy:
 | Series position | `©mvi` is an integer. `MVIN` is a string such as `2/5`, where the position is the part before the slash. `SERIES-PART` is a string that may be decimal (`2.5`). A value that is not a number is ignored. |
 | Date | `©day`, `TDRC` and `TDRL` hold a year (`2021`), a year and month (`2021-03`), a date (`2021-03-04`) or an ISO 8601 timestamp. `TYER` holds a four-digit year. Parse the text of the tag. A missing component takes its earliest value: a year alone maps to January 1st of that year, a year and month to the first day of that month. |
 | Language | `TLAN` may list several languages, such as `eng/fra`: split it on `/` first, as described above, and convert each part on its own. Each value is a BCP 47 tag (`fr`, `fr-CA`) or an ISO 639 code, matched case-insensitively. ID3v2.3 and ID3v2.4 define `TLAN` as ISO 639-2 codes, which have two variants for some languages: the terminology code (`fra`) and the bibliographic code (`fre`). Convert every form to BCP 47, using the two-letter code when one exists (`fr`). Ignore `und` and any other value, such as a language name ("English"). |
-| ISBN | Strip spaces and hyphens, then write `urn:isbn:<value>`. An ISBN-10 may end with `X`. |
+| ISBN | Strip spaces and hyphens. If the result is a valid ISBN-10 or ISBN-13, including its check digit, write `urn:isbn:<value>`; otherwise ignore it. An ISBN-10 may end with `X`. |
 | `COMM` | Use the frame whose description is empty. A `COMM` frame with a description may hold technical data: iTunes stores its normalization settings in one described as `iTunNORM`. |
 | Bitrate | The manifest expects kbps. Divide a value in bits per second by 1000. |
 | ID3 text frames | First byte is the encoding: `0` ISO-8859-1, `1` UTF-16 with BOM, `2` UTF-16BE, `3` UTF-8. The text follows, optionally null terminated. |
