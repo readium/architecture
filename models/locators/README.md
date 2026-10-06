@@ -35,7 +35,7 @@ It <strong class="rfc">may</strong> also contain:
 
 | Key  | Definition | Format | Required |
 | ---- | ---------- | ------ | -------- |
-| `fragments` |  Contains one or more fragment in the resource referenced by the Locator Object.  | Array of strings | No |
+| `fragments` |  Contains one or more [percent-encoded fragments](#encoding) in the resource referenced by the Locator Object.  | Array of strings | No |
 | `progression`  | Progression in the resource expressed as a percentage.  | Float between 0 and 1 | No |
 | `position`  | An index in the publication.  | Integer where the value is > 0 | No |
 | `totalProgression` | Progression in the publication expressed as a percentage.  | Float between 0 and 1 | No |
@@ -75,6 +75,19 @@ For this purpose, this document identifies the following specifications along wi
 | [Media Fragment URI 1.0](https://www.w3.org/TR/media-frags/) | Audio, Video and Images | `t=67`, `xywh=160,120,320,240`|
 | [PDF](http://tools.ietf.org/rfc/rfc3778) | PDF | `page=12`, `viewrect=50,50,640,480`|
 
+### Encoding
+
+Each fragment <strong class="rfc">must</strong> be percent-encoded, as it appears in a URI ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986#section-3.5)), and <strong class="rfc">must not</strong> include the `#` prefix.
+
+A fragment can be structured, like a [text fragment](https://wicg.github.io/scroll-to-text-fragment/). A character which is a delimiter in its syntax then has a different meaning from its percent-encoded form:
+
+| Target | Fragment |
+| ------ | -------- |
+| HTML element with the `id` `café noir` | `caf%C3%A9%20noir` |
+| The text `Yes, please` | `:~:text=Yes%2C%20please` |
+| The text starting with `Yes` and ending with `please` | `:~:text=Yes,please` |
+
+An implementation <strong class="rfc">must</strong> therefore split a structured fragment on its delimiters before percent-decoding its components.
 
 ## Examples
 
