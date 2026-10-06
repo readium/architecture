@@ -170,7 +170,7 @@ Reading policy:
 | Bitrate | The manifest expects kbps. Divide a value in bits per second by 1000. |
 | ID3 text frames | First byte is the encoding: `0` ISO-8859-1, `1` UTF-16 with BOM, `2` UTF-16BE, `3` UTF-8. The text follows, optionally null terminated. |
 | Cover media type | Declared by the file: the type code of the `covr` data atom (13 for JPEG, 14 for PNG), or the MIME type of the `APIC` frame (treat `image/jpg` as `image/jpeg`). The declared type is trusted and exposed as the `type` of the cover. A wrong declaration is an authoring error. |
-| `APIC` | Prefer the picture of type 3 (front cover), otherwise the first one. |
+| `APIC` | Ignore the frames whose MIME type is `-->`: their payload is a URL, not an embedded picture. Among the remaining ones, prefer the picture of type 3 (front cover), otherwise the first one. |
 | `chpl` | Version (1 byte), flags (3 bytes), 4 reserved bytes when the version is 1, chapter count (1 byte). Then for each chapter: start (64-bit big endian, in units of 100 ns), title length (1 byte), title (UTF-8). |
 | `CHAP` | Element ID (null terminated), start time and end time (32-bit, milliseconds), start offset and end offset (32-bit), then sub-frames. |
 | Chapter track sample | Text length (16-bit big endian), then the text in UTF-8, or UTF-16 when it starts with a BOM. |
@@ -183,6 +183,7 @@ Reading policy:
 | Grouping as series (`©grp`, `TIT1`, `GRP1`) | The Plex Audiobook Guide and beets-audible write `TIT1` as the free text "Series, Book #", which needs heuristics to split. |
 | OverDrive MediaMarkers (`TXXX`) | Chapters stored as XML in library MP3 files. |
 | Per-chapter artwork and URLs | No slot in the manifest. |
+| Linked covers (`APIC` with the MIME type `-->`) | The picture is behind a URL instead of being embedded. Fetching it would add a network request to the parsing. |
 | Copyright, lyrics, explicit rating, media kind (`cprt`, `©lyr`, `rtng`, `stik`) | No matching metadata field. |
 | DRM flag | A separate feature. |
 | MP4 audio track language | Not read the same way everywhere. A file encoded by Apple's encoder carries the legacy QuickTime language code 0, which ffprobe reports as `eng` and AVFoundation as `und`, whatever the spoken language. |
