@@ -28,7 +28,7 @@ Sources are listed in priority order within a cell. The first one holding a non-
 | Series position | `©mvi`, `----:SERIES-PART` | `MVIN`, `TXXX:SERIES-PART` | `metadata.belongsTo.series[].position` |
 | Publisher | `©pub` | `TPUB` | `metadata.publisher` |
 | Date | `©day` | `TDRL`, `TDRC`, `TYER` | `metadata.published` |
-| Genres | `©gen`, `gnre` | `TCON` | `metadata.subject` |
+| Genres | `©gen` | `TCON` | `metadata.subject` |
 | Description | `ldes`, `desc`, `©cmt` | `TXXX:DESCRIPTION`, `TDES`, `COMM` | `metadata.description` |
 | Language | `----:LANGUAGE` | `TLAN` | `metadata.language` |
 | ISBN | `----:ISBN` | `TXXX:ISBN` | `metadata.identifier` |
@@ -160,8 +160,7 @@ Reading policy:
 | `/` in ID3 values | Split on `/` the values of the ID3 frames feeding a field with several values: `TPE1`, `TPE2`, `TCOM`, `TXXX:NARRATOR`, `TPUB` and `TLAN`. Do it whatever the ID3 version, then trim each part and drop the empty ones. ID3v2.3 defines `/` as the separator for `TPE1` and `TCOM`. For the other frames it comes from mutagen, which by default joins the values of any text frame with `/` when saving ID3v2.3: two publishers are written as `A/B`. |
 | Other punctuation | A contributor is never split on commas, semicolons or `&`. An MP4 value is never split, not even on `/`. A title or a series name is never split. |
 | Genres | Split on `;` and `/` (which covers `//`), then trim each part and drop the empty ones. Each part is one subject. |
-| `TCON` | May hold ID3v1 genre references such as `(17)` or `17`, to resolve against the ID3v1 genre list. |
-| `gnre` | 16-bit integer holding the ID3v1 genre index plus one. |
+| `TCON` | May hold references to the ID3v1 genre list: `(17)` in ID3v2.3, where several of them may precede a name as in `(12)(101)Fantasy`, and `17` in ID3v2.4. `RX` and `CR` are references too. Ignore the references and keep the name. A name starting with a parenthesis is escaped as `((name)`. |
 | Series position | `©mvi` is an integer. `MVIN` is a string such as `2/5`, where the position is the part before the slash. `SERIES-PART` is a string that may be decimal (`2.5`). A value that is not a number is ignored. |
 | Date | `©day`, `TDRC` and `TDRL` hold a year (`2021`), a year and month (`2021-03`), a date (`2021-03-04`) or an ISO 8601 timestamp. `TYER` holds a four-digit year. Parse the text of the tag. A missing component takes its earliest value: a year alone maps to January 1st of that year, a year and month to the first day of that month. |
 | Language | `TLAN` may list several languages, such as `eng/fra`: split it on `/` first, as described above, and convert each part on its own. Each value is a BCP 47 tag (`fr`, `fr-CA`) or an ISO 639 code, matched case-insensitively. ID3v2.3 and ID3v2.4 define `TLAN` as ISO 639-2 codes, which have two variants for some languages: the terminology code (`fra`) and the bibliographic code (`fre`). Convert every form to BCP 47, using the two-letter code when one exists (`fr`). Ignore `und` and any other value, such as a language name ("English"). |
@@ -183,6 +182,7 @@ Reading policy:
 | Grouping as series (`©grp`, `TIT1`, `GRP1`) | The Plex Audiobook Guide and beets-audible write `TIT1` as the free text "Series, Book #", which needs heuristics to split. |
 | OverDrive MediaMarkers (`TXXX`) | Chapters stored as XML in library MP3 files. |
 | Per-chapter artwork and URLs | No slot in the manifest. |
+| ID3v1 genres (`gnre`, references in `TCON`) | The ID3v1 list holds music genres. Its few spoken word entries, such as "Speech" and "Audiobook", do not describe the book. |
 | Linked covers (`APIC` with the MIME type `-->`) | The picture is behind a URL instead of being embedded. Fetching it would add a network request to the parsing. |
 | Copyright, lyrics, explicit rating, media kind (`cprt`, `©lyr`, `rtng`, `stik`) | No matching metadata field. |
 | DRM flag | A separate feature. |
